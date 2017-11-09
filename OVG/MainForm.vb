@@ -22,11 +22,13 @@ Public Class MainForm
     Dim outputLocation As String = ""
     Dim outputDirectory As String = ""
     Dim NoFileWriting As Boolean = False
+    Dim allFilesLoaded As Boolean = False
+    Dim failedFiles As New Dictionary(Of String, String)
+    '===FFmpeg Worker
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
     Dim FFmpegExitCode As Integer = 0
-    Dim allFilesLoaded As Boolean = False
-    Dim failedFiles As New Dictionary(Of String, String)
+    Dim FFmpegEncodingPreset As String = ""
     '===For file operation
     Const FileFilter As String = "WAVE File(*.wav)|*.wav"
     Public currentChannelToBeSet As String = ""
@@ -43,6 +45,9 @@ Public Class MainForm
         thumbnail.Title = Me.Text
     End Sub
     Private Sub MainForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        SetStyle(ControlStyles.AllPaintingInWmPaint, True)
+        SetStyle(ControlStyles.DoubleBuffer, True)
+        SetStyle(ControlStyles.UserPaint, True)
         If My.Computer.FileSystem.FileExists("config.ini") Then
             Dim configReader As IO.StreamReader = My.Computer.FileSystem.OpenTextFileReader("config.ini")
             ffmpegPath = configReader.ReadLine()
@@ -55,7 +60,7 @@ Public Class MainForm
         End If
         LabelStatus.Text = ""
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
-        'Me.Icon = SystemIcons.Application
+        ComboBoxFFmpegEncodingPreset.SelectedIndex = 2
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -111,6 +116,7 @@ Public Class MainForm
             convertVideo = CheckBoxVideo.Checked
             NoFileWriting = CheckBoxNoFileWriting.Checked
             If convertVideo And Not NoFileWriting Then
+                FFmpegEncodingPreset = ComboBoxFFmpegEncodingPreset.SelectedItem
                 Debug.WriteLine(Strings.Right(outputLocation, 4).ToLower)
                 If Strings.Right(outputLocation, 4).ToLower <> ".mp4" Then
                     MsgBox("Please set a proper filename!", MsgBoxStyle.Critical)
@@ -173,9 +179,11 @@ Public Class MainForm
                     Exit Sub
                 End If
             End If
+            ComboBoxFFmpegEncodingPreset.Enabled = True
             ButtonAudio.Enabled = True
             LabelOutputLocation.Text = "Output video:"
         Else
+            ComboBoxFFmpegEncodingPreset.Enabled = False
             ButtonAudio.Enabled = False
             LabelOutputLocation.Text = "Output folder:"
             masterAudioFile = ""
@@ -287,6 +295,7 @@ Public Class MainForm
                 Try
                     bmpCreateCount += 1
                     bmp = New Bitmap(canvasSize.Width, canvasSize.Height)
+
                     createdBmp = True
                 Catch ex As Exception
                     createdBmp = False
@@ -570,10 +579,10 @@ Public Class MainForm
         ffmpeg.UseShellExecute = False
         If args.joinAudio Then
             'join audio
-            ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -i ""{1}"" ""{2}""", args.FPS, args.audioFile, args.outputFile)
+            ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -i ""{1}"" -preset {2} ""{3}""", args.FPS, args.audioFile, FFmpegEncodingPreset, args.outputFile)
         Else
             'silence
-            ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png ""{1}""", args.FPS, args.outputFile)
+            ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -preset {1} ""{2}""", args.FPS, FFmpegEncodingPreset, args.outputFile)
         End If
         Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
         Dim prevprog As New FFmpegProgress
