@@ -641,7 +641,7 @@ Public Class MainForm
         If FPS <> 0 Then
             timeLeft = New TimeSpan(0, 0, (totalFrame - frame) / FPS).ToString()
         End If
-        LabelStatus.Text = String.Format("{0}% {1}/{2}, {3} FPS, Time left: {4}", Math.Round(prog.frame / totalFrame, 1), frame, totalFrame, FPS, timeLeft)
+        LabelStatus.Text = String.Format("{0}% {1}/{2}, {3} FPS, Time left: {4}", Math.Round(prog.frame / totalFrame * 100, 1), frame, totalFrame, FPS, timeLeft)
         'LabelStatus.Text = Val(prog.frame) & "/" & totalFrame & " fps=" & Val(prog.FPS)
     End Sub
 
