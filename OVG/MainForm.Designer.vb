@@ -31,6 +31,7 @@ Partial Class MainForm
         Me.ButtonControl = New System.Windows.Forms.Button()
         Me.CheckBoxShowOutput = New System.Windows.Forms.CheckBox()
         Me.GroupBoxOptions = New System.Windows.Forms.GroupBox()
+        Me.ComboBoxFFmpegEncodingPreset = New System.Windows.Forms.ComboBox()
         Me.CheckBoxGrid = New System.Windows.Forms.CheckBox()
         Me.LabelCanvasSize = New System.Windows.Forms.Label()
         Me.ComboBoxCanvasSize = New System.Windows.Forms.ComboBox()
@@ -62,7 +63,6 @@ Partial Class MainForm
         Me.ToolStripStatusLabelAbout = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LabelPreviewMode = New System.Windows.Forms.Label()
         Me.TimerLabelFlashing = New System.Windows.Forms.Timer(Me.components)
-        Me.ComboBoxFFmpegEncodingPreset = New System.Windows.Forms.ComboBox()
         Me.GroupBoxOptions.SuspendLayout()
         CType(Me.NumericUpDownLineWidth, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownColumn, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -79,7 +79,7 @@ Partial Class MainForm
         'ButtonSetOutputFolder
         '
         Me.ButtonSetOutputFolder.Location = New System.Drawing.Point(788, 18)
-        Me.ButtonSetOutputFolder.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.ButtonSetOutputFolder.Margin = New System.Windows.Forms.Padding(4)
         Me.ButtonSetOutputFolder.Name = "ButtonSetOutputFolder"
         Me.ButtonSetOutputFolder.Size = New System.Drawing.Size(31, 29)
         Me.ButtonSetOutputFolder.TabIndex = 2
@@ -100,7 +100,7 @@ Partial Class MainForm
         'TextBoxOutputLocation
         '
         Me.TextBoxOutputLocation.Location = New System.Drawing.Point(105, 18)
-        Me.TextBoxOutputLocation.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TextBoxOutputLocation.Margin = New System.Windows.Forms.Padding(4)
         Me.TextBoxOutputLocation.Name = "TextBoxOutputLocation"
         Me.TextBoxOutputLocation.Size = New System.Drawing.Size(674, 25)
         Me.TextBoxOutputLocation.TabIndex = 1
@@ -108,7 +108,7 @@ Partial Class MainForm
         'ButtonControl
         '
         Me.ButtonControl.Location = New System.Drawing.Point(724, 52)
-        Me.ButtonControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.ButtonControl.Margin = New System.Windows.Forms.Padding(4)
         Me.ButtonControl.Name = "ButtonControl"
         Me.ButtonControl.Size = New System.Drawing.Size(94, 29)
         Me.ButtonControl.TabIndex = 3
@@ -122,7 +122,7 @@ Partial Class MainForm
         Me.CheckBoxShowOutput.Checked = True
         Me.CheckBoxShowOutput.CheckState = System.Windows.Forms.CheckState.Checked
         Me.CheckBoxShowOutput.Location = New System.Drawing.Point(6, 49)
-        Me.CheckBoxShowOutput.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.CheckBoxShowOutput.Margin = New System.Windows.Forms.Padding(4)
         Me.CheckBoxShowOutput.Name = "CheckBoxShowOutput"
         Me.CheckBoxShowOutput.Size = New System.Drawing.Size(101, 19)
         Me.CheckBoxShowOutput.TabIndex = 1
@@ -164,11 +164,22 @@ Partial Class MainForm
         Me.GroupBoxOptions.TabStop = False
         Me.GroupBoxOptions.Text = "Options"
         '
+        'ComboBoxFFmpegEncodingPreset
+        '
+        Me.ComboBoxFFmpegEncodingPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBoxFFmpegEncodingPreset.Enabled = False
+        Me.ComboBoxFFmpegEncodingPreset.FormattingEnabled = True
+        Me.ComboBoxFFmpegEncodingPreset.Items.AddRange(New Object() {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"})
+        Me.ComboBoxFFmpegEncodingPreset.Location = New System.Drawing.Point(135, 104)
+        Me.ComboBoxFFmpegEncodingPreset.Name = "ComboBoxFFmpegEncodingPreset"
+        Me.ComboBoxFFmpegEncodingPreset.Size = New System.Drawing.Size(111, 23)
+        Me.ComboBoxFFmpegEncodingPreset.TabIndex = 22
+        '
         'CheckBoxGrid
         '
         Me.CheckBoxGrid.AutoSize = True
         Me.CheckBoxGrid.Location = New System.Drawing.Point(172, 219)
-        Me.CheckBoxGrid.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.CheckBoxGrid.Margin = New System.Windows.Forms.Padding(4)
         Me.CheckBoxGrid.Name = "CheckBoxGrid"
         Me.CheckBoxGrid.Size = New System.Drawing.Size(55, 19)
         Me.CheckBoxGrid.TabIndex = 12
@@ -190,7 +201,7 @@ Partial Class MainForm
         Me.ComboBoxCanvasSize.FormattingEnabled = True
         Me.ComboBoxCanvasSize.Items.AddRange(New Object() {"1280x720", "1920x1080"})
         Me.ComboBoxCanvasSize.Location = New System.Drawing.Point(96, 246)
-        Me.ComboBoxCanvasSize.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.ComboBoxCanvasSize.Margin = New System.Windows.Forms.Padding(4)
         Me.ComboBoxCanvasSize.Name = "ComboBoxCanvasSize"
         Me.ComboBoxCanvasSize.Size = New System.Drawing.Size(150, 23)
         Me.ComboBoxCanvasSize.TabIndex = 14
@@ -398,7 +409,7 @@ Partial Class MainForm
         'PictureBoxOutput
         '
         Me.PictureBoxOutput.Location = New System.Drawing.Point(18, 89)
-        Me.PictureBoxOutput.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.PictureBoxOutput.Margin = New System.Windows.Forms.Padding(4)
         Me.PictureBoxOutput.Name = "PictureBoxOutput"
         Me.PictureBoxOutput.Size = New System.Drawing.Size(800, 450)
         Me.PictureBoxOutput.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -408,7 +419,7 @@ Partial Class MainForm
         'TextBoxLog
         '
         Me.TextBoxLog.Location = New System.Drawing.Point(18, 89)
-        Me.TextBoxLog.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TextBoxLog.Margin = New System.Windows.Forms.Padding(4)
         Me.TextBoxLog.Multiline = True
         Me.TextBoxLog.Name = "TextBoxLog"
         Me.TextBoxLog.ReadOnly = True
@@ -472,17 +483,6 @@ Partial Class MainForm
         Me.TimerLabelFlashing.Enabled = True
         Me.TimerLabelFlashing.Interval = 1000
         '
-        'ComboBoxFFmpegEncodingPreset
-        '
-        Me.ComboBoxFFmpegEncodingPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBoxFFmpegEncodingPreset.Enabled = False
-        Me.ComboBoxFFmpegEncodingPreset.FormattingEnabled = True
-        Me.ComboBoxFFmpegEncodingPreset.Items.AddRange(New Object() {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"})
-        Me.ComboBoxFFmpegEncodingPreset.Location = New System.Drawing.Point(135, 104)
-        Me.ComboBoxFFmpegEncodingPreset.Name = "ComboBoxFFmpegEncodingPreset"
-        Me.ComboBoxFFmpegEncodingPreset.Size = New System.Drawing.Size(111, 23)
-        Me.ComboBoxFFmpegEncodingPreset.TabIndex = 22
-        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(120.0!, 120.0!)
@@ -499,7 +499,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.ButtonSetOutputFolder)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.MaximizeBox = False
         Me.Name = "MainForm"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

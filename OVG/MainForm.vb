@@ -60,7 +60,7 @@ Public Class MainForm
         End If
         LabelStatus.Text = ""
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
-        ComboBoxFFmpegEncodingPreset.SelectedIndex = 2
+        ComboBoxFFmpegEncodingPreset.SelectedIndex = 0
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -305,14 +305,15 @@ Public Class MainForm
             Dim g As Graphics = Graphics.FromImage(bmp)
             g.Clear(bgColor)
             If smoothLine Then g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
-
-            
-
+            If drawGrid Then
+                For x As Integer = 1 To col - 1
+                    g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+                Next
+                For y As Integer = 1 To maxChannelPerColumn - 1
+                    g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+                Next
+            End If
             For c As Byte = 0 To channels - 1 'for each channel
-                If drawGrid And c Mod maxChannelPerColumn <> 0 Then
-                    g.DrawLine(Pens.Gray, channelOffset(c).X, 0, channelOffset(c).X, canvasSize.Height)
-                    g.DrawLine(Pens.Gray, 0, channelOffset(c).Y, canvasSize.Width, channelOffset(c).Y)
-                End If
                 Dim channelArg As channelOptions = wave(c).extraArguments
                 Dim triggerOffset As Long = 0
                 'trigger
@@ -548,7 +549,14 @@ Public Class MainForm
             'If bitDepth = 16 Then samplesPerFrame *= 2
             Dim channelOffset(channels - 1) As Point
             Dim currentColumn As Integer = 0
-
+            If CheckBoxGrid.Checked Then 'draw grid
+                For x As Integer = 1 To col - 1
+                    g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+                Next
+                For y As Integer = 1 To maxChannelPerColumn - 1
+                    g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+                Next
+            End If
             For c As Integer = 0 To channels - 1
                 Dim y As Integer = channelHeight * (c Mod maxChannelPerColumn)
                 currentColumn = (c - (c Mod maxChannelPerColumn)) / maxChannelPerColumn
