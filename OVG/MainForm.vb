@@ -535,6 +535,7 @@ Public Class MainForm
     End Sub
 
     Sub previewLayout()
+        TextBoxLog.Visible = False
         Dim bmpLayout As New Bitmap(canvasSize.Width, canvasSize.Height)
         Dim g As Graphics = Graphics.FromImage(bmpLayout)
         g.Clear(bgColor)
@@ -632,9 +633,16 @@ Public Class MainForm
 
     Private Sub FFmpegBackgroundWorker_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles FFmpegBackgroundWorker.ProgressChanged
         Dim prog As FFmpegProgress = e.UserState
+        Dim FPS As ULong = Val(prog.FPS)
+        Dim frame As ULong = Val(prog.frame)
         TaskbarManager.Instance.SetProgressValue(e.ProgressPercentage, totalFrame)
         TextBoxLog.AppendText(prog.stderr & vbCrLf)
-        LabelStatus.Text = Val(prog.frame) & "/" & totalFrame & " fps=" & Val(prog.FPS)
+        Dim timeLeft As String = "?"
+        If FPS <> 0 Then
+            timeLeft = New TimeSpan(0, 0, (totalFrame - frame) / FPS).ToString()
+        End If
+        LabelStatus.Text = String.Format("{0}% {1}/{2}, {3} FPS, Time left: {4}", Math.Round(prog.frame / totalFrame, 1), frame, totalFrame, FPS, timeLeft)
+        'LabelStatus.Text = Val(prog.frame) & "/" & totalFrame & " fps=" & Val(prog.FPS)
     End Sub
 
     Private Sub FFmpegBackgroundWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles FFmpegBackgroundWorker.RunWorkerCompleted
