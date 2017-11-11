@@ -1,0 +1,45 @@
+2017/11/11 0.0.2.4
+* Fix grid should not be drawn at x=0
+* Video preset default is now ultrafast
+
+2017/11/10 0.0.2.3
+* Fix FFmpeg progress percentage should multiply 100
+
+2017/11/10 0.0.2.2
++ FFmpeg progress status now have remaining time.
+
+2017/11/10 0.0.2.1
++ Added FFmpeg preset settings.
+
+2017/11/9 0.0.2.0
++ Added grid option.
+
+2017/11/8 0.0.1.6
++ Added remain time.
++ You can now choose canvas size or enter one.
+* Fixed FFmpeg stderr logging.
+
+2017/11/7
++ FPS counter now also include the FPS of FFmpeg.(though not nessesary, might be handy in furture)
+
+2017/11/6
++ FFmpeg logging.
+
+2017/11/5
++ Added FPS counter
++ Added taskbar progress bar.(2 DLLs added)
+
+2017/11/4
++ FFmpeg convert.
+
+2017/11/6
+* Fixed multi-channel(stereo) wav problems.
+
+2017/11/5
+* Intitial version.
+
+2017/11/3~2017/11/5
+[Not logged, too much to do.]
+
+2017/11/3
++ Project started. 
