@@ -153,6 +153,7 @@ Public Class MainForm
             OscilloscopeBackgroundWorker.RunWorkerAsync(arg)
             GroupBoxOptions.Enabled = False
             ButtonControl.Text = "Cancel"
+            ButtonControl.Update()
         Else
             TaskbarManager.Instance.TabbedThumbnail.RemoveThumbnailPreview(thumbnail)
             OscilloscopeBackgroundWorker.CancelAsync()
@@ -369,17 +370,15 @@ Public Class MainForm
             If useAnalogOscilloscopeStyle Then
                 points.Add(New Point(x, y + analogOscilloscopeLineWidth))
                 Dim nextX As Integer = (i + 1 - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
-                Dim nextY As Integer
-                'If args.flipWave Then
-                'nextY = (wave.getSample(i + 1, False)) / 260 * rect.Height + rect.Y
-                'Else
-                nextY = (258 - wave.getSample(i + 1, False)) / 260 * rect.Height + rect.Y
-                'End If
-                If nextX - x > 1 And x > 0 Then
-                    Dim m As Double = (nextY - y) / (nextX - x)
+                'Dim nextY As Integer
+                'nextY = (258 - wave.getSample(i + 1, False)) / 260 * rect.Height + rect.Y
+                'Dim m As Double = (nextY - y) / (nextX - x)
+                If nextX - x > 1 And x >= 0 Then
                     For dx As ULong = x To nextX
-                        points.Add(New Point(dx, (dx - x) * m + y))
-                        points.Add(New Point(dx, (dx - x) * m + analogOscilloscopeLineWidth + y))
+                        'Dim drawY As Integer = (dx - x) * m + y
+                        'drawY = Math.Ceiling(drawY)
+                        points.Add(New Point(dx, y + analogOscilloscopeLineWidth))
+                        points.Add(New Point(dx, y))
                     Next
                 End If
             End If
