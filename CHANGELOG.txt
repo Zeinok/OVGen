@@ -2,6 +2,12 @@
 * Fix grid should not be drawn at x=0
 * Video preset default is now ultrafast
 
+2017/11/12 0.0.2.5
+* Don't use slope for CRT Oscilloscope rendering mode now.
+
+2017/11/10 0.0.2.3
+* Fix grid should not be drawn at x=0
+
 2017/11/10 0.0.2.3
 * Fix FFmpeg progress percentage should multiply 100
 
