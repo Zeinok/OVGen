@@ -243,10 +243,8 @@ Public Class MainForm
             End Try
             Dim extraArg As channelOptions = optionsMap(args.files(z))
             wave(z).extraArguments = extraArg
-            wave(z).flipWave = extraArg.flipWave
             wave(z).amplify = extraArg.amplify
             wave(z).timeScale = extraArg.timeScale
-            'wave(z).flipWave = extraArg.flipWave
             If wave(z).rawSample.Length / wave(z).channels > sampleLength Then sampleLength = wave(z).rawSample.Length / wave(z).channels
         Next
         If Not allFilesLoaded Then
@@ -363,11 +361,7 @@ Public Class MainForm
         For i As Integer = triggerPoint - sampleRate * args.timeScale / 2 To triggerPoint + sampleRate * args.timeScale / 2 '+ sampleRate * timeScale
             Dim x As Integer = (i - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
             Dim y As Integer
-            If args.flipWave Then
-                y = (wave.getSample(i, False)) / 256 * rect.Height + rect.Y
-            Else
-                y = (258 - wave.getSample(i, False)) / 256 * rect.Height + rect.Y
-            End If
+            y = (258 - wave.getSample(i, False)) / 256 * rect.Height + rect.Y
             points.Add(New Point(x, y))
             If useAnalogOscilloscopeStyle Then
                 points.Add(New Point(x, y + analogOscilloscopeLineWidth))

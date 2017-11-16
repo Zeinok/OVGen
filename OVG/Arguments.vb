@@ -46,6 +46,5 @@ Public Class channelOptions
     Public amplify As Single = 1
     Public trigger As Integer = 0
     Public algorithm As Byte = TriggeringAlgorithms.UsePeakSpeedScanning
-    Public flipWave As Boolean = False
 
 End Class

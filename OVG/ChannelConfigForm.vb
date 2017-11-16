@@ -14,7 +14,6 @@
         ComboBoxAlgorithm.SelectedIndex = currentOptions.algorithm
         TextBoxTimeScale.Text = currentOptions.timeScale * 1000
         TextBoxAmplify.Text = currentOptions.amplify
-        CheckBoxFlipWave.Checked = currentOptions.flipWave
     End Sub
     Sub checkValueValid()
         If IsNumeric(TextBoxTimeScale.Text) And IsNumeric(TextBoxAmplify.Text) Then
@@ -45,8 +44,6 @@
             currentOptions.algorithm = ComboBoxAlgorithm.SelectedIndex
             currentOptions.timeScale = TextBoxTimeScale.Text / 1000
             currentOptions.amplify = TextBoxAmplify.Text
-            currentOptions.flipWave = CheckBoxFlipWave.Checked
-
         Else
             For Each key In MainForm.optionsMap.Keys
                 Dim currentChannel As channelOptions = MainForm.optionsMap.Item(key)
@@ -54,7 +51,6 @@
                 currentChannel.algorithm = ComboBoxAlgorithm.SelectedIndex
                 currentChannel.timeScale = TextBoxTimeScale.Text / 1000
                 currentChannel.amplify = TextBoxAmplify.Text
-                currentChannel.flipWave = CheckBoxFlipWave.Checked
             Next
         End If
         Me.DialogResult = Windows.Forms.DialogResult.OK

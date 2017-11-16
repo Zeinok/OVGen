@@ -30,7 +30,6 @@ Partial Class ChannelConfigForm
         Me.TextBoxAmplify = New System.Windows.Forms.TextBox()
         Me.LabelX = New System.Windows.Forms.Label()
         Me.LabelTimeScale = New System.Windows.Forms.Label()
-        Me.CheckBoxFlipWave = New System.Windows.Forms.CheckBox()
         Me.ButtonOK = New System.Windows.Forms.Button()
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.SuspendLayout()
@@ -112,20 +111,9 @@ Partial Class ChannelConfigForm
         Me.LabelTimeScale.TabIndex = 2
         Me.LabelTimeScale.Text = "Time scale:"
         '
-        'CheckBoxFlipWave
-        '
-        Me.CheckBoxFlipWave.AutoSize = True
-        Me.CheckBoxFlipWave.Location = New System.Drawing.Point(11, 120)
-        Me.CheckBoxFlipWave.Margin = New System.Windows.Forms.Padding(2)
-        Me.CheckBoxFlipWave.Name = "CheckBoxFlipWave"
-        Me.CheckBoxFlipWave.Size = New System.Drawing.Size(85, 19)
-        Me.CheckBoxFlipWave.TabIndex = 8
-        Me.CheckBoxFlipWave.Text = "Flip wave"
-        Me.CheckBoxFlipWave.UseVisualStyleBackColor = True
-        '
         'ButtonOK
         '
-        Me.ButtonOK.Location = New System.Drawing.Point(38, 151)
+        Me.ButtonOK.Location = New System.Drawing.Point(38, 120)
         Me.ButtonOK.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(56, 25)
@@ -136,7 +124,7 @@ Partial Class ChannelConfigForm
         'ButtonCancel
         '
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonCancel.Location = New System.Drawing.Point(98, 151)
+        Me.ButtonCancel.Location = New System.Drawing.Point(98, 120)
         Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(56, 25)
@@ -148,10 +136,9 @@ Partial Class ChannelConfigForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(164, 184)
+        Me.ClientSize = New System.Drawing.Size(164, 155)
         Me.Controls.Add(Me.ButtonCancel)
         Me.Controls.Add(Me.ButtonOK)
-        Me.Controls.Add(Me.CheckBoxFlipWave)
         Me.Controls.Add(Me.LabelTimeScale)
         Me.Controls.Add(Me.LabelX)
         Me.Controls.Add(Me.TextBoxAmplify)
@@ -181,7 +168,6 @@ Partial Class ChannelConfigForm
     Friend WithEvents TextBoxAmplify As System.Windows.Forms.TextBox
     Friend WithEvents LabelX As System.Windows.Forms.Label
     Friend WithEvents LabelTimeScale As System.Windows.Forms.Label
-    Friend WithEvents CheckBoxFlipWave As System.Windows.Forms.CheckBox
     Friend WithEvents ButtonOK As System.Windows.Forms.Button
     Friend WithEvents ButtonCancel As System.Windows.Forms.Button
 End Class

@@ -14,7 +14,6 @@ Public Class WAV
     Public amplify As Single = 1
     Public limit As UInteger = 10
     Private sampleBegin As UInt32
-    Public flipWave As Boolean = False
     Public rawSample As Byte()
 
     Sub New(ByVal filename As String)
@@ -99,7 +98,6 @@ Public Class WAV
                     End If
                 End If
                 Dim value As Double = BitConverter.ToInt16({rawSample(index), rawSample(index + 1)}, 0) / 258 * amplify
-                If flipWave Then value = -value
                 If signed Then
                     Select Case value
                         Case Is < -128 + limit
@@ -128,7 +126,6 @@ Public Class WAV
                     End If
                 End If
                 Dim value As Double = (rawSample(index) - 128) * amplify
-                If flipWave Then value = -value
                 If signed Then
                     Select Case value
                         Case Is < -128
