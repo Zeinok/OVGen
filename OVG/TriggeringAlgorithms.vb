@@ -11,6 +11,7 @@
             zeroCrossingTrigger += 1
         End While
     End Function
+
     Function peakSpeedScanning(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         'OPNA2608: scans how fast a peak is reached centers there
         peakSpeedScanning = 0
@@ -65,8 +66,5 @@
         'Debug.WriteLine(middlePoint)
         peakSpeedScanning = middlePoint
     End Function
-
-
-
 
 End Module

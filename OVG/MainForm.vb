@@ -318,11 +318,13 @@ Public Class MainForm
                 Dim channelArg As channelOptions = wave(c).extraArguments
                 Dim triggerOffset As Long = 0
                 'trigger
-                If channelArg.algorithm = TriggeringAlgorithms.UseZeroCrossing Then
-                    triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(wave(c), i, sampleRate / 50)
-                ElseIf channelArg.algorithm = TriggeringAlgorithms.UsePeakSpeedScanning Then
-                    triggerOffset = TriggeringAlgorithms.peakSpeedScanning(wave(c), i, sampleRate / 25)
-                End If
+                Select Case channelArg.algorithm
+                    Case TriggeringAlgorithms.UseZeroCrossing
+                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(wave(c), i, sampleRate / 50)
+                    Case TriggeringAlgorithms.UsePeakSpeedScanning
+                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(wave(c), i, sampleRate / 25)
+                End Select
+
                 'draw
                 drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), sampleRate, channelArg.timeScale, i, triggerOffset)
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
@@ -548,14 +550,14 @@ Public Class MainForm
             'If bitDepth = 16 Then samplesPerFrame *= 2
             Dim channelOffset(channels - 1) As Point
             Dim currentColumn As Integer = 0
-            If CheckBoxGrid.Checked Then 'draw grid
-                For x As Integer = 1 To col - 1
-                    g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
-                Next
-                For y As Integer = 1 To maxChannelPerColumn - 1
-                    g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
-                Next
-            End If
+            'If CheckBoxGrid.Checked Then 'draw grid
+            For x As Integer = 1 To col - 1
+                g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+            Next
+            For y As Integer = 1 To maxChannelPerColumn - 1
+                g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+            Next
+            'End If
             For c As Integer = 0 To channels - 1
                 Dim y As Integer = channelHeight * (c Mod maxChannelPerColumn)
                 currentColumn = (c - (c Mod maxChannelPerColumn)) / maxChannelPerColumn
@@ -719,6 +721,16 @@ Public Class MainForm
     End Sub
 
     Private Sub ToolStripStatusLabelAbout_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ToolStripStatusLabelAbout.Click
-        Process.Start("https://zeinok.blogspot.tw")
+        'Process.Start("https://zeinok.blogspot.tw")
+
+    End Sub
+
+    Private Sub ToolStripStatusLabelAbout_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ToolStripStatusLabelAbout.MouseDown
+        ToolStripStatusLabelAbout.BorderSides = ToolStripStatusLabelBorderSides.Left + ToolStripStatusLabelBorderSides.Top
+    End Sub
+
+    Private Sub ToolStripStatusLabelAbout_MouseUp(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ToolStripStatusLabelAbout.MouseUp
+        ToolStripStatusLabelAbout.BorderSides = ToolStripStatusLabelBorderSides.All
+        AboutForm.ShowDialog()
     End Sub
 End Class

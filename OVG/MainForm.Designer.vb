@@ -436,10 +436,10 @@ Partial Class MainForm
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LabelStatus, Me.ToolStripStatusLabelPadding, Me.ToolStripStatusLabelAbout})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 552)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 548)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(1, 0, 18, 0)
-        Me.StatusStrip1.Size = New System.Drawing.Size(1098, 24)
+        Me.StatusStrip1.Size = New System.Drawing.Size(1098, 28)
         Me.StatusStrip1.SizingGrip = False
         Me.StatusStrip1.TabIndex = 6
         Me.StatusStrip1.Text = "StatusStrip1"
@@ -447,22 +447,25 @@ Partial Class MainForm
         'LabelStatus
         '
         Me.LabelStatus.Name = "LabelStatus"
-        Me.LabelStatus.Size = New System.Drawing.Size(89, 19)
+        Me.LabelStatus.Size = New System.Drawing.Size(89, 23)
         Me.LabelStatus.Text = "LabelStatus"
         '
         'ToolStripStatusLabelPadding
         '
         Me.ToolStripStatusLabelPadding.Name = "ToolStripStatusLabelPadding"
-        Me.ToolStripStatusLabelPadding.Size = New System.Drawing.Size(795, 19)
+        Me.ToolStripStatusLabelPadding.Size = New System.Drawing.Size(904, 23)
         Me.ToolStripStatusLabelPadding.Spring = True
         '
         'ToolStripStatusLabelAbout
         '
+        Me.ToolStripStatusLabelAbout.BorderSides = CType((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left Or System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) _
+                    Or System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) _
+                    Or System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom), System.Windows.Forms.ToolStripStatusLabelBorderSides)
+        Me.ToolStripStatusLabelAbout.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter
         Me.ToolStripStatusLabelAbout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ToolStripStatusLabelAbout.IsLink = True
         Me.ToolStripStatusLabelAbout.Name = "ToolStripStatusLabelAbout"
-        Me.ToolStripStatusLabelAbout.Size = New System.Drawing.Size(195, 19)
-        Me.ToolStripStatusLabelAbout.Text = "https://zeinok.blogspot.tw/"
+        Me.ToolStripStatusLabelAbout.Size = New System.Drawing.Size(55, 23)
+        Me.ToolStripStatusLabelAbout.Text = "About"
         Me.ToolStripStatusLabelAbout.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'LabelPreviewMode

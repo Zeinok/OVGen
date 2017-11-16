@@ -102,6 +102,12 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutForm.Designer.vb">
+      <DependentUpon>AboutForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AboutForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Arguments.vb" />
     <Compile Include="ChannelConfigForm.Designer.vb">
       <DependentUpon>ChannelConfigForm.vb</DependentUpon>
@@ -135,6 +141,9 @@
     <Compile Include="WAV.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ChannelConfigForm.resx">
       <DependentUpon>ChannelConfigForm.vb</DependentUpon>
     </EmbeddedResource>
