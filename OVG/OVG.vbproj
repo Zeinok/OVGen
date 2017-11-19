@@ -115,6 +115,12 @@
     <Compile Include="ChannelConfigForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="CustomCommandLineForm.Designer.vb">
+      <DependentUpon>CustomCommandLineForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="CustomCommandLineForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -146,6 +152,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ChannelConfigForm.resx">
       <DependentUpon>ChannelConfigForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomCommandLineForm.resx">
+      <DependentUpon>CustomCommandLineForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>

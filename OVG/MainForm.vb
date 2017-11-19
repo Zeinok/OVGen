@@ -28,8 +28,11 @@ Public Class MainForm
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
     Dim FFmpegExitCode As Integer = 0
-    Dim FFmpegEncodingPreset As String = ""
-    '===For file operation
+    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-r {framerate} -f image2 -i {img} -i {audio} -c:a:1 copy -codec:a aac -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineSilence As String = "-r {framerate} -f image2 -i {img} -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public FFmpegCommandLineJoinAudio As String = DefaultFFmpegCommandLineJoinAudio
+    Public FFmpegCommandLineSilence As String = DefaultFFmpegCommandLineSilence
+        '===For file operation
     Const FileFilter As String = "WAVE File(*.wav)|*.wav"
     Public currentChannelToBeSet As String = ""
     Dim ffmpegPath As String = ""
@@ -44,6 +47,22 @@ Public Class MainForm
         thumbnail = New Microsoft.WindowsAPICodePack.Taskbar.TabbedThumbnail(Me.Handle, PictureBoxOutput)
         thumbnail.Title = Me.Text
     End Sub
+
+    Private Sub MainForm_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+        If OscilloscopeBackgroundWorker.IsBusy Or FFmpegBackgroundWorker.IsBusy Then
+            If OscilloscopeBackgroundWorker.IsBusy Then
+                Dim r As DialogResult = MsgBox("Do you want to stop the worker?", MsgBoxStyle.Question + MsgBoxStyle.YesNo)
+                If r = Windows.Forms.DialogResult.Yes Then
+                    ButtonControl_Click(Nothing, Nothing)
+                Else
+                    e.Cancel = True
+                End If
+            Else
+                MsgBox("Please wait while encoding the video.", MsgBoxStyle.Critical)
+                e.Cancel = True
+            End If
+        End If
+    End Sub
     Private Sub MainForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         SetStyle(ControlStyles.AllPaintingInWmPaint, True)
         SetStyle(ControlStyles.DoubleBuffer, True)
@@ -51,6 +70,10 @@ Public Class MainForm
         If My.Computer.FileSystem.FileExists("config.ini") Then
             Dim configReader As IO.StreamReader = My.Computer.FileSystem.OpenTextFileReader("config.ini")
             ffmpegPath = configReader.ReadLine()
+            FFmpegCommandLineJoinAudio = configReader.ReadLine()
+            FFmpegCommandLineSilence = configReader.ReadLine()
+            If FFmpegCommandLineJoinAudio = "" Then FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio
+            If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
             configReader.Close()
         End If
         NumericUpDownFrameRate.Value = frameRate
@@ -60,7 +83,6 @@ Public Class MainForm
         End If
         LabelStatus.Text = ""
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
-        ComboBoxFFmpegEncodingPreset.SelectedIndex = 0
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -71,7 +93,13 @@ Public Class MainForm
             randStr &= map.Substring(rand.Next(map.Length - 1), 1)
         Next
     End Function
-
+    Private Sub writeConfig()
+        Dim configWriter As IO.StreamWriter = My.Computer.FileSystem.OpenTextFileWriter("config.ini", False)
+        configWriter.WriteLine(ffmpegPath)
+        configWriter.WriteLine(FFmpegCommandLineJoinAudio)
+        configWriter.WriteLine(FFmpegCommandLineSilence)
+        configWriter.Close()
+    End Sub
     Private Sub ButtonControl_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonControl.Click
 
 
@@ -116,7 +144,6 @@ Public Class MainForm
             convertVideo = CheckBoxVideo.Checked
             NoFileWriting = CheckBoxNoFileWriting.Checked
             If convertVideo And Not NoFileWriting Then
-                FFmpegEncodingPreset = ComboBoxFFmpegEncodingPreset.SelectedItem
                 Debug.WriteLine(Strings.Right(outputLocation, 4).ToLower)
                 If Strings.Right(outputLocation, 4).ToLower <> ".mp4" Then
                     MsgBox("Please set a proper filename!", MsgBoxStyle.Critical)
@@ -171,20 +198,15 @@ Public Class MainForm
                 ofd.Filter = "FFmpeg binary|ffmpeg.exe|All Files|*.*"
                 If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
                     ffmpegPath = ofd.FileName
-                    Dim configWriter As IO.StreamWriter = My.Computer.FileSystem.OpenTextFileWriter("config.ini", False)
-                    configWriter.WriteLine(ffmpegPath)
-                    configWriter.Close()
-                    Debug.WriteLine(ffmpegPath)
+                    writeConfig()
                 Else
                     CheckBoxVideo.Checked = False
                     Exit Sub
                 End If
             End If
-            ComboBoxFFmpegEncodingPreset.Enabled = True
             ButtonAudio.Enabled = True
             LabelOutputLocation.Text = "Output video:"
         Else
-            ComboBoxFFmpegEncodingPreset.Enabled = False
             ButtonAudio.Enabled = False
             LabelOutputLocation.Text = "Output folder:"
             masterAudioFile = ""
@@ -583,10 +605,14 @@ Public Class MainForm
         ffmpeg.UseShellExecute = False
         If args.joinAudio Then
             'join audio
-            ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -i ""{1}"" -preset {2} ""{3}""", args.FPS, args.audioFile, FFmpegEncodingPreset, args.outputFile)
+            Dim arguments As String = "-y " & FFmpegCommandLineJoinAudio.Replace("{img}", "%d.png").Replace("{framerate}", args.FPS).Replace("{audio}", args.audioFile).Replace("{outfile}", args.outputFile)
+            ffmpeg.Arguments = arguments
+            'ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -i ""{1}"" -preset {2} ""{3}""", args.FPS, args.audioFile, FFmpegEncodingPreset, args.outputFile)
         Else
             'silence
-            ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -preset {1} ""{2}""", args.FPS, FFmpegEncodingPreset, args.outputFile)
+            Dim arguments As String = "-y " & FFmpegCommandLineSilence.Replace("{img}", "%d.png").Replace("{framerate}", args.FPS).Replace("{outfile}", args.outputFile)
+            ffmpeg.Arguments = arguments
+            'ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -preset {1} ""{2}""", args.FPS, FFmpegEncodingPreset, args.outputFile)
         End If
         Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
         Dim prevprog As New FFmpegProgress
@@ -652,7 +678,7 @@ Public Class MainForm
         If convertVideo Then
             TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
             If FFmpegExitCode <> 0 Then
-                Dim retryResult As MsgBoxResult = MsgBox(String.Format("FFmpeg returned exit code {0}. {vbCrlf}Do you wan to retry?", FFmpegExitCode), MsgBoxStyle.RetryCancel)
+                Dim retryResult As MsgBoxResult = MsgBox(String.Format("FFmpeg returned exit code {0}." & vbCrLf & "Do you wan to retry?", FFmpegExitCode), MsgBoxStyle.RetryCancel)
                 If retryResult = MsgBoxResult.Retry Then
                     Dim newLocationResult As MsgBoxResult = MsgBox("Do you want to specify new file location?", MsgBoxStyle.YesNo)
                     If newLocationResult = MsgBoxResult.Yes Then
@@ -727,4 +753,10 @@ Public Class MainForm
         ToolStripStatusLabelAbout.BorderSides = ToolStripStatusLabelBorderSides.All
         AboutForm.ShowDialog()
     End Sub
+
+    Private Sub LinkLabelCustomCommandLine_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkLabelCustomCommandLine.LinkClicked
+        CustomCommandLineForm.ShowDialog()
+    End Sub
+
+
 End Class

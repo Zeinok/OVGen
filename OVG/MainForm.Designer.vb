@@ -31,7 +31,7 @@ Partial Class MainForm
         Me.ButtonControl = New System.Windows.Forms.Button()
         Me.CheckBoxShowOutput = New System.Windows.Forms.CheckBox()
         Me.GroupBoxOptions = New System.Windows.Forms.GroupBox()
-        Me.ComboBoxFFmpegEncodingPreset = New System.Windows.Forms.ComboBox()
+        Me.LinkLabelCustomCommandLine = New System.Windows.Forms.LinkLabel()
         Me.CheckBoxGrid = New System.Windows.Forms.CheckBox()
         Me.LabelCanvasSize = New System.Windows.Forms.Label()
         Me.ComboBoxCanvasSize = New System.Windows.Forms.ComboBox()
@@ -132,7 +132,7 @@ Partial Class MainForm
         '
         'GroupBoxOptions
         '
-        Me.GroupBoxOptions.Controls.Add(Me.ComboBoxFFmpegEncodingPreset)
+        Me.GroupBoxOptions.Controls.Add(Me.LinkLabelCustomCommandLine)
         Me.GroupBoxOptions.Controls.Add(Me.CheckBoxGrid)
         Me.GroupBoxOptions.Controls.Add(Me.LabelCanvasSize)
         Me.GroupBoxOptions.Controls.Add(Me.ComboBoxCanvasSize)
@@ -164,16 +164,15 @@ Partial Class MainForm
         Me.GroupBoxOptions.TabStop = False
         Me.GroupBoxOptions.Text = "Options"
         '
-        'ComboBoxFFmpegEncodingPreset
+        'LinkLabelCustomCommandLine
         '
-        Me.ComboBoxFFmpegEncodingPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBoxFFmpegEncodingPreset.Enabled = False
-        Me.ComboBoxFFmpegEncodingPreset.FormattingEnabled = True
-        Me.ComboBoxFFmpegEncodingPreset.Items.AddRange(New Object() {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"})
-        Me.ComboBoxFFmpegEncodingPreset.Location = New System.Drawing.Point(135, 104)
-        Me.ComboBoxFFmpegEncodingPreset.Name = "ComboBoxFFmpegEncodingPreset"
-        Me.ComboBoxFFmpegEncodingPreset.Size = New System.Drawing.Size(111, 23)
-        Me.ComboBoxFFmpegEncodingPreset.TabIndex = 22
+        Me.LinkLabelCustomCommandLine.AutoSize = True
+        Me.LinkLabelCustomCommandLine.Location = New System.Drawing.Point(135, 107)
+        Me.LinkLabelCustomCommandLine.Name = "LinkLabelCustomCommandLine"
+        Me.LinkLabelCustomCommandLine.Size = New System.Drawing.Size(19, 15)
+        Me.LinkLabelCustomCommandLine.TabIndex = 23
+        Me.LinkLabelCustomCommandLine.TabStop = True
+        Me.LinkLabelCustomCommandLine.Text = "..."
         '
         'CheckBoxGrid
         '
@@ -453,7 +452,7 @@ Partial Class MainForm
         'ToolStripStatusLabelPadding
         '
         Me.ToolStripStatusLabelPadding.Name = "ToolStripStatusLabelPadding"
-        Me.ToolStripStatusLabelPadding.Size = New System.Drawing.Size(904, 23)
+        Me.ToolStripStatusLabelPadding.Size = New System.Drawing.Size(935, 23)
         Me.ToolStripStatusLabelPadding.Spring = True
         '
         'ToolStripStatusLabelAbout
@@ -557,6 +556,6 @@ Partial Class MainForm
     Friend WithEvents CheckBoxGrid As System.Windows.Forms.CheckBox
     Friend WithEvents ToolStripStatusLabelPadding As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabelAbout As System.Windows.Forms.ToolStripStatusLabel
-    Friend WithEvents ComboBoxFFmpegEncodingPreset As System.Windows.Forms.ComboBox
+    Friend WithEvents LinkLabelCustomCommandLine As System.Windows.Forms.LinkLabel
 
 End Class
