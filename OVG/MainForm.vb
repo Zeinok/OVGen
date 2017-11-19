@@ -566,14 +566,14 @@ Public Class MainForm
             'If bitDepth = 16 Then samplesPerFrame *= 2
             Dim channelOffset(channels - 1) As Point
             Dim currentColumn As Integer = 0
-            'If CheckBoxGrid.Checked Then 'draw grid
-            For x As Integer = 1 To col - 1
-                g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
-            Next
-            For y As Integer = 1 To maxChannelPerColumn - 1
-                g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
-            Next
-            'End If
+            If CheckBoxGrid.Checked Then 'draw grid
+                For x As Integer = 1 To col - 1
+                    g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+                Next
+                For y As Integer = 1 To maxChannelPerColumn - 1
+                    g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+                Next
+            End If
             For c As Integer = 0 To channels - 1
                 Dim y As Integer = channelHeight * (c Mod maxChannelPerColumn)
                 currentColumn = (c - (c Mod maxChannelPerColumn)) / maxChannelPerColumn
@@ -758,5 +758,7 @@ Public Class MainForm
         CustomCommandLineForm.ShowDialog()
     End Sub
 
-
+    Private Sub CheckBoxGrid_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CheckBoxGrid.CheckedChanged
+        previewLayout()
+    End Sub
 End Class
