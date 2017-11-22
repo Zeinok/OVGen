@@ -414,14 +414,13 @@ Public Class MainForm
             Dim ok As Boolean = False
             Do
                 Try
-                    PictureBoxOutput.Image = prog.Image.Clone
-                    thumbnail.InvalidatePreview()
-                    'TaskbarManager.Instance.TabbedThumbnail.InvalidateThumbnails()
+                    PictureBoxOutput.Image = prog.Image.Clone()
                     ok = True
                 Catch ex As InvalidOperationException
                     ok = False
                 End Try
             Loop Until ok = True
+            thumbnail.InvalidatePreview()
             Dim timeLeftSecond As ULong = 0
             If averageFPS <> 0 Then
                 timeLeftSecond = (prog.TotalFrame - prog.CurrentFrame) / averageFPS
@@ -501,6 +500,10 @@ Public Class MainForm
         ofd.Multiselect = True
         If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
             For Each file In ofd.FileNames
+                If ListBoxFiles.Items.Contains(file) Then
+                    MsgBox(file & " already exists in the list!", MsgBoxStyle.Exclamation)
+                    Continue For
+                End If
                 ListBoxFiles.Items.Add(file)
                 optionsMap.Add(file, New channelOptions)
             Next
