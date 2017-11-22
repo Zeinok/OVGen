@@ -30,7 +30,7 @@ Partial Class CustomCommandLineForm
         Me.ButtonOK = New System.Windows.Forms.Button()
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.LabelFFmpeg1 = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.LabelFFmpeg2 = New System.Windows.Forms.Label()
         Me.ButtonDefault = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
@@ -45,9 +45,9 @@ Partial Class CustomCommandLineForm
         '
         'TextBoxJoinAudioCommandLine
         '
-        Me.TextBoxJoinAudioCommandLine.Location = New System.Drawing.Point(89, 27)
+        Me.TextBoxJoinAudioCommandLine.Location = New System.Drawing.Point(105, 27)
         Me.TextBoxJoinAudioCommandLine.Name = "TextBoxJoinAudioCommandLine"
-        Me.TextBoxJoinAudioCommandLine.Size = New System.Drawing.Size(393, 25)
+        Me.TextBoxJoinAudioCommandLine.Size = New System.Drawing.Size(377, 25)
         Me.TextBoxJoinAudioCommandLine.TabIndex = 1
         '
         'LabelWithoutAudio
@@ -61,9 +61,9 @@ Partial Class CustomCommandLineForm
         '
         'TextBoxSilenceCommandLine
         '
-        Me.TextBoxSilenceCommandLine.Location = New System.Drawing.Point(89, 73)
+        Me.TextBoxSilenceCommandLine.Location = New System.Drawing.Point(105, 73)
         Me.TextBoxSilenceCommandLine.Name = "TextBoxSilenceCommandLine"
-        Me.TextBoxSilenceCommandLine.Size = New System.Drawing.Size(393, 25)
+        Me.TextBoxSilenceCommandLine.Size = New System.Drawing.Size(377, 25)
         Me.TextBoxSilenceCommandLine.TabIndex = 3
         '
         'LabelVariables
@@ -98,18 +98,18 @@ Partial Class CustomCommandLineForm
         Me.LabelFFmpeg1.AutoSize = True
         Me.LabelFFmpeg1.Location = New System.Drawing.Point(12, 30)
         Me.LabelFFmpeg1.Name = "LabelFFmpeg1"
-        Me.LabelFFmpeg1.Size = New System.Drawing.Size(71, 15)
+        Me.LabelFFmpeg1.Size = New System.Drawing.Size(87, 15)
         Me.LabelFFmpeg1.TabIndex = 7
-        Me.LabelFFmpeg1.Text = "ffmpeg.exe"
+        Me.LabelFFmpeg1.Text = "ffmpeg.exe -y"
         '
-        'Label1
+        'LabelFFmpeg2
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 76)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(71, 15)
-        Me.Label1.TabIndex = 8
-        Me.Label1.Text = "ffmpeg.exe"
+        Me.LabelFFmpeg2.AutoSize = True
+        Me.LabelFFmpeg2.Location = New System.Drawing.Point(12, 76)
+        Me.LabelFFmpeg2.Name = "LabelFFmpeg2"
+        Me.LabelFFmpeg2.Size = New System.Drawing.Size(87, 15)
+        Me.LabelFFmpeg2.TabIndex = 8
+        Me.LabelFFmpeg2.Text = "ffmpeg.exe -y"
         '
         'ButtonDefault
         '
@@ -126,7 +126,7 @@ Partial Class CustomCommandLineForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(494, 190)
         Me.Controls.Add(Me.ButtonDefault)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.LabelFFmpeg2)
         Me.Controls.Add(Me.LabelFFmpeg1)
         Me.Controls.Add(Me.ButtonCancel)
         Me.Controls.Add(Me.ButtonOK)
@@ -154,6 +154,6 @@ Partial Class CustomCommandLineForm
     Friend WithEvents ButtonOK As System.Windows.Forms.Button
     Friend WithEvents ButtonCancel As System.Windows.Forms.Button
     Friend WithEvents LabelFFmpeg1 As System.Windows.Forms.Label
-    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents LabelFFmpeg2 As System.Windows.Forms.Label
     Friend WithEvents ButtonDefault As System.Windows.Forms.Button
 End Class

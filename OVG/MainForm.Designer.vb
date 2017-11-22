@@ -241,6 +241,7 @@ Partial Class MainForm
         'CheckBoxNoFileWriting
         '
         Me.CheckBoxNoFileWriting.AutoSize = True
+        Me.CheckBoxNoFileWriting.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.CheckBoxNoFileWriting.Checked = True
         Me.CheckBoxNoFileWriting.CheckState = System.Windows.Forms.CheckState.Checked
         Me.CheckBoxNoFileWriting.Location = New System.Drawing.Point(6, 22)
@@ -250,7 +251,7 @@ Partial Class MainForm
         Me.CheckBoxNoFileWriting.TabIndex = 0
         Me.CheckBoxNoFileWriting.Text = "No file writing (preview only)"
         Me.ToolTips.SetToolTip(Me.CheckBoxNoFileWriting, "Good for previewing your settings.")
-        Me.CheckBoxNoFileWriting.UseVisualStyleBackColor = True
+        Me.CheckBoxNoFileWriting.UseVisualStyleBackColor = False
         '
         'LabelLineWidth
         '
@@ -417,15 +418,14 @@ Partial Class MainForm
         '
         'TextBoxLog
         '
-        Me.TextBoxLog.Location = New System.Drawing.Point(18, 89)
+        Me.TextBoxLog.Location = New System.Drawing.Point(18, 541)
         Me.TextBoxLog.Margin = New System.Windows.Forms.Padding(4)
         Me.TextBoxLog.Multiline = True
         Me.TextBoxLog.Name = "TextBoxLog"
         Me.TextBoxLog.ReadOnly = True
         Me.TextBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxLog.Size = New System.Drawing.Size(800, 450)
+        Me.TextBoxLog.Size = New System.Drawing.Size(1060, 92)
         Me.TextBoxLog.TabIndex = 4
-        Me.TextBoxLog.Visible = False
         '
         'FFmpegBackgroundWorker
         '
@@ -435,7 +435,7 @@ Partial Class MainForm
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LabelStatus, Me.ToolStripStatusLabelPadding, Me.ToolStripStatusLabelAbout})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 548)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 637)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(1, 0, 18, 0)
         Me.StatusStrip1.Size = New System.Drawing.Size(1098, 28)
@@ -489,10 +489,10 @@ Partial Class MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(120.0!, 120.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(1098, 576)
+        Me.ClientSize = New System.Drawing.Size(1098, 665)
+        Me.Controls.Add(Me.TextBoxLog)
         Me.Controls.Add(Me.LabelPreviewMode)
         Me.Controls.Add(Me.StatusStrip1)
-        Me.Controls.Add(Me.TextBoxLog)
         Me.Controls.Add(Me.GroupBoxOptions)
         Me.Controls.Add(Me.PictureBoxOutput)
         Me.Controls.Add(Me.ButtonControl)

@@ -28,10 +28,11 @@ Public Class MainForm
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
     Dim FFmpegExitCode As Integer = 0
-    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-r {framerate} -f image2 -i {img} -i {audio} -c:a:1 copy -codec:a aac -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
-    Public Const DefaultFFmpegCommandLineSilence As String = "-r {framerate} -f image2 -i {img} -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-r {framerate} -f image2pipe -i {img} -i {audio} -c:a:1 copy -codec:a aac -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineSilence As String = "-r {framerate} -f image2pipe -i {img} -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
     Public FFmpegCommandLineJoinAudio As String = DefaultFFmpegCommandLineJoinAudio
     Public FFmpegCommandLineSilence As String = DefaultFFmpegCommandLineSilence
+    Dim FFmpegRegex As New System.Text.RegularExpressions.Regex("frame=\s*(.+?)\s+fps=\s*(.+?)\s+")
         '===For file operation
     Const FileFilter As String = "WAVE File(*.wav)|*.wav"
     Public currentChannelToBeSet As String = ""
@@ -122,7 +123,6 @@ Public Class MainForm
                 Exit Sub
             End Try
 
-            TextBoxLog.Visible = False
             outputLocation = TextBoxOutputLocation.Text
             outputDirectory = ""
 
@@ -307,6 +307,39 @@ Public Class MainForm
         Dim i As Integer = 0
         Dim sampleStep As Byte = 1
         totalFrame = sampleLength \ samplesPerFrame + 1
+        'ffmpeg
+        Dim ffmpeg As New ProcessStartInfo
+        ffmpeg.FileName = args.ffmpegBinary
+        ffmpeg.CreateNoWindow = True
+        ffmpeg.RedirectStandardInput = True
+        ffmpeg.RedirectStandardError = True
+        ffmpeg.UseShellExecute = False
+        If args.joinAudio Then
+            'join audio
+            Dim arguments As String = "-y " & FFmpegCommandLineJoinAudio.Replace("{img}", "-").Replace("{framerate}", args.FPS).Replace("{audio}", args.audioFile).Replace("{outfile}", args.outputFile)
+            ffmpeg.Arguments = arguments
+        Else
+            'silence
+            Dim arguments As String = "-y " & FFmpegCommandLineSilence.Replace("{img}", "-").Replace("{framerate}", args.FPS).Replace("{outfile}", args.outputFile)
+            ffmpeg.Arguments = arguments
+        End If
+        Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
+        Dim prevprog As New FFmpegProgress
+        prevprog.stderr = "Run command:" & ffmpeg.FileName & " " & ffmpeg.Arguments
+        FFmpegBackgroundWorker.ReportProgress(0, prevprog)
+        Dim ffmpegProc As Process = Nothing
+        Dim stdin As IO.StreamWriter = Nothing
+        Dim stderr As IO.StreamReader = Nothing
+        If Not CheckBoxNoFileWriting.Checked And NoFileWriting Then
+            ffmpegProc = Process.Start(ffmpeg)
+            stdin = ffmpegProc.StandardInput
+            stderr = ffmpegProc.StandardError
+        End If
+
+
+
+
+        'start work
         While i < sampleLength - 1
 
             Dim bmp As Bitmap = Nothing
@@ -358,7 +391,11 @@ Public Class MainForm
                 If NoFileWriting Then Exit Do
                 Try
                     saveRetries += 1
-                    bmp.Clone().Save(outputDirectory & "\" & i \ samplesPerFrame & ".png", Imaging.ImageFormat.Png)
+                    If convertVideo Then
+                        bmp.Save(stdin.BaseStream, Imaging.ImageFormat.Png)
+                    Else
+                        bmp.Clone().Save(outputDirectory & "\" & i \ samplesPerFrame & ".png", Imaging.ImageFormat.Png)
+                    End If
                     ok = True
                 Catch ex As InvalidOperationException
                     ok = False
@@ -368,13 +405,22 @@ Public Class MainForm
             OscilloscopeBackgroundWorker.ReportProgress(i, prog)
             If OscilloscopeBackgroundWorker.CancellationPending Then
                 prog = New Progress(Nothing, 0, 0)
+                prog.canceled = True
                 OscilloscopeBackgroundWorker.ReportProgress(0, prog)
                 canceledByUser = True
                 Exit While
             End If
 
         End While
+        If convertVideo Then
+            stdin.Close()
+            Do Until ffmpegProc.HasExited
+                If Not stderr.EndOfStream Then
 
+                End If
+            Loop
+            stderr.Close()
+        End If
     End Sub
     Private Sub drawWave(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal sampleRate As Long, ByVal timeScale As Double, ByVal offset As Long, ByVal triggerOffset As Long)
         Dim args As channelOptions = wave.extraArguments
@@ -439,7 +485,7 @@ Public Class MainForm
 
             TaskbarManager.Instance.SetProgressValue(prog.CurrentFrame, prog.TotalFrame)
             'taskbarProgress.ProgressValue = prog.CurrentFrame / prog.TotalFrame
-        ElseIf prog.Image Is Nothing Then 'canceled
+        ElseIf prog.canceled Then 'canceled
             'PictureBoxOutput.Image = Nothing
             LabelStatus.Text = "Canceled."
             If prog.message <> "" Then
@@ -460,37 +506,36 @@ Public Class MainForm
         ButtonControl.Enabled = True
         TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
         If Not allFilesLoaded Then
-            TextBoxLog.Visible = True
             For Each msg In failedFiles
                 TextBoxLog.AppendText("Failed to load " & msg.Key & ":" & msg.Value)
             Next
             Exit Sub
         End If
-        If CheckBoxVideo.Checked And Not canceledByUser And Not NoFileWriting Then
-            ButtonControl.Enabled = False
-            TextBoxLog.Visible = True
-            TextBoxLog.Clear()
-            Dim ffmpegarg As New FFmpegWorkerArguments
-            If My.Computer.FileSystem.FileExists(masterAudioFile) Then
-                ffmpegarg.joinAudio = True
-                ffmpegarg.audioFile = masterAudioFile
-            Else
-                ffmpegarg.joinAudio = False
-            End If
-            ffmpegarg.ffmpegBinary = ffmpegPath
-            ffmpegarg.directory = outputDirectory
-            ffmpegarg.outputFile = outputLocation
-            ffmpegarg.FPS = frameRate
-            FFmpegBackgroundWorker.RunWorkerAsync(ffmpegarg)
-        End If
-        If CheckBoxVideo.Checked And canceledByUser And Not NoFileWriting Then
-            Dim result As MsgBoxResult = MsgBox("Do you want to delete frames generated by program?", MsgBoxStyle.Question + MsgBoxStyle.YesNo)
-            If result = MsgBoxResult.Yes Then
-                TextBoxLog.Visible = True
-                TextBoxLog.Clear()
-                deleteFiles()
-            End If
-        End If
+        'If CheckBoxVideo.Checked And Not canceledByUser And Not NoFileWriting Then
+        '    ButtonControl.Enabled = False
+        '    TextBoxLog.Visible = True
+        '    TextBoxLog.Clear()
+        '    Dim ffmpegarg As New FFmpegWorkerArguments
+        '    If My.Computer.FileSystem.FileExists(masterAudioFile) Then
+        '        ffmpegarg.joinAudio = True
+        '        ffmpegarg.audioFile = masterAudioFile
+        '    Else
+        '        ffmpegarg.joinAudio = False
+        '    End If
+        '    ffmpegarg.ffmpegBinary = ffmpegPath
+        '    ffmpegarg.directory = outputDirectory
+        '    ffmpegarg.outputFile = outputLocation
+        '    ffmpegarg.FPS = frameRate
+        '    FFmpegBackgroundWorker.RunWorkerAsync(ffmpegarg)
+        'End If
+        'If CheckBoxVideo.Checked And canceledByUser And Not NoFileWriting Then
+        '    Dim result As MsgBoxResult = MsgBox("Do you want to delete frames generated by program?", MsgBoxStyle.Question + MsgBoxStyle.YesNo)
+        '    If result = MsgBoxResult.Yes Then
+        '        TextBoxLog.Visible = True
+        '        TextBoxLog.Clear()
+        '        deleteFiles()
+        '    End If
+        'End If
 
     End Sub
 
@@ -556,7 +601,7 @@ Public Class MainForm
     End Sub
 
     Sub previewLayout()
-        TextBoxLog.Visible = False
+
         Dim bmpLayout As New Bitmap(canvasSize.Width, canvasSize.Height)
         Dim g As Graphics = Graphics.FromImage(bmpLayout)
         g.Clear(bgColor)
@@ -650,10 +695,7 @@ Public Class MainForm
                         prog.stderr = errline
                         FFmpegBackgroundWorker.ReportProgress(Val(prog.frame), prog)
                     End If
-
-                    Application.DoEvents()
                 End If
-                Application.DoEvents()
             End While
             FFmpegExitCode = ffmpegProc.ExitCode
         End If

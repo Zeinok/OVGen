@@ -8,6 +8,7 @@ Public Class Progress
     Public CurrentFrame As ULong
     Public TotalFrame As ULong
     Public message As String
+    Public canceled As Boolean = False
 
     Sub New(ByVal NewImage As System.Drawing.Image, ByVal NewCurrentFrame As ULong, ByVal NewTotalFrame As ULong, Optional ByVal newMessage As String = "")
         Image = NewImage
@@ -19,6 +20,12 @@ End Class
 Public Class WorkerArguments
     Public files As String()
     Public columns As Byte
+    Public ffmpegBinary As String
+    Public FPS As Integer
+    Public outputFile As String
+    Public joinAudio As Boolean
+    Public audioFile As String
+    Public canceled As Boolean = False
 End Class
 Public Class FFmpegWorkerArguments
     Public ffmpegBinary As String
