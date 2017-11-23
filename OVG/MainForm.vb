@@ -103,6 +103,11 @@ Public Class MainForm
             randStr &= map.Substring(rand.Next(map.Length - 1), 1)
         Next
     End Function
+
+    Function SafeFilename(ByVal filename As String) As String
+        SafeFilename = filename
+        If filename.Contains(" ") Then SafeFilename = """" & filename & """"
+    End Function
     Private Sub writeConfig()
         Dim configWriter As IO.StreamWriter = My.Computer.FileSystem.OpenTextFileWriter("config.ini", False)
         configWriter.WriteLine(ffmpegPath)
@@ -347,11 +352,11 @@ Public Class MainForm
         ffmpeg.UseShellExecute = False
         If args.joinAudio Then
             'join audio
-            Dim arguments As String = "-y " & FFmpegCommandLineJoinAudio.Replace("{img}", "-").Replace("{framerate}", args.FPS).Replace("{audio}", args.audioFile).Replace("{outfile}", args.outputFile)
+            Dim arguments As String = "-y " & FFmpegCommandLineJoinAudio.Replace("{img}", "-").Replace("{framerate}", args.FPS).Replace("{audio}", SafeFilename(args.audioFile)).Replace("{outfile}", SafeFilename(args.outputFile))
             ffmpeg.Arguments = arguments
         Else
             'silence
-            Dim arguments As String = "-y " & FFmpegCommandLineSilence.Replace("{img}", "-").Replace("{framerate}", args.FPS).Replace("{outfile}", args.outputFile)
+            Dim arguments As String = "-y " & FFmpegCommandLineSilence.Replace("{img}", "-").Replace("{framerate}", args.FPS).Replace("{outfile}", SafeFilename(args.outputFile))
             ffmpeg.Arguments = arguments
         End If
         Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
