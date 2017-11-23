@@ -30,7 +30,7 @@ Partial Class AboutForm
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(88, 94)
+        Me.Button1.Location = New System.Drawing.Point(118, 94)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(94, 29)
         Me.Button1.TabIndex = 0
@@ -42,9 +42,9 @@ Partial Class AboutForm
         Me.LabelInformation.AutoSize = True
         Me.LabelInformation.Location = New System.Drawing.Point(12, 9)
         Me.LabelInformation.Name = "LabelInformation"
-        Me.LabelInformation.Size = New System.Drawing.Size(143, 30)
+        Me.LabelInformation.Size = New System.Drawing.Size(193, 30)
         Me.LabelInformation.TabIndex = 1
-        Me.LabelInformation.Text = "An SIDWiz2 equalivent" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Creator: Zeinok"
+        Me.LabelInformation.Text = "An SIDWiz2 re-implementation." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Creator: Zeinok"
         '
         'LinkLabelWebsite
         '
@@ -69,7 +69,7 @@ Partial Class AboutForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(194, 135)
+        Me.ClientSize = New System.Drawing.Size(224, 135)
         Me.Controls.Add(Me.LabelVersion)
         Me.Controls.Add(Me.LinkLabelWebsite)
         Me.Controls.Add(Me.LabelInformation)
