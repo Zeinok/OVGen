@@ -1,3 +1,6 @@
+2017/11/24 0.0.4.2
+* If filename have space, add double quote.
+
 2017/11/23 0.0.4.1
 * Fix default commandline: audio is not encoded to aac but just copy.
 - Ready to remove FFmpegBackgroundWorker.
