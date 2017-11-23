@@ -1,3 +1,8 @@
+2017/11/23 0.0.4.0
++ Now feed image data into ffmpeg stdin instead of saving each frame to image.
++ Adjustable Log Text Box.
+* If a file is already added, don't add it.
+
 2017/11/19 0.0.3.0
 + Allow using custom ffmpeg commandline
 * Clicking grid checkbox now updates preview
