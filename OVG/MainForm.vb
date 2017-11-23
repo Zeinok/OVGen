@@ -28,7 +28,7 @@ Public Class MainForm
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
     Dim FFmpegExitCode As Integer = 0
-    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-f image2pipe -r {framerate} -vcodec png -i {img} -i {audio} -acodec copy -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-f image2pipe -r {framerate} -vcodec png -i {img} -i {audio} -acodec aac -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
     Public Const DefaultFFmpegCommandLineSilence As String = "-f image2pipe -r {framerate} -vcodec png -i {img} -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
     Public FFmpegCommandLineJoinAudio As String = DefaultFFmpegCommandLineJoinAudio
     Public FFmpegCommandLineSilence As String = DefaultFFmpegCommandLineSilence
@@ -54,6 +54,7 @@ Public Class MainForm
         formStarted = True
         thumbnail = New Microsoft.WindowsAPICodePack.Taskbar.TabbedThumbnail(Me.Handle, PictureBoxOutput)
         thumbnail.Title = Me.Text
+
     End Sub
 
     Private Sub MainForm_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
@@ -91,9 +92,10 @@ Public Class MainForm
         End If
         LabelStatus.Text = ""
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
-
-
         originalTextBoxLogHeight = TextBoxLog.Height
+        If Not BackgroundWorkerStdErrReader.IsBusy Then
+            BackgroundWorkerStdErrReader.RunWorkerAsync()
+        End If
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -203,7 +205,7 @@ Public Class MainForm
                 arg.joinAudio = False
             End If
             arg.ffmpegBinary = ffmpegPath
-            BackgroundWorkerStdErrReader.RunWorkerAsync()
+
             OscilloscopeBackgroundWorker.RunWorkerAsync(arg)
             GroupBoxOptions.Enabled = False
             ButtonControl.Text = "Cancel"
@@ -439,7 +441,6 @@ Public Class MainForm
             OscilloscopeBackgroundWorker.ReportProgress(i, prog)
             If OscilloscopeBackgroundWorker.CancellationPending Then
                 If convertVideo And Not NoFileWriting Then ffmpegProc.Kill()
-                BackgroundWorkerStdErrReader.CancelAsync()
                 prog = New Progress(Nothing, 0, 0)
                 prog.canceled = True
                 OscilloscopeBackgroundWorker.ReportProgress(0, prog)
