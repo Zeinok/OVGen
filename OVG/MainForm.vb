@@ -93,9 +93,6 @@ Public Class MainForm
         LabelStatus.Text = ""
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         originalTextBoxLogHeight = TextBoxLog.Height
-        If Not BackgroundWorkerStdErrReader.IsBusy Then
-            BackgroundWorkerStdErrReader.RunWorkerAsync()
-        End If
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -177,6 +174,9 @@ Public Class MainForm
                 arg.outputDirectory = IO.Path.GetTempPath() & "OVG_" & randStr(5) & "\"
                 outputDirectory = IO.Path.GetTempPath() & "OVG_" & randStr(5) & "\"
                 arg.outputFile = outputLocation
+                If Not BackgroundWorkerStdErrReader.IsBusy Then
+                    BackgroundWorkerStdErrReader.RunWorkerAsync()
+                End If
             Else
                 arg.outputDirectory = TextBoxOutputLocation.Text
                 outputDirectory = outputLocation
