@@ -28,11 +28,12 @@ Public Class MainForm
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
     Dim FFmpegExitCode As Integer = 0
-    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-r {framerate} -f image2pipe -i {img} -i {audio} -c:a:1 copy -codec:a aac -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
-    Public Const DefaultFFmpegCommandLineSilence As String = "-r {framerate} -f image2pipe -i {img} -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-f image2pipe -r {framerate} -vcodec png -i {img} -i {audio} -acodec copy -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineSilence As String = "-f image2pipe -r {framerate} -vcodec png -i {img} -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
     Public FFmpegCommandLineJoinAudio As String = DefaultFFmpegCommandLineJoinAudio
     Public FFmpegCommandLineSilence As String = DefaultFFmpegCommandLineSilence
     Dim FFmpegRegex As New System.Text.RegularExpressions.Regex("frame=\s*(.+?)\s+fps=\s*(.+?)\s+")
+    Public FFmpegstderr As IO.StreamReader
         '===For file operation
     Const FileFilter As String = "WAVE File(*.wav)|*.wav"
     Public currentChannelToBeSet As String = ""
@@ -105,8 +106,11 @@ Public Class MainForm
 
 
         If Not OscilloscopeBackgroundWorker.IsBusy Then
+            TextBoxLog.Clear()
+            Dim arg As New WorkerArguments
             'check cavnas size
             Try
+
                 Dim userInput As String() = ComboBoxCanvasSize.Text.Split({"x", " "}, StringSplitOptions.RemoveEmptyEntries)
                 If userInput.Length = 2 Then
                     canvasSize = New Size(userInput(0), userInput(1))
@@ -123,6 +127,7 @@ Public Class MainForm
                 Exit Sub
             End Try
 
+            arg.outputFile = outputLocation
             outputLocation = TextBoxOutputLocation.Text
             outputDirectory = ""
 
@@ -158,9 +163,11 @@ Public Class MainForm
                     MsgBox(ex.Message, MsgBoxStyle.Critical, "Error on creating empty file.")
                     Exit Sub
                 End Try
-
+                arg.outputDirectory = IO.Path.GetTempPath() & "OVG_" & randStr(5) & "\"
                 outputDirectory = IO.Path.GetTempPath() & "OVG_" & randStr(5) & "\"
+                arg.outputFile = outputLocation
             Else
+                arg.outputDirectory = TextBoxOutputLocation.Text
                 outputDirectory = outputLocation
             End If
             If outputDirectory = "" And Not NoFileWriting And Not convertVideo Then
@@ -170,19 +177,32 @@ Public Class MainForm
             Debug.WriteLine(String.Format("Output directory:{0}", outputDirectory))
             frameRate = NumericUpDownFrameRate.Value
             smoothLine = CheckBoxSmooth.Checked
-            Dim arg As New WorkerArguments
+            arg.FPS = NumericUpDownFrameRate.Value
+            arg.noFileWriting = CheckBoxNoFileWriting.Checked
+            arg.convertVideo = CheckBoxVideo.Checked
+
             arg.columns = NumericUpDownColumn.Value
             Dim fileArray(ListBoxFiles.Items.Count - 1) As String
             For i As Integer = 0 To fileArray.Length - 1
                 fileArray(i) = ListBoxFiles.Items(i)
             Next
             arg.files = fileArray
+            If IO.File.Exists(masterAudioFile) Then
+                arg.joinAudio = True
+                arg.audioFile = masterAudioFile
+            Else
+                arg.joinAudio = False
+            End If
+            arg.ffmpegBinary = ffmpegPath
+            BackgroundWorkerStdErrReader.RunWorkerAsync()
             OscilloscopeBackgroundWorker.RunWorkerAsync(arg)
             GroupBoxOptions.Enabled = False
             ButtonControl.Text = "Cancel"
             ButtonControl.Update()
         Else
-            TaskbarManager.Instance.TabbedThumbnail.RemoveThumbnailPreview(thumbnail)
+            If TaskbarManager.Instance.TabbedThumbnail.IsThumbnailPreviewAdded(thumbnail) Then
+                TaskbarManager.Instance.TabbedThumbnail.RemoveThumbnailPreview(thumbnail)
+            End If
             OscilloscopeBackgroundWorker.CancelAsync()
             ButtonControl.Text = "Start"
         End If
@@ -324,16 +344,14 @@ Public Class MainForm
             ffmpeg.Arguments = arguments
         End If
         Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
-        Dim prevprog As New FFmpegProgress
-        prevprog.stderr = "Run command:" & ffmpeg.FileName & " " & ffmpeg.Arguments
-        FFmpegBackgroundWorker.ReportProgress(0, prevprog)
         Dim ffmpegProc As Process = Nothing
-        Dim stdin As IO.StreamWriter = Nothing
         Dim stderr As IO.StreamReader = Nothing
-        If Not CheckBoxNoFileWriting.Checked And NoFileWriting Then
+        Dim stdin As IO.BufferedStream = Nothing
+        If convertVideo And Not NoFileWriting Then
             ffmpegProc = Process.Start(ffmpeg)
-            stdin = ffmpegProc.StandardInput
+            stdin = New IO.BufferedStream(ffmpegProc.StandardInput.BaseStream, 16384)
             stderr = ffmpegProc.StandardError
+            FFmpegstderr = ffmpegProc.StandardError
         End If
 
 
@@ -342,6 +360,7 @@ Public Class MainForm
         'start work
         While i < sampleLength - 1
 
+            Dim stderrStrBuild As New System.Text.StringBuilder
             Dim bmp As Bitmap = Nothing
             Dim createdBmp As Boolean = False
             Dim bmpCreateCount As Integer = 0
@@ -381,6 +400,11 @@ Public Class MainForm
                 'draw
                 drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), sampleRate, channelArg.timeScale, i, triggerOffset)
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
+
+                'and also read stderr
+                If convertVideo And Not NoFileWriting Then
+                    'stderrStrBuild.AppendLine(stderr.ReadLine())
+                End If
             Next
 
 
@@ -392,7 +416,7 @@ Public Class MainForm
                 Try
                     saveRetries += 1
                     If convertVideo Then
-                        bmp.Save(stdin.BaseStream, Imaging.ImageFormat.Png)
+                        bmp.Save(stdin, Imaging.ImageFormat.Png)
                     Else
                         bmp.Clone().Save(outputDirectory & "\" & i \ samplesPerFrame & ".png", Imaging.ImageFormat.Png)
                     End If
@@ -402,22 +426,21 @@ Public Class MainForm
                 End Try
             Loop Until ok = True Or saveRetries > 10
             Dim prog As New Progress(bmp, i \ samplesPerFrame, totalFrame)
+            prog.message = stderrStrBuild.ToString()
             OscilloscopeBackgroundWorker.ReportProgress(i, prog)
             If OscilloscopeBackgroundWorker.CancellationPending Then
+                If convertVideo And Not NoFileWriting Then ffmpegProc.Kill()
+                BackgroundWorkerStdErrReader.CancelAsync()
                 prog = New Progress(Nothing, 0, 0)
                 prog.canceled = True
                 OscilloscopeBackgroundWorker.ReportProgress(0, prog)
                 canceledByUser = True
                 Exit While
             End If
-
         End While
-        If convertVideo Then
+        If convertVideo And Not NoFileWriting Then
             stdin.Close()
             Do Until ffmpegProc.HasExited
-                If Not stderr.EndOfStream Then
-
-                End If
             Loop
             stderr.Close()
         End If
@@ -455,24 +478,26 @@ Public Class MainForm
         'taskbarProgress.ProgressState = Windows.Shell.TaskbarItemProgressState.Normal
         TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
         Dim prog As Progress = e.UserState
-        If CheckBoxShowOutput.Checked And prog.Image IsNot Nothing Then
-
+        If prog.Image IsNot Nothing Then
+            If prog.message <> "" Then TextBoxLog.AppendText(prog.message & vbCrLf)
             Dim ok As Boolean = False
-            Do
-                Try
-                    PictureBoxOutput.Image = prog.Image.Clone()
-                    ok = True
-                Catch ex As InvalidOperationException
-                    ok = False
-                End Try
-            Loop Until ok = True
-            thumbnail.InvalidatePreview()
+            If CheckBoxShowOutput.Checked Then
+                Do
+                    Try
+                        PictureBoxOutput.Image = prog.Image.Clone()
+                        ok = True
+                    Catch ex As InvalidOperationException
+                        ok = False
+                    End Try
+                Loop Until ok = True
+                thumbnail.InvalidatePreview()
+            End If
             Dim timeLeftSecond As ULong = 0
             If averageFPS <> 0 Then
                 timeLeftSecond = (prog.TotalFrame - prog.CurrentFrame) / averageFPS
             End If
             Dim timeLeft As New TimeSpan(0, 0, timeLeftSecond)
-            LabelStatus.Text = String.Format("{0}% {1}/{2}, {3} FPS, Time left: {4}", Math.Ceiling(prog.CurrentFrame / prog.TotalFrame * 100), prog.CurrentFrame, prog.TotalFrame, realFPS, timeLeft.ToString())
+            LabelStatus.Text = String.Format("{0}% {1}/{2}, {3} FPS , Time left: {4}", Math.Ceiling(prog.CurrentFrame / prog.TotalFrame * 100), prog.CurrentFrame, prog.TotalFrame, realFPS, timeLeft.ToString())
             frames += 1
             'realFPS = frames
             'Debug.WriteLine((TimeOfDay - fpsTimer).TotalMilliseconds)
@@ -482,11 +507,9 @@ Public Class MainForm
                 averageFPS = (averageFPS + realFPS) / 2
                 frames = 0
             End If
-
+            TaskbarManager.Instance.TabbedThumbnail.InvalidateThumbnails()
             TaskbarManager.Instance.SetProgressValue(prog.CurrentFrame, prog.TotalFrame)
-            'taskbarProgress.ProgressValue = prog.CurrentFrame / prog.TotalFrame
         ElseIf prog.canceled Then 'canceled
-            'PictureBoxOutput.Image = Nothing
             LabelStatus.Text = "Canceled."
             If prog.message <> "" Then
                 LabelStatus.Text = prog.message
@@ -773,6 +796,7 @@ Public Class MainForm
         Else
             LabelPreviewMode.Visible = False
         End If
+        TimerLabelFlashing.Enabled = CheckBoxNoFileWriting.Checked
     End Sub
 
     Private Sub TimerLabelFlashing_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerLabelFlashing.Tick
@@ -805,5 +829,24 @@ Public Class MainForm
 
     Private Sub CheckBoxGrid_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CheckBoxGrid.CheckedChanged
         previewLayout()
+    End Sub
+
+    Private Sub BackgroundWorkerStdErrReader_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorkerStdErrReader.DoWork
+        While convertVideo And Not NoFileWriting And Not BackgroundWorkerStdErrReader.CancellationPending
+            If FFmpegstderr IsNot Nothing Then
+                If FFmpegstderr.BaseStream IsNot Nothing Then
+                    If FFmpegstderr.BaseStream.CanRead Then
+                        BackgroundWorkerStdErrReader.ReportProgress(0, FFmpegstderr.ReadLine())
+                    End If
+                End If
+            End If
+        End While
+    End Sub
+
+    Private Sub BackgroundWorkerStdErrReader_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles BackgroundWorkerStdErrReader.ProgressChanged
+        Dim stderr As String = e.UserState
+        If stderr <> "" Then
+            TextBoxLog.AppendText(stderr & vbCrLf)
+        End If
     End Sub
 End Class

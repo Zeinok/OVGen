@@ -20,9 +20,12 @@ End Class
 Public Class WorkerArguments
     Public files As String()
     Public columns As Byte
+    Public noFileWriting As Boolean
+    Public convertVideo As Boolean
     Public ffmpegBinary As String
     Public FPS As Integer
     Public outputFile As String
+    Public outputDirectory As String
     Public joinAudio As Boolean
     Public audioFile As String
     Public canceled As Boolean = False
