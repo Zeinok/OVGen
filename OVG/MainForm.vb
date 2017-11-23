@@ -674,125 +674,125 @@ Public Class MainForm
         'End If
     End Sub
 
-    Private Sub FFmpegBackgroundWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles FFmpegBackgroundWorker.DoWork
-        Dim args As FFmpegWorkerArguments = e.Argument
-        Dim ffmpeg As New ProcessStartInfo
-        ffmpeg.WorkingDirectory = args.directory
-        ffmpeg.FileName = args.ffmpegBinary
-        'ffmpeg.WindowStyle = ProcessWindowStyle.Hidden
-        ffmpeg.CreateNoWindow = True
-        'ffmpeg.RedirectStandardOutput = True
-        ffmpeg.RedirectStandardError = True
-        ffmpeg.UseShellExecute = False
-        If args.joinAudio Then
-            'join audio
-            Dim arguments As String = "-y " & FFmpegCommandLineJoinAudio.Replace("{img}", "%d.png").Replace("{framerate}", args.FPS).Replace("{audio}", args.audioFile).Replace("{outfile}", args.outputFile)
-            ffmpeg.Arguments = arguments
-            'ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -i ""{1}"" -preset {2} ""{3}""", args.FPS, args.audioFile, FFmpegEncodingPreset, args.outputFile)
-        Else
-            'silence
-            Dim arguments As String = "-y " & FFmpegCommandLineSilence.Replace("{img}", "%d.png").Replace("{framerate}", args.FPS).Replace("{outfile}", args.outputFile)
-            ffmpeg.Arguments = arguments
-            'ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -preset {1} ""{2}""", args.FPS, FFmpegEncodingPreset, args.outputFile)
-        End If
-        Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
-        Dim prevprog As New FFmpegProgress
-        prevprog.stderr = "Run command:" & ffmpeg.FileName & " " & ffmpeg.Arguments
-        FFmpegBackgroundWorker.ReportProgress(0, prevprog)
-        Dim ffmpegProc As Process
-        If Not CheckBoxNoFileWriting.Checked Then
-            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
-            Dim regex As New System.Text.RegularExpressions.Regex("frame=\s*(.+?)\s+fps=\s*(.+?)\s+")
-            ffmpegProc = Process.Start(ffmpeg)
-            Dim stderr As IO.StreamReader = ffmpegProc.StandardError
-            Dim lastProg As New FFmpegProgress
-            While Not ffmpegProc.HasExited
-                Dim errline As String
-                If Not stderr.EndOfStream Then
-                    Try
-                        errline = stderr.ReadLine()
-                    Catch ex As Exception
-                        Application.DoEvents()
-                        Continue While
-                    End Try
-                    If regex.IsMatch(errline) Then
-                        Dim match As System.Text.RegularExpressions.Match = regex.Match(errline)
-                        Dim prog As New FFmpegProgress
-                        prog.stderr = errline
-                        prog.frame = match.Groups(1).Value
-                        prog.FPS = match.Groups(2).Value
-                        FFmpegBackgroundWorker.ReportProgress(Val(prog.frame), prog)
-                        lastProg = prog
-                    Else
-                        Dim prog As FFmpegProgress = lastProg
-                        prog.stderr = errline
-                        FFmpegBackgroundWorker.ReportProgress(Val(prog.frame), prog)
-                    End If
-                End If
-            End While
-            FFmpegExitCode = ffmpegProc.ExitCode
-        End If
-        Dim retries As Integer = 0
-        Dim ok As Boolean = False
+    'Private Sub FFmpegBackgroundWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles FFmpegBackgroundWorker.DoWork
+    '    Dim args As FFmpegWorkerArguments = e.Argument
+    '    Dim ffmpeg As New ProcessStartInfo
+    '    ffmpeg.WorkingDirectory = args.directory
+    '    ffmpeg.FileName = args.ffmpegBinary
+    '    'ffmpeg.WindowStyle = ProcessWindowStyle.Hidden
+    '    ffmpeg.CreateNoWindow = True
+    '    'ffmpeg.RedirectStandardOutput = True
+    '    ffmpeg.RedirectStandardError = True
+    '    ffmpeg.UseShellExecute = False
+    '    If args.joinAudio Then
+    '        'join audio
+    '        Dim arguments As String = "-y " & FFmpegCommandLineJoinAudio.Replace("{img}", "%d.png").Replace("{framerate}", args.FPS).Replace("{audio}", args.audioFile).Replace("{outfile}", args.outputFile)
+    '        ffmpeg.Arguments = arguments
+    '        'ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -i ""{1}"" -preset {2} ""{3}""", args.FPS, args.audioFile, FFmpegEncodingPreset, args.outputFile)
+    '    Else
+    '        'silence
+    '        Dim arguments As String = "-y " & FFmpegCommandLineSilence.Replace("{img}", "%d.png").Replace("{framerate}", args.FPS).Replace("{outfile}", args.outputFile)
+    '        ffmpeg.Arguments = arguments
+    '        'ffmpeg.Arguments = String.Format("-y -framerate {0} -i %d.png -preset {1} ""{2}""", args.FPS, FFmpegEncodingPreset, args.outputFile)
+    '    End If
+    '    Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
+    '    Dim prevprog As New FFmpegProgress
+    '    prevprog.stderr = "Run command:" & ffmpeg.FileName & " " & ffmpeg.Arguments
+    '    FFmpegBackgroundWorker.ReportProgress(0, prevprog)
+    '    Dim ffmpegProc As Process
+    '    If Not CheckBoxNoFileWriting.Checked Then
+    '        TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
+    '        Dim regex As New System.Text.RegularExpressions.Regex("frame=\s*(.+?)\s+fps=\s*(.+?)\s+")
+    '        ffmpegProc = Process.Start(ffmpeg)
+    '        Dim stderr As IO.StreamReader = ffmpegProc.StandardError
+    '        Dim lastProg As New FFmpegProgress
+    '        While Not ffmpegProc.HasExited
+    '            Dim errline As String
+    '            If Not stderr.EndOfStream Then
+    '                Try
+    '                    errline = stderr.ReadLine()
+    '                Catch ex As Exception
+    '                    Application.DoEvents()
+    '                    Continue While
+    '                End Try
+    '                If regex.IsMatch(errline) Then
+    '                    Dim match As System.Text.RegularExpressions.Match = regex.Match(errline)
+    '                    Dim prog As New FFmpegProgress
+    '                    prog.stderr = errline
+    '                    prog.frame = match.Groups(1).Value
+    '                    prog.FPS = match.Groups(2).Value
+    '                    FFmpegBackgroundWorker.ReportProgress(Val(prog.frame), prog)
+    '                    lastProg = prog
+    '                Else
+    '                    Dim prog As FFmpegProgress = lastProg
+    '                    prog.stderr = errline
+    '                    FFmpegBackgroundWorker.ReportProgress(Val(prog.frame), prog)
+    '                End If
+    '            End If
+    '        End While
+    '        FFmpegExitCode = ffmpegProc.ExitCode
+    '    End If
+    '    Dim retries As Integer = 0
+    '    Dim ok As Boolean = False
 
 
-    End Sub
+    'End Sub
 
-    Private Sub FFmpegBackgroundWorker_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles FFmpegBackgroundWorker.ProgressChanged
-        Dim prog As FFmpegProgress = e.UserState
-        Dim FPS As ULong = Val(prog.FPS)
-        Dim frame As ULong = Val(prog.frame)
-        TaskbarManager.Instance.SetProgressValue(e.ProgressPercentage, totalFrame)
-        TextBoxLog.AppendText(prog.stderr & vbCrLf)
-        Dim timeLeft As String = "?"
-        If FPS <> 0 Then
-            timeLeft = New TimeSpan(0, 0, (totalFrame - frame) / FPS).ToString()
-        End If
-        LabelStatus.Text = String.Format("{0}% {1}/{2}, {3} FPS, Time left: {4}", Math.Round(prog.frame / totalFrame * 100, 1), frame, totalFrame, FPS, timeLeft)
-        'LabelStatus.Text = Val(prog.frame) & "/" & totalFrame & " fps=" & Val(prog.FPS)
-    End Sub
+    'Private Sub FFmpegBackgroundWorker_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles FFmpegBackgroundWorker.ProgressChanged
+    '    Dim prog As FFmpegProgress = e.UserState
+    '    Dim FPS As ULong = Val(prog.FPS)
+    '    Dim frame As ULong = Val(prog.frame)
+    '    TaskbarManager.Instance.SetProgressValue(e.ProgressPercentage, totalFrame)
+    '    TextBoxLog.AppendText(prog.stderr & vbCrLf)
+    '    Dim timeLeft As String = "?"
+    '    If FPS <> 0 Then
+    '        timeLeft = New TimeSpan(0, 0, (totalFrame - frame) / FPS).ToString()
+    '    End If
+    '    LabelStatus.Text = String.Format("{0}% {1}/{2}, {3} FPS, Time left: {4}", Math.Round(prog.frame / totalFrame * 100, 1), frame, totalFrame, FPS, timeLeft)
+    '    'LabelStatus.Text = Val(prog.frame) & "/" & totalFrame & " fps=" & Val(prog.FPS)
+    'End Sub
 
-    Private Sub FFmpegBackgroundWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles FFmpegBackgroundWorker.RunWorkerCompleted
-        If convertVideo Then
-            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
-            If FFmpegExitCode <> 0 Then
-                Dim retryResult As MsgBoxResult = MsgBox(String.Format("FFmpeg returned exit code {0}." & vbCrLf & "Do you wan to retry?", FFmpegExitCode), MsgBoxStyle.RetryCancel)
-                If retryResult = MsgBoxResult.Retry Then
-                    Dim newLocationResult As MsgBoxResult = MsgBox("Do you want to specify new file location?", MsgBoxStyle.YesNo)
-                    If newLocationResult = MsgBoxResult.Yes Then
-                        Dim sfd As New SaveFileDialog
-                        sfd.Filter = "MP4 File(*.mp4)|*.mp4"
-                        If sfd.ShowDialog() = Windows.Forms.DialogResult.OK Then
-                            TextBoxOutputLocation.Text = outputLocation
-                            outputLocation = sfd.FileName
-                        End If
-                    End If
-                    FFmpegBackgroundWorker.RunWorkerAsync()
-                    Exit Sub 'don't delete files
-                End If
-            End If
-            deleteFiles()
-            TextBoxLog.AppendText("Finished.")
-            LabelStatus.Text = "Finished."
-            ButtonControl.Text = "Start"
-            ButtonControl.Enabled = True
+    'Private Sub FFmpegBackgroundWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles FFmpegBackgroundWorker.RunWorkerCompleted
+    '    If convertVideo Then
+    '        TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
+    '        If FFmpegExitCode <> 0 Then
+    '            Dim retryResult As MsgBoxResult = MsgBox(String.Format("FFmpeg returned exit code {0}." & vbCrLf & "Do you wan to retry?", FFmpegExitCode), MsgBoxStyle.RetryCancel)
+    '            If retryResult = MsgBoxResult.Retry Then
+    '                Dim newLocationResult As MsgBoxResult = MsgBox("Do you want to specify new file location?", MsgBoxStyle.YesNo)
+    '                If newLocationResult = MsgBoxResult.Yes Then
+    '                    Dim sfd As New SaveFileDialog
+    '                    sfd.Filter = "MP4 File(*.mp4)|*.mp4"
+    '                    If sfd.ShowDialog() = Windows.Forms.DialogResult.OK Then
+    '                        TextBoxOutputLocation.Text = outputLocation
+    '                        outputLocation = sfd.FileName
+    '                    End If
+    '                End If
+    '                FFmpegBackgroundWorker.RunWorkerAsync()
+    '                Exit Sub 'don't delete files
+    '            End If
+    '        End If
+    '        deleteFiles()
+    '        TextBoxLog.AppendText("Finished.")
+    '        LabelStatus.Text = "Finished."
+    '        ButtonControl.Text = "Start"
+    '        ButtonControl.Enabled = True
 
-        End If
-    End Sub
-    Sub deleteFiles()
-        Dim ok As Boolean = False
-        Dim retries As Integer = 0
-        Do
-            Try
-                TextBoxLog.AppendText("Deleting temporary files Attempt " & retries & "," & outputDirectory & vbCrLf)
-                My.Computer.FileSystem.DeleteDirectory(outputDirectory, FileIO.DeleteDirectoryOption.DeleteAllContents)
-                ok = True
-            Catch ex As Exception
-                retries += 1
-                ok = False
-            End Try
-        Loop Until ok Or retries > 5
-    End Sub
+    '    End If
+    'End Sub
+    'Sub deleteFiles()
+    '    Dim ok As Boolean = False
+    '    Dim retries As Integer = 0
+    '    Do
+    '        Try
+    '            TextBoxLog.AppendText("Deleting temporary files Attempt " & retries & "," & outputDirectory & vbCrLf)
+    '            My.Computer.FileSystem.DeleteDirectory(outputDirectory, FileIO.DeleteDirectoryOption.DeleteAllContents)
+    '            ok = True
+    '        Catch ex As Exception
+    '            retries += 1
+    '            ok = False
+    '        End Try
+    '    Loop Until ok Or retries > 5
+    'End Sub
     Private Sub ListBoxFiles_MouseDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ListBoxFiles.MouseDoubleClick
         If Not ListBoxFiles.SelectedIndex < 0 Then
             currentChannelToBeSet = ListBoxFiles.SelectedItem
