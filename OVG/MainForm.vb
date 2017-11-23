@@ -43,8 +43,14 @@ Public Class MainForm
     Dim hidpi As New Windows.Shell.TaskbarItemInfo 'causes hidpi support :/
     Dim formStarted As Boolean = False
     Dim thumbnail As Microsoft.WindowsAPICodePack.Taskbar.TabbedThumbnail
+    Dim originalFormSize As Size
+    Dim originalTextBoxLogHeight As Integer
 
     Private Sub MainForm_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
+        If Not formStarted Then
+            originalFormSize = Me.Size
+            Me.MinimumSize = Me.Size
+        End If
         formStarted = True
         thumbnail = New Microsoft.WindowsAPICodePack.Taskbar.TabbedThumbnail(Me.Handle, PictureBoxOutput)
         thumbnail.Title = Me.Text
@@ -85,6 +91,9 @@ Public Class MainForm
         End If
         LabelStatus.Text = ""
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
+
+
+        originalTextBoxLogHeight = TextBoxLog.Height
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -849,4 +858,13 @@ Public Class MainForm
             TextBoxLog.AppendText(stderr & vbCrLf)
         End If
     End Sub
+
+    Private Sub MainForm_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
+        If formStarted Then
+            Me.Size = New Size(originalFormSize.Width, Me.Height)
+            TextBoxLog.Size = New Size(TextBoxLog.Width, Me.Height - originalFormSize.Height + originalTextBoxLogHeight)
+        End If
+
+    End Sub
+
 End Class

@@ -37,58 +37,65 @@ Partial Class CustomCommandLineForm
         'LabelWithAudio
         '
         Me.LabelWithAudio.AutoSize = True
-        Me.LabelWithAudio.Location = New System.Drawing.Point(12, 9)
+        Me.LabelWithAudio.Location = New System.Drawing.Point(11, 9)
+        Me.LabelWithAudio.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelWithAudio.Name = "LabelWithAudio"
-        Me.LabelWithAudio.Size = New System.Drawing.Size(78, 15)
+        Me.LabelWithAudio.Size = New System.Drawing.Size(63, 12)
         Me.LabelWithAudio.TabIndex = 0
         Me.LabelWithAudio.Text = "With Audio:"
         '
         'TextBoxJoinAudioCommandLine
         '
-        Me.TextBoxJoinAudioCommandLine.Location = New System.Drawing.Point(105, 27)
+        Me.TextBoxJoinAudioCommandLine.Location = New System.Drawing.Point(86, 22)
+        Me.TextBoxJoinAudioCommandLine.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxJoinAudioCommandLine.Name = "TextBoxJoinAudioCommandLine"
-        Me.TextBoxJoinAudioCommandLine.Size = New System.Drawing.Size(377, 25)
+        Me.TextBoxJoinAudioCommandLine.Size = New System.Drawing.Size(497, 22)
         Me.TextBoxJoinAudioCommandLine.TabIndex = 1
         '
         'LabelWithoutAudio
         '
         Me.LabelWithoutAudio.AutoSize = True
-        Me.LabelWithoutAudio.Location = New System.Drawing.Point(12, 55)
+        Me.LabelWithoutAudio.Location = New System.Drawing.Point(11, 46)
+        Me.LabelWithoutAudio.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelWithoutAudio.Name = "LabelWithoutAudio"
-        Me.LabelWithoutAudio.Size = New System.Drawing.Size(96, 15)
+        Me.LabelWithoutAudio.Size = New System.Drawing.Size(78, 12)
         Me.LabelWithoutAudio.TabIndex = 2
         Me.LabelWithoutAudio.Text = "Without Audio:"
         '
         'TextBoxSilenceCommandLine
         '
-        Me.TextBoxSilenceCommandLine.Location = New System.Drawing.Point(105, 73)
+        Me.TextBoxSilenceCommandLine.Location = New System.Drawing.Point(86, 60)
+        Me.TextBoxSilenceCommandLine.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxSilenceCommandLine.Name = "TextBoxSilenceCommandLine"
-        Me.TextBoxSilenceCommandLine.Size = New System.Drawing.Size(377, 25)
+        Me.TextBoxSilenceCommandLine.Size = New System.Drawing.Size(497, 22)
         Me.TextBoxSilenceCommandLine.TabIndex = 3
         '
         'LabelVariables
         '
         Me.LabelVariables.AutoSize = True
-        Me.LabelVariables.Location = New System.Drawing.Point(12, 101)
+        Me.LabelVariables.Location = New System.Drawing.Point(11, 102)
+        Me.LabelVariables.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelVariables.Name = "LabelVariables"
-        Me.LabelVariables.Size = New System.Drawing.Size(119, 75)
+        Me.LabelVariables.Size = New System.Drawing.Size(96, 60)
         Me.LabelVariables.TabIndex = 4
         Me.LabelVariables.Text = "Available variables:" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "{framerate}" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "{img}" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "{audio}" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "{outfile}"
         '
         'ButtonOK
         '
-        Me.ButtonOK.Location = New System.Drawing.Point(288, 147)
+        Me.ButtonOK.Location = New System.Drawing.Point(438, 137)
+        Me.ButtonOK.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonOK.Name = "ButtonOK"
-        Me.ButtonOK.Size = New System.Drawing.Size(94, 29)
+        Me.ButtonOK.Size = New System.Drawing.Size(70, 23)
         Me.ButtonOK.TabIndex = 5
         Me.ButtonOK.Text = "OK"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
         'ButtonCancel
         '
-        Me.ButtonCancel.Location = New System.Drawing.Point(388, 147)
+        Me.ButtonCancel.Location = New System.Drawing.Point(513, 137)
+        Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonCancel.Name = "ButtonCancel"
-        Me.ButtonCancel.Size = New System.Drawing.Size(94, 29)
+        Me.ButtonCancel.Size = New System.Drawing.Size(70, 23)
         Me.ButtonCancel.TabIndex = 6
         Me.ButtonCancel.Text = "Cancel"
         Me.ButtonCancel.UseVisualStyleBackColor = True
@@ -96,35 +103,38 @@ Partial Class CustomCommandLineForm
         'LabelFFmpeg1
         '
         Me.LabelFFmpeg1.AutoSize = True
-        Me.LabelFFmpeg1.Location = New System.Drawing.Point(12, 30)
+        Me.LabelFFmpeg1.Location = New System.Drawing.Point(11, 25)
+        Me.LabelFFmpeg1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelFFmpeg1.Name = "LabelFFmpeg1"
-        Me.LabelFFmpeg1.Size = New System.Drawing.Size(87, 15)
+        Me.LabelFFmpeg1.Size = New System.Drawing.Size(71, 12)
         Me.LabelFFmpeg1.TabIndex = 7
         Me.LabelFFmpeg1.Text = "ffmpeg.exe -y"
         '
         'LabelFFmpeg2
         '
         Me.LabelFFmpeg2.AutoSize = True
-        Me.LabelFFmpeg2.Location = New System.Drawing.Point(12, 76)
+        Me.LabelFFmpeg2.Location = New System.Drawing.Point(11, 63)
+        Me.LabelFFmpeg2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelFFmpeg2.Name = "LabelFFmpeg2"
-        Me.LabelFFmpeg2.Size = New System.Drawing.Size(87, 15)
+        Me.LabelFFmpeg2.Size = New System.Drawing.Size(71, 12)
         Me.LabelFFmpeg2.TabIndex = 8
         Me.LabelFFmpeg2.Text = "ffmpeg.exe -y"
         '
         'ButtonDefault
         '
-        Me.ButtonDefault.Location = New System.Drawing.Point(188, 147)
+        Me.ButtonDefault.Location = New System.Drawing.Point(363, 137)
+        Me.ButtonDefault.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonDefault.Name = "ButtonDefault"
-        Me.ButtonDefault.Size = New System.Drawing.Size(94, 29)
+        Me.ButtonDefault.Size = New System.Drawing.Size(70, 23)
         Me.ButtonDefault.TabIndex = 9
         Me.ButtonDefault.Text = "Default"
         Me.ButtonDefault.UseVisualStyleBackColor = True
         '
         'CustomCommandLineForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(494, 190)
+        Me.ClientSize = New System.Drawing.Size(594, 171)
         Me.Controls.Add(Me.ButtonDefault)
         Me.Controls.Add(Me.LabelFFmpeg2)
         Me.Controls.Add(Me.LabelFFmpeg1)
@@ -136,6 +146,8 @@ Partial Class CustomCommandLineForm
         Me.Controls.Add(Me.TextBoxJoinAudioCommandLine)
         Me.Controls.Add(Me.LabelWithAudio)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.HelpButton = True
+        Me.Margin = New System.Windows.Forms.Padding(2)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "CustomCommandLineForm"

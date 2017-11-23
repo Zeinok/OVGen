@@ -1,5 +1,10 @@
 ﻿Public Class CustomCommandLineForm
 
+    Private Sub CustomCommandLineForm_HelpButtonClicked(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles Me.HelpButtonClicked
+        MsgBox("If you messed up something, press [Default] button.")
+        e.Cancel = True
+    End Sub
+
     Private Sub CustomCommandLineForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         TextBoxJoinAudioCommandLine.Text = MainForm.FFmpegCommandLineJoinAudio
         TextBoxSilenceCommandLine.Text = MainForm.FFmpegCommandLineSilence

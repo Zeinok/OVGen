@@ -166,10 +166,10 @@ Partial Class MainForm
         Me.LinkLabelCustomCommandLine.Location = New System.Drawing.Point(108, 86)
         Me.LinkLabelCustomCommandLine.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LinkLabelCustomCommandLine.Name = "LinkLabelCustomCommandLine"
-        Me.LinkLabelCustomCommandLine.Size = New System.Drawing.Size(14, 12)
+        Me.LinkLabelCustomCommandLine.Size = New System.Drawing.Size(90, 12)
         Me.LinkLabelCustomCommandLine.TabIndex = 23
         Me.LinkLabelCustomCommandLine.TabStop = True
-        Me.LinkLabelCustomCommandLine.Text = "..."
+        Me.LinkLabelCustomCommandLine.Text = "Edit commandline"
         '
         'CheckBoxGrid
         '
@@ -495,7 +495,6 @@ Partial Class MainForm
         Me.Controls.Add(Me.TextBoxOutputLocation)
         Me.Controls.Add(Me.LabelOutputLocation)
         Me.Controls.Add(Me.ButtonSetOutputFolder)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.Name = "MainForm"
