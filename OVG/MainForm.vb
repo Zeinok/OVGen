@@ -7,6 +7,7 @@ Public Class MainForm
     Dim realFPS As Double
     Dim averageFPS As Double
     Dim startTime As DateTime
+    Dim channelFlowDirection As FlowDirection = FlowDirection.LeftToRight
     '===For Worker
     Public optionsMap As New Dictionary(Of String, channelOptions)
     Dim canvasSize As New Size(1280, 720)
@@ -35,7 +36,7 @@ Public Class MainForm
     Public FFmpegCommandLineSilence As String = DefaultFFmpegCommandLineSilence
     Dim FFmpegRegex As New System.Text.RegularExpressions.Regex("frame=\s*(.+?)\s+fps=\s*(.+?)\s+")
     Public FFmpegstderr As IO.StreamReader
-        '===For file operation
+    '===For file operation
     Const FileFilter As String = "WAVE File(*.wav)|*.wav"
     Public currentChannelToBeSet As String = ""
     Dim ffmpegPath As String = ""
@@ -92,6 +93,7 @@ Public Class MainForm
             TextBoxOutputLocation.Text = outputDirectory
         End If
         LabelStatus.Text = ""
+        ComboBoxFlowDirection.SelectedIndex = 0
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         originalTextBoxLogHeight = TextBoxLog.Height
     End Sub
@@ -109,6 +111,7 @@ Public Class MainForm
         SafeFilename = filename
         If filename.Contains(" ") Then SafeFilename = """" & filename & """"
     End Function
+
     Private Sub writeConfig()
         Dim configWriter As IO.StreamWriter = My.Computer.FileSystem.OpenTextFileWriter("config.ini", False)
         configWriter.WriteLine(ffmpegPath)
@@ -332,14 +335,21 @@ Public Class MainForm
         'If bitDepth = 16 Then samplesPerFrame *= 2
         Dim channelSize As New Size(channelWidth, channelHeight)
         Dim channelOffset(channels - 1) As Point
-        Dim currentColumn As Integer = 0
         For c As Integer = 0 To channels - 1
-            Dim y As Integer = channelHeight * (c Mod maxChannelPerColumn)
-            currentColumn = (c - (c Mod maxChannelPerColumn)) / maxChannelPerColumn
-            Dim x As Integer = channelWidth * currentColumn
+            Dim x, y, currentColumn, currentRow As Integer
+            If channelFlowDirection = FlowDirection.LeftToRight Then
+                currentRow = (c - (c Mod col)) / col
+                y = channelHeight * currentRow
+                x = channelWidth * (c Mod col)
+            ElseIf channelFlowDirection = FlowDirection.TopDown Then
+                currentColumn = (c - (c Mod maxChannelPerColumn)) / maxChannelPerColumn
+                y = channelHeight * (c Mod maxChannelPerColumn)
+                x = channelWidth * currentColumn
+            End If
             channelOffset(c) = New Point(x, y)
             Debug.WriteLine(channelOffset(c).ToString())
         Next
+
 
         Dim i As Integer = 0
         Dim sampleStep As Byte = 1
@@ -633,7 +643,6 @@ Public Class MainForm
             Dim channelHeight As Integer = canvasSize.Height / maxChannelPerColumn
             'If bitDepth = 16 Then samplesPerFrame *= 2
             Dim channelOffset(channels - 1) As Point
-            Dim currentColumn As Integer = 0
             If CheckBoxGrid.Checked Then 'draw grid
                 For x As Integer = 1 To col - 1
                     g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
@@ -643,9 +652,16 @@ Public Class MainForm
                 Next
             End If
             For c As Integer = 0 To channels - 1
-                Dim y As Integer = channelHeight * (c Mod maxChannelPerColumn)
-                currentColumn = (c - (c Mod maxChannelPerColumn)) / maxChannelPerColumn
-                Dim x As Integer = channelWidth * currentColumn
+                Dim x, y, currentColumn, currentRow As Integer
+                If channelFlowDirection = FlowDirection.LeftToRight Then
+                    currentRow = (c - (c Mod col)) / col
+                    y = channelHeight * currentRow
+                    x = channelWidth * (c Mod col)
+                ElseIf channelFlowDirection = FlowDirection.TopDown Then
+                    currentColumn = (c - (c Mod maxChannelPerColumn)) / maxChannelPerColumn
+                    y = channelHeight * (c Mod maxChannelPerColumn)
+                    x = channelWidth * currentColumn
+                End If
                 Dim filename As String = IO.Path.GetFileName(ListBoxFiles.Items(c))
                 Dim channelColor As Color = optionsMap(ListBoxFiles.Items(c)).waveColor
                 g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(channelColor), x, y)
@@ -740,4 +756,8 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub ComboBoxFlowDirection_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBoxFlowDirection.SelectedIndexChanged
+        channelFlowDirection = ComboBoxFlowDirection.SelectedIndex
+        previewLayout()
+    End Sub
 End Class

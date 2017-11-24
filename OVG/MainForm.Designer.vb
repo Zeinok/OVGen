@@ -31,6 +31,8 @@ Partial Class MainForm
         Me.ButtonControl = New System.Windows.Forms.Button()
         Me.CheckBoxShowOutput = New System.Windows.Forms.CheckBox()
         Me.GroupBoxOptions = New System.Windows.Forms.GroupBox()
+        Me.ComboBoxFlowDirection = New System.Windows.Forms.ComboBox()
+        Me.LabelFlowDirecton = New System.Windows.Forms.Label()
         Me.LinkLabelCustomCommandLine = New System.Windows.Forms.LinkLabel()
         Me.CheckBoxGrid = New System.Windows.Forms.CheckBox()
         Me.LabelCanvasSize = New System.Windows.Forms.Label()
@@ -78,7 +80,7 @@ Partial Class MainForm
         '
         'ButtonSetOutputFolder
         '
-        Me.ButtonSetOutputFolder.Location = New System.Drawing.Point(630, 14)
+        Me.ButtonSetOutputFolder.Location = New System.Drawing.Point(629, 14)
         Me.ButtonSetOutputFolder.Name = "ButtonSetOutputFolder"
         Me.ButtonSetOutputFolder.Size = New System.Drawing.Size(25, 23)
         Me.ButtonSetOutputFolder.TabIndex = 2
@@ -99,7 +101,7 @@ Partial Class MainForm
         '
         Me.TextBoxOutputLocation.Location = New System.Drawing.Point(84, 14)
         Me.TextBoxOutputLocation.Name = "TextBoxOutputLocation"
-        Me.TextBoxOutputLocation.Size = New System.Drawing.Size(540, 22)
+        Me.TextBoxOutputLocation.Size = New System.Drawing.Size(539, 22)
         Me.TextBoxOutputLocation.TabIndex = 1
         '
         'ButtonControl
@@ -128,6 +130,8 @@ Partial Class MainForm
         '
         'GroupBoxOptions
         '
+        Me.GroupBoxOptions.Controls.Add(Me.ComboBoxFlowDirection)
+        Me.GroupBoxOptions.Controls.Add(Me.LabelFlowDirecton)
         Me.GroupBoxOptions.Controls.Add(Me.LinkLabelCustomCommandLine)
         Me.GroupBoxOptions.Controls.Add(Me.CheckBoxGrid)
         Me.GroupBoxOptions.Controls.Add(Me.LabelCanvasSize)
@@ -159,10 +163,29 @@ Partial Class MainForm
         Me.GroupBoxOptions.TabStop = False
         Me.GroupBoxOptions.Text = "Options"
         '
+        'ComboBoxFlowDirection
+        '
+        Me.ComboBoxFlowDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBoxFlowDirection.FormattingEnabled = True
+        Me.ComboBoxFlowDirection.Items.AddRange(New Object() {"Left to right", "Top to down"})
+        Me.ComboBoxFlowDirection.Location = New System.Drawing.Point(90, 223)
+        Me.ComboBoxFlowDirection.Name = "ComboBoxFlowDirection"
+        Me.ComboBoxFlowDirection.Size = New System.Drawing.Size(108, 20)
+        Me.ComboBoxFlowDirection.TabIndex = 23
+        '
+        'LabelFlowDirecton
+        '
+        Me.LabelFlowDirecton.AutoSize = True
+        Me.LabelFlowDirecton.Location = New System.Drawing.Point(7, 226)
+        Me.LabelFlowDirecton.Name = "LabelFlowDirecton"
+        Me.LabelFlowDirecton.Size = New System.Drawing.Size(77, 12)
+        Me.LabelFlowDirecton.TabIndex = 22
+        Me.LabelFlowDirecton.Text = "Flow Direction:"
+        '
         'LinkLabelCustomCommandLine
         '
         Me.LinkLabelCustomCommandLine.AutoSize = True
-        Me.LinkLabelCustomCommandLine.Location = New System.Drawing.Point(108, 86)
+        Me.LinkLabelCustomCommandLine.Location = New System.Drawing.Point(98, 87)
         Me.LinkLabelCustomCommandLine.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LinkLabelCustomCommandLine.Name = "LinkLabelCustomCommandLine"
         Me.LinkLabelCustomCommandLine.Size = New System.Drawing.Size(90, 12)
@@ -173,7 +196,7 @@ Partial Class MainForm
         'CheckBoxGrid
         '
         Me.CheckBoxGrid.AutoSize = True
-        Me.CheckBoxGrid.Location = New System.Drawing.Point(138, 175)
+        Me.CheckBoxGrid.Location = New System.Drawing.Point(138, 176)
         Me.CheckBoxGrid.Name = "CheckBoxGrid"
         Me.CheckBoxGrid.Size = New System.Drawing.Size(45, 16)
         Me.CheckBoxGrid.TabIndex = 12
@@ -212,7 +235,7 @@ Partial Class MainForm
         'CheckBoxCRT
         '
         Me.CheckBoxCRT.AutoSize = True
-        Me.CheckBoxCRT.Location = New System.Drawing.Point(5, 176)
+        Me.CheckBoxCRT.Location = New System.Drawing.Point(9, 176)
         Me.CheckBoxCRT.Margin = New System.Windows.Forms.Padding(2)
         Me.CheckBoxCRT.Name = "CheckBoxCRT"
         Me.CheckBoxCRT.Size = New System.Drawing.Size(134, 16)
@@ -222,7 +245,7 @@ Partial Class MainForm
         '
         'NumericUpDownLineWidth
         '
-        Me.NumericUpDownLineWidth.Location = New System.Drawing.Point(64, 150)
+        Me.NumericUpDownLineWidth.Location = New System.Drawing.Point(72, 152)
         Me.NumericUpDownLineWidth.Margin = New System.Windows.Forms.Padding(2)
         Me.NumericUpDownLineWidth.Maximum = New Decimal(New Integer() {10, 0, 0, 0})
         Me.NumericUpDownLineWidth.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
@@ -237,7 +260,7 @@ Partial Class MainForm
         Me.CheckBoxNoFileWriting.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.CheckBoxNoFileWriting.Checked = True
         Me.CheckBoxNoFileWriting.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBoxNoFileWriting.Location = New System.Drawing.Point(5, 18)
+        Me.CheckBoxNoFileWriting.Location = New System.Drawing.Point(9, 18)
         Me.CheckBoxNoFileWriting.Margin = New System.Windows.Forms.Padding(2)
         Me.CheckBoxNoFileWriting.Name = "CheckBoxNoFileWriting"
         Me.CheckBoxNoFileWriting.Size = New System.Drawing.Size(164, 16)
@@ -249,7 +272,7 @@ Partial Class MainForm
         'LabelLineWidth
         '
         Me.LabelLineWidth.AutoSize = True
-        Me.LabelLineWidth.Location = New System.Drawing.Point(7, 152)
+        Me.LabelLineWidth.Location = New System.Drawing.Point(7, 154)
         Me.LabelLineWidth.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelLineWidth.Name = "LabelLineWidth"
         Me.LabelLineWidth.Size = New System.Drawing.Size(61, 12)
@@ -261,10 +284,10 @@ Partial Class MainForm
         Me.ListBoxFiles.FormattingEnabled = True
         Me.ListBoxFiles.HorizontalScrollbar = True
         Me.ListBoxFiles.ItemHeight = 12
-        Me.ListBoxFiles.Location = New System.Drawing.Point(4, 228)
+        Me.ListBoxFiles.Location = New System.Drawing.Point(3, 248)
         Me.ListBoxFiles.Margin = New System.Windows.Forms.Padding(2)
         Me.ListBoxFiles.Name = "ListBoxFiles"
-        Me.ListBoxFiles.Size = New System.Drawing.Size(195, 160)
+        Me.ListBoxFiles.Size = New System.Drawing.Size(195, 148)
         Me.ListBoxFiles.TabIndex = 15
         '
         'ButtonOptions
@@ -324,7 +347,7 @@ Partial Class MainForm
         '
         'NumericUpDownColumn
         '
-        Me.NumericUpDownColumn.Location = New System.Drawing.Point(57, 126)
+        Me.NumericUpDownColumn.Location = New System.Drawing.Point(61, 126)
         Me.NumericUpDownColumn.Margin = New System.Windows.Forms.Padding(2)
         Me.NumericUpDownColumn.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownColumn.Name = "NumericUpDownColumn"
@@ -346,7 +369,7 @@ Partial Class MainForm
         'CheckBoxSmooth
         '
         Me.CheckBoxSmooth.AutoSize = True
-        Me.CheckBoxSmooth.Location = New System.Drawing.Point(5, 38)
+        Me.CheckBoxSmooth.Location = New System.Drawing.Point(9, 38)
         Me.CheckBoxSmooth.Margin = New System.Windows.Forms.Padding(2)
         Me.CheckBoxSmooth.Name = "CheckBoxSmooth"
         Me.CheckBoxSmooth.Size = New System.Drawing.Size(84, 16)
@@ -369,18 +392,18 @@ Partial Class MainForm
         'CheckBoxVideo
         '
         Me.CheckBoxVideo.AutoSize = True
-        Me.CheckBoxVideo.Location = New System.Drawing.Point(5, 85)
+        Me.CheckBoxVideo.Location = New System.Drawing.Point(9, 86)
         Me.CheckBoxVideo.Margin = New System.Windows.Forms.Padding(2)
         Me.CheckBoxVideo.Name = "CheckBoxVideo"
-        Me.CheckBoxVideo.Size = New System.Drawing.Size(103, 16)
+        Me.CheckBoxVideo.Size = New System.Drawing.Size(85, 16)
         Me.CheckBoxVideo.TabIndex = 4
-        Me.CheckBoxVideo.Text = "Convert to video"
+        Me.CheckBoxVideo.Text = "Output video"
         Me.ToolTips.SetToolTip(Me.CheckBoxVideo, "Auto convert frames to video after finished." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Requires FFmpeg.")
         Me.CheckBoxVideo.UseVisualStyleBackColor = True
         '
         'NumericUpDownFrameRate
         '
-        Me.NumericUpDownFrameRate.Location = New System.Drawing.Point(57, 59)
+        Me.NumericUpDownFrameRate.Location = New System.Drawing.Point(61, 59)
         Me.NumericUpDownFrameRate.Margin = New System.Windows.Forms.Padding(2)
         Me.NumericUpDownFrameRate.Maximum = New Decimal(New Integer() {500, 0, 0, 0})
         Me.NumericUpDownFrameRate.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
@@ -392,7 +415,7 @@ Partial Class MainForm
         'LabelFrameRate
         '
         Me.LabelFrameRate.AutoSize = True
-        Me.LabelFrameRate.Location = New System.Drawing.Point(3, 64)
+        Me.LabelFrameRate.Location = New System.Drawing.Point(7, 64)
         Me.LabelFrameRate.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelFrameRate.Name = "LabelFrameRate"
         Me.LabelFrameRate.Size = New System.Drawing.Size(54, 12)
@@ -545,5 +568,7 @@ Partial Class MainForm
     Friend WithEvents ToolStripStatusLabelAbout As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents LinkLabelCustomCommandLine As System.Windows.Forms.LinkLabel
     Friend WithEvents BackgroundWorkerStdErrReader As System.ComponentModel.BackgroundWorker
+    Friend WithEvents ComboBoxFlowDirection As System.Windows.Forms.ComboBox
+    Friend WithEvents LabelFlowDirecton As System.Windows.Forms.Label
 
 End Class
