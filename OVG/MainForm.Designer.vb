@@ -56,7 +56,6 @@ Partial Class MainForm
         Me.ToolTips = New System.Windows.Forms.ToolTip(Me.components)
         Me.PictureBoxOutput = New System.Windows.Forms.PictureBox()
         Me.TextBoxLog = New System.Windows.Forms.TextBox()
-        Me.FFmpegBackgroundWorker = New System.ComponentModel.BackgroundWorker()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.LabelStatus = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabelPadding = New System.Windows.Forms.ToolStripStatusLabel()
@@ -419,11 +418,6 @@ Partial Class MainForm
         Me.TextBoxLog.Size = New System.Drawing.Size(849, 74)
         Me.TextBoxLog.TabIndex = 6
         '
-        'FFmpegBackgroundWorker
-        '
-        Me.FFmpegBackgroundWorker.WorkerReportsProgress = True
-        Me.FFmpegBackgroundWorker.WorkerSupportsCancellation = True
-        '
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LabelStatus, Me.ToolStripStatusLabelPadding, Me.ToolStripStatusLabelAbout})
@@ -540,7 +534,6 @@ Partial Class MainForm
     Friend WithEvents CheckBoxCRT As System.Windows.Forms.CheckBox
     Friend WithEvents ButtonSetAll As System.Windows.Forms.Button
     Friend WithEvents TextBoxLog As System.Windows.Forms.TextBox
-    Friend WithEvents FFmpegBackgroundWorker As System.ComponentModel.BackgroundWorker
     Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
     Friend WithEvents LabelStatus As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents LabelPreviewMode As System.Windows.Forms.Label

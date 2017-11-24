@@ -16,6 +16,9 @@ Public Class Progress
         TotalFrame = NewTotalFrame
         message = newMessage
     End Sub
+    Sub New(ByVal message As String)
+        Me.message = message
+    End Sub
 End Class
 Public Class WorkerArguments
     Public files As String()
@@ -30,22 +33,7 @@ Public Class WorkerArguments
     Public audioFile As String
     Public canceled As Boolean = False
 End Class
-Public Class FFmpegWorkerArguments
-    Public ffmpegBinary As String
-    Public directory As String
-    Public FPS As Integer
-    Public outputFile As String
-    Public joinAudio As Boolean
-    Public audioFile As String
 
-End Class
-Public Class FFmpegProgress
-    Public stderr As String
-    Public frame As String
-    'Public totalFrame As String
-    Public FPS As String
-
-End Class
 Public Class channelOptions
     'Public color As Color
     Public pen As Pen = MainForm.wavePen
