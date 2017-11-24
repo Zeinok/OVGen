@@ -830,11 +830,15 @@ Public Class MainForm
     End Sub
 
     Private Sub ToolStripStatusLabelAbout_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ToolStripStatusLabelAbout.MouseDown
-        ToolStripStatusLabelAbout.BorderSides = ToolStripStatusLabelBorderSides.Left + ToolStripStatusLabelBorderSides.Top
+        ToolStripStatusLabelAbout.BorderStyle = Border3DStyle.SunkenOuter
+    End Sub
+
+    Private Sub ToolStripStatusLabelAbout_MouseLeave(ByVal sender As Object, ByVal e As System.EventArgs) Handles ToolStripStatusLabelAbout.MouseLeave
+        ToolStripStatusLabelAbout.BorderStyle = Border3DStyle.RaisedOuter
     End Sub
 
     Private Sub ToolStripStatusLabelAbout_MouseUp(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ToolStripStatusLabelAbout.MouseUp
-        ToolStripStatusLabelAbout.BorderSides = ToolStripStatusLabelBorderSides.All
+        ToolStripStatusLabelAbout.BorderStyle = Border3DStyle.RaisedOuter
         AboutForm.ShowDialog()
     End Sub
 
