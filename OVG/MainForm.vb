@@ -4,7 +4,7 @@ Public Class MainForm
     'Public timeScale As Double = 0.025
     Dim fpsTimer As Date
     Dim frames As ULong
-    Dim realFPS As ULong
+    Dim realFPS As Double
     Dim averageFPS As Double
     Dim startTime As DateTime
     '===For Worker
@@ -211,7 +211,7 @@ Public Class MainForm
                 arg.joinAudio = False
             End If
             arg.ffmpegBinary = ffmpegPath
-
+            LabelStatus.Text = "Start."
             OscilloscopeBackgroundWorker.RunWorkerAsync(arg)
             GroupBoxOptions.Enabled = False
             ButtonControl.Text = "Cancel"
@@ -284,7 +284,6 @@ Public Class MainForm
         End If
         Debug.WriteLine(outputDirectory)
         Dim args As WorkerArguments = e.Argument
-        Debug.WriteLine("Start.")
         Dim reader(args.files.Length - 1) As IO.StreamReader
         Dim wave(args.files.Length - 1) As WAV
         Dim data As New List(Of Byte())
@@ -366,6 +365,7 @@ Public Class MainForm
         Dim stderr As IO.StreamReader = Nothing
         Dim stdin As IO.BufferedStream = Nothing
         If convertVideo And Not NoFileWriting Then
+            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Starting FFmpeg."))
             ffmpegProc = Process.Start(ffmpeg)
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Started FFmpeg."))
             stdin = New IO.BufferedStream(ffmpegProc.StandardInput.BaseStream, 16384)
@@ -516,13 +516,14 @@ Public Class MainForm
                 timeLeftSecond = (prog.TotalFrame - prog.CurrentFrame) / averageFPS
             End If
             Dim timeLeft As New TimeSpan(0, 0, timeLeftSecond)
-            LabelStatus.Text = String.Format("{0}% {1}/{2}, {3} FPS , Time left: {4}", Math.Ceiling(prog.CurrentFrame / prog.TotalFrame * 100), prog.CurrentFrame, prog.TotalFrame, realFPS, timeLeft.ToString())
+            LabelStatus.Text = String.Format("{0}% {1}/{2}, {3:N1} FPS , Time left: {4}", Math.Ceiling(prog.CurrentFrame / prog.TotalFrame * 100), prog.CurrentFrame, prog.TotalFrame, realFPS, timeLeft.ToString())
             frames += 1
             'realFPS = frames
             'Debug.WriteLine((TimeOfDay - fpsTimer).TotalMilliseconds)
-            If Math.Abs((TimeOfDay - fpsTimer).TotalMilliseconds) >= 1000 Then
-                fpsTimer = TimeOfDay
-                realFPS = frames
+            Dim ms As ULong = Math.Abs((Now - fpsTimer).TotalMilliseconds)
+            If ms >= 1000 Then
+                fpsTimer = Now
+                realFPS = frames * 1000 / ms
                 averageFPS = (averageFPS + realFPS) / 2
                 frames = 0
             End If
@@ -539,6 +540,7 @@ Public Class MainForm
 
     Private Sub OscilloscopeBackgroundWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles OscilloscopeBackgroundWorker.RunWorkerCompleted
         Dim elapsedTime As TimeSpan = Now - startTime
+        TextBoxLog.AppendText("Total time spent: " & elapsedTime.ToString())
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         If TaskbarManager.Instance.TabbedThumbnail.IsThumbnailPreviewAdded(thumbnail) Then
             TaskbarManager.Instance.TabbedThumbnail.RemoveThumbnailPreview(thumbnail)
