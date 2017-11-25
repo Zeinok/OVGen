@@ -115,8 +115,16 @@ Public Class MainForm
     Private Sub writeConfig()
         Dim configWriter As IO.StreamWriter = My.Computer.FileSystem.OpenTextFileWriter("config.ini", False)
         configWriter.WriteLine(ffmpegPath)
-        configWriter.WriteLine(FFmpegCommandLineJoinAudio)
-        configWriter.WriteLine(FFmpegCommandLineSilence)
+        If Not FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio Then
+            configWriter.WriteLine(FFmpegCommandLineJoinAudio)
+        Else
+            configWriter.WriteLine()
+        End If
+        If Not FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence Then
+            configWriter.WriteLine(FFmpegCommandLineSilence)
+        Else
+            configWriter.WriteLine()
+        End If
         configWriter.Close()
     End Sub
     Private Sub ButtonControl_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonControl.Click
@@ -722,7 +730,9 @@ Public Class MainForm
     End Sub
 
     Private Sub LinkLabelCustomCommandLine_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkLabelCustomCommandLine.LinkClicked
-        CustomCommandLineForm.ShowDialog()
+        If CustomCommandLineForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            writeConfig()
+        End If
     End Sub
 
     Private Sub CheckBoxGrid_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CheckBoxGrid.CheckedChanged
