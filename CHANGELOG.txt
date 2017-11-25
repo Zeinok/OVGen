@@ -1,3 +1,6 @@
+2017/11/25 0.0.5.1
+* Fix config file is not saved after editing commandline
+
 2017/11/24 0.0.5.0
 + You can now select channel flow direction.
 
