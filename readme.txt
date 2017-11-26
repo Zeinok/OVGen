@@ -1,22 +1,12 @@
-﻿
-very
-
-@@@  @       @  @@@@@@    @@@@   @@@@@  @@@@@@@@@     @     @@     @@@ @@@@@@@@@
- @   @@     @@   @    @  @    @   @   @ @   @   @    @ @     @@     @  @   @   @
- @   @ @   @ @   @    @ @      @  @   @     @       @   @    @ @    @      @
- @   @ @   @ @   @    @ @      @  @   @     @      @     @   @  @   @      @
- @   @  @ @  @   @@@@   @      @  @@@@      @      @@@@@@@   @   @  @      @
- @   @   @   @   @      @      @  @ @       @      @     @   @    @ @      @
- @   @   @   @   @       @    @   @  @      @      @     @   @     @@      @
-@@@ @@@  @  @@@ @@@       @@@@   @@@  @    @@@    @@@   @@@ @@@     @@    @@@
-
-
-       ______________________________________________________________________
-      /                                                                      \
-      >  * Please don't distribute the source code, I'm not ready for it. *  <
-      \______________________________________________________________________/
-
-
-Contact:
-Discord: @Zeinok#7251
-Telegram: @Zeinok
+﻿Oscilloscope View Generator
+---
+Specs:
++ Open 16-bit or 8-bit depth WAV
++ Output as PNG (image each frame) or MP4 (video,requires FFmpeg)
++ If output as video, directly feed raw image into FFmpeg. 
++ In-program amplification
++ Per channel time scaling
++ Set color for each channel
++ Preview mode
++ Toggleable output displaying
++ CRT oscilloscope rendering mode
