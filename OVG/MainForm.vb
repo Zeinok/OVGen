@@ -432,6 +432,10 @@ Public Class MainForm
                         triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(wave(c), i, sampleRate / 50)
                     Case TriggeringAlgorithms.UsePeakSpeedScanning
                         triggerOffset = TriggeringAlgorithms.peakSpeedScanning(wave(c), i, sampleRate / 25)
+                    Case TriggeringAlgorithms.UsePostiveLengthScanning
+                        triggerOffset = TriggeringAlgorithms.postiveLengthScanning(wave(c), i, sampleRate / 50)
+                    Case TriggeringAlgorithms.UseAutoTrigger
+                        triggerOffset = TriggeringAlgorithms.autoTrigger(wave(c), i, sampleRate / 50)
                 End Select
 
                 'draw

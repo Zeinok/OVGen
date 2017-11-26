@@ -1,13 +1,15 @@
 ﻿Module TriggeringAlgorithms
     Public Const UseZeroCrossing As Byte = 0
     Public Const UsePeakSpeedScanning As Byte = 1
+    Public Const UsePostiveLengthScanning As Byte = 2
+    Public Const UseAutoTrigger As Byte = 3
     Function zeroCrossingTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         Dim args As channelOptions = wave.extraArguments
         zeroCrossingTrigger = 0
         While Math.Floor(wave.getSample(offset + zeroCrossingTrigger, True)) > args.trigger And zeroCrossingTrigger < maxScanLength 'postive
             zeroCrossingTrigger += 1
         End While
-        While Math.Floor(wave.getSample(offset + zeroCrossingTrigger, True)) <= args.trigger And zeroCrossingTrigger < maxScanLength
+        While Math.Floor(wave.getSample(offset + zeroCrossingTrigger, True)) <= args.trigger And zeroCrossingTrigger < maxScanLength 'negative
             zeroCrossingTrigger += 1
         End While
     End Function
@@ -67,4 +69,51 @@
         peakSpeedScanning = middlePoint
     End Function
 
+    Function postiveLengthScanning(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
+        Dim args As channelOptions = wave.extraArguments
+        postiveLengthScanning = 0
+        Dim scanLocation As Long = 0
+
+        Dim points As New List(Of Long)
+        Dim lengths As New List(Of Long)
+        Dim zeroCrossingOffset As Long = zeroCrossingTrigger(wave, offset, maxScanLength)
+        'zeroCrossingOffset = 0
+        While scanLocation < maxScanLength
+            Dim currentLength As Long = 0
+            points.Add(zeroCrossingOffset + scanLocation)
+            While Math.Floor(wave.getSample(offset + zeroCrossingOffset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
+                scanLocation += 1
+                currentLength += 1
+            End While
+            While Math.Floor(wave.getSample(offset + zeroCrossingOffset + scanLocation, True)) <= args.trigger And scanLocation < maxScanLength
+                scanLocation += 1
+            End While
+            lengths.Add(currentLength)
+        End While
+        If lengths.Count <> 0 Then postiveLengthScanning = points(lengths.IndexOf(lengths.Max))
+    End Function
+
+    Function autoTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
+        autoTrigger = 0
+        Dim firstScan As Long = 0
+        Dim low As Integer = 0
+        Dim max As Integer = 0
+        Dim peaks As New List(Of Integer)
+        While firstScan < maxScanLength
+            If Math.Floor(wave.getSample(offset + firstScan, True)) < low Then
+                low = Math.Floor(wave.getSample(offset + firstScan, True))
+            End If
+            If Math.Floor(wave.getSample(offset + firstScan, True)) > max Then
+                max = Math.Floor(wave.getSample(offset + firstScan, True))
+            End If
+            firstScan += 1
+        End While
+        Dim middle As Integer = Math.Floor((max + low) / 2)
+        While Math.Floor(wave.getSample(offset + autoTrigger, True)) > middle And autoTrigger < maxScanLength 'postive
+            autoTrigger += 1
+        End While
+        While Math.Floor(wave.getSample(offset + autoTrigger, True)) <= middle And autoTrigger < maxScanLength 'negative
+            autoTrigger += 1
+        End While
+    End Function
 End Module
