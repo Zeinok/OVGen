@@ -1,3 +1,7 @@
+2017/11/26 0.0.6.0
++ Added two algorithms: Postive Length, Auto Trigger
+* Stops stderr Reader Background worker on cancel.
+
 2017/11/25 0.0.5.1
 * Fix config file is not saved after editing commandline
 

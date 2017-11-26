@@ -470,7 +470,11 @@ Public Class MainForm
             prog.message = stderrStrBuild.ToString()
             OscilloscopeBackgroundWorker.ReportProgress(i, prog)
             If OscilloscopeBackgroundWorker.CancellationPending Then
+                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Stopping!"))
                 If convertVideo And Not NoFileWriting Then ffmpegProc.Kill()
+                If BackgroundWorkerStdErrReader.IsBusy Then
+                    BackgroundWorkerStdErrReader.CancelAsync()
+                End If
                 prog = New Progress(Nothing, 0, 0)
                 prog.canceled = True
                 OscilloscopeBackgroundWorker.ReportProgress(0, prog)
@@ -478,7 +482,7 @@ Public Class MainForm
                 Exit While
             End If
         End While
-        If convertVideo And Not NoFileWriting Then
+        If convertVideo And Not NoFileWriting And Not OscilloscopeBackgroundWorker.CancellationPending Then
             stdin.Close()
             Do Until ffmpegProc.HasExited
             Loop
