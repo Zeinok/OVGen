@@ -1,7 +1,7 @@
 ﻿Module TriggeringAlgorithms
     Public Const UseZeroCrossing As Byte = 0
     Public Const UsePeakSpeedScanning As Byte = 1
-    Public Const UsePostiveLengthScanning As Byte = 2
+    Public Const UsePositiveLengthScanning As Byte = 2
     Public Const UseAutoTrigger As Byte = 3
     Function zeroCrossingTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         Dim args As channelOptions = wave.extraArguments
@@ -69,9 +69,9 @@
         peakSpeedScanning = middlePoint
     End Function
 
-    Function postiveLengthScanning(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
+    Function positiveLengthScanning(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         Dim args As channelOptions = wave.extraArguments
-        postiveLengthScanning = 0
+        positiveLengthScanning = 0
         Dim scanLocation As Long = 0
 
         Dim points As New List(Of Long)
@@ -90,7 +90,7 @@
             End While
             lengths.Add(currentLength)
         End While
-        If lengths.Count <> 0 Then postiveLengthScanning = points(lengths.IndexOf(lengths.Max))
+        If lengths.Count <> 0 Then positiveLengthScanning = points(lengths.IndexOf(lengths.Max))
     End Function
 
     Function autoTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
