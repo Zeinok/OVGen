@@ -318,14 +318,14 @@ Public Class MainForm
             If wave(z).rawSample.Length / wave(z).channels > sampleLength Then sampleLength = wave(z).rawSample.Length / wave(z).channels
         Next
         If Not allFilesLoaded Then
-            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress(Nothing, 0, 0, "Failed to load file(s), see log."))
+            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to load file(s)."))
             Exit Sub
         End If
         If My.Computer.FileSystem.FileExists(masterAudioFile) Then 'use master audio's sample length
             Dim master As New WAV(masterAudioFile)
             sampleLength = master.rawSample.Length / master.channels
         End If
-        OscilloscopeBackgroundWorker.ReportProgress(0, New Progress(Nothing, 0, 0, "All file loaded."))
+        OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("All file loaded."))
         Debug.WriteLine("Done loading waves.")
         fpsTimer = Now
         Debug.WriteLine(sampleLength)
@@ -482,6 +482,7 @@ Public Class MainForm
                 Exit While
             End If
         End While
+        wavePen.Color = Color.White 'reset color on end
         If convertVideo And Not NoFileWriting And Not OscilloscopeBackgroundWorker.CancellationPending Then
             stdin.Close()
             Do Until ffmpegProc.HasExited
@@ -566,7 +567,7 @@ Public Class MainForm
 
     Private Sub OscilloscopeBackgroundWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles OscilloscopeBackgroundWorker.RunWorkerCompleted
         Dim elapsedTime As TimeSpan = Now - startTime
-        TextBoxLog.AppendText("Total time spent: " & elapsedTime.ToString())
+        TextBoxLog.AppendText("Total time spent: " & elapsedTime.ToString() & vbCrLf)
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         If TaskbarManager.Instance.TabbedThumbnail.IsThumbnailPreviewAdded(thumbnail) Then
             TaskbarManager.Instance.TabbedThumbnail.RemoveThumbnailPreview(thumbnail)
@@ -636,6 +637,7 @@ Public Class MainForm
         If Not ListBoxFiles.SelectedIndex < 0 Then
             currentChannelToBeSet = ListBoxFiles.SelectedItem
             ChannelConfigForm.ShowDialog()
+            previewLayout()
         End If
     End Sub
 
@@ -643,6 +645,7 @@ Public Class MainForm
         If ListBoxFiles.Items.Count <> 0 Then
             currentChannelToBeSet = ""
             ChannelConfigForm.ShowDialog()
+            previewLayout()
         End If
     End Sub
 
@@ -657,7 +660,6 @@ Public Class MainForm
             Dim maxChannelPerColumn As Integer = Math.Ceiling(channels / col)
             Dim channelWidth As Integer = canvasSize.Width / col
             Dim channelHeight As Integer = canvasSize.Height / maxChannelPerColumn
-            'If bitDepth = 16 Then samplesPerFrame *= 2
             Dim channelOffset(channels - 1) As Point
             If CheckBoxGrid.Checked Then 'draw grid
                 For x As Integer = 1 To col - 1
@@ -680,7 +682,8 @@ Public Class MainForm
                 End If
                 Dim filename As String = IO.Path.GetFileName(ListBoxFiles.Items(c))
                 Dim channelColor As Color = optionsMap(ListBoxFiles.Items(c)).waveColor
-                g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(channelColor), x, y)
+                g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(optionsMap(ListBoxFiles.Items(c)).waveColor), x, y)
+
             Next
         End If
 
@@ -697,6 +700,7 @@ Public Class MainForm
         If Not ListBoxFiles.SelectedIndex < 0 Then
             currentChannelToBeSet = ListBoxFiles.SelectedItem
             ChannelConfigForm.ShowDialog()
+            previewLayout()
         End If
     End Sub
 
