@@ -1,3 +1,6 @@
+2017/12/2 0.0.6.1
++ Make length scanning can scan both positive or/and negative
+
 2017/11/26 0.0.6.0
 + Added two algorithms: Postive Length, Auto Trigger
 * Stops stderr Reader Background worker on cancel.
