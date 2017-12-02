@@ -433,7 +433,11 @@ Public Class MainForm
                     Case TriggeringAlgorithms.UsePeakSpeedScanning
                         triggerOffset = TriggeringAlgorithms.peakSpeedScanning(wave(c), i, sampleRate / 25)
                     Case TriggeringAlgorithms.UsePositiveLengthScanning
-                        triggerOffset = TriggeringAlgorithms.positiveLengthScanning(wave(c), i, sampleRate / 50)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate / 50, True, False)
+                    Case TriggeringAlgorithms.UseNegativeLengthScanning
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate / 50, False, True)
+                    Case TriggeringAlgorithms.UseCrossingLengthScanning
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate / 50, True, True)
                     Case TriggeringAlgorithms.UseAutoTrigger
                         triggerOffset = TriggeringAlgorithms.autoTrigger(wave(c), i, sampleRate / 50)
                 End Select

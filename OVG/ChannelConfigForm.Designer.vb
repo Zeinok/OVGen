@@ -48,7 +48,7 @@ Partial Class ChannelConfigForm
         '
         Me.ComboBoxAlgorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxAlgorithm.FormattingEnabled = True
-        Me.ComboBoxAlgorithm.Items.AddRange(New Object() {"Zero-Crossing", "Peak Speed", "Positive Length", "Auto Trigger"})
+        Me.ComboBoxAlgorithm.Items.AddRange(New Object() {"Zero-Crossing", "Peak Speed", "Positive Length", "Negative Length", "Crossing Length", "Auto Trigger", "No Trigger"})
         Me.ComboBoxAlgorithm.Location = New System.Drawing.Point(9, 37)
         Me.ComboBoxAlgorithm.Margin = New System.Windows.Forms.Padding(2)
         Me.ComboBoxAlgorithm.Name = "ComboBoxAlgorithm"

@@ -2,7 +2,9 @@
     Public Const UseZeroCrossing As Byte = 0
     Public Const UsePeakSpeedScanning As Byte = 1
     Public Const UsePositiveLengthScanning As Byte = 2
-    Public Const UseAutoTrigger As Byte = 3
+    Public Const UseNegativeLengthScanning As Byte = 3
+    Public Const UseCrossingLengthScanning As Byte = 4
+    Public Const UseAutoTrigger As Byte = 5
     Function zeroCrossingTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         Dim args As channelOptions = wave.extraArguments
         zeroCrossingTrigger = 0
@@ -69,28 +71,30 @@
         peakSpeedScanning = middlePoint
     End Function
 
-    Function positiveLengthScanning(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
+    Function lengthScanning(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long, ByVal scanPositive As Boolean, ByVal scanNegative As Boolean) As Long
         Dim args As channelOptions = wave.extraArguments
-        positiveLengthScanning = 0
+        lengthScanning = 0
         Dim scanLocation As Long = 0
-
-        Dim points As New List(Of Long)
-        Dim lengths As New List(Of Long)
+        Dim triggerPoint As Long = 0
+        Dim maxLength As Long = 0
         Dim zeroCrossingOffset As Long = zeroCrossingTrigger(wave, offset, maxScanLength)
         'zeroCrossingOffset = 0
         While scanLocation < maxScanLength
             Dim currentLength As Long = 0
-            points.Add(zeroCrossingOffset + scanLocation)
+            triggerPoint = scanLocation
             While Math.Floor(wave.getSample(offset + zeroCrossingOffset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
                 scanLocation += 1
-                currentLength += 1
+                If scanPositive Then currentLength += 1
             End While
             While Math.Floor(wave.getSample(offset + zeroCrossingOffset + scanLocation, True)) <= args.trigger And scanLocation < maxScanLength
                 scanLocation += 1
+                If scanNegative Then currentLength += 1
             End While
-            lengths.Add(currentLength)
+            If currentLength > maxLength Then
+                maxLength = currentLength
+                lengthScanning = zeroCrossingOffset + triggerPoint
+            End If
         End While
-        If lengths.Count <> 0 Then positiveLengthScanning = points(lengths.IndexOf(lengths.Max))
     End Function
 
     Function autoTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
