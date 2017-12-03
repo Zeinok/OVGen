@@ -547,7 +547,7 @@ Public Class MainForm
                 timeLeftSecond = (prog.TotalFrame - prog.CurrentFrame) / averageFPS
             End If
             Dim timeLeft As New TimeSpan(0, 0, timeLeftSecond)
-            LabelStatus.Text = String.Format("{0}% {1}/{2}, {3:N1} FPS , Time left: {4}", Math.Ceiling(prog.CurrentFrame / prog.TotalFrame * 100), prog.CurrentFrame, prog.TotalFrame, realFPS, timeLeft.ToString())
+            LabelStatus.Text = String.Format("{0:P1} {1}/{2}, {3:N1} FPS , Time left: {4}", prog.CurrentFrame / prog.TotalFrame, prog.CurrentFrame, prog.TotalFrame, realFPS, timeLeft.ToString())
             frames += 1
             'realFPS = frames
             'Debug.WriteLine((TimeOfDay - fpsTimer).TotalMilliseconds)
