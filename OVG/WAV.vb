@@ -99,7 +99,7 @@ Public Class WAV
                 End If
                 Dim value As Double = BitConverter.ToInt16({rawSample(index), rawSample(index + 1)}, 0) / 258 * amplify
                 For i As Integer = 2 To channels
-                    value = value + BitConverter.ToInt16({rawSample(index + i), rawSample(index + 1 + i)}, 0) / 258 * amplify
+                    value += BitConverter.ToInt16({rawSample(index + i), rawSample(index + 1 + i)}, 0) / 258 * amplify
                     value /= 2
                 Next
                 If signed Then
@@ -131,7 +131,7 @@ Public Class WAV
                 End If
                 Dim value As Double = (rawSample(index) - 128) * amplify
                 For i As Integer = 2 To channels
-                    value = value + (rawSample(index) - 128) * amplify
+                    value += (rawSample(index) - 128) * amplify
                     value /= 2
                 Next
                 If signed Then
