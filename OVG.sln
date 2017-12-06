@@ -1,20 +1,31 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Basic Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OVG", "OVG\OVG.vbproj", "{A118E1D2-7CE0-45F7-8C68-83F1BC3CA89D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A118E1D2-7CE0-45F7-8C68-83F1BC3CA89D}.Debug|x64.ActiveCfg = Debug|x64
+		{A118E1D2-7CE0-45F7-8C68-83F1BC3CA89D}.Debug|x64.Build.0 = Debug|x64
 		{A118E1D2-7CE0-45F7-8C68-83F1BC3CA89D}.Debug|x86.ActiveCfg = Debug|x86
 		{A118E1D2-7CE0-45F7-8C68-83F1BC3CA89D}.Debug|x86.Build.0 = Debug|x86
+		{A118E1D2-7CE0-45F7-8C68-83F1BC3CA89D}.Release|x64.ActiveCfg = Release|x64
+		{A118E1D2-7CE0-45F7-8C68-83F1BC3CA89D}.Release|x64.Build.0 = Release|x64
 		{A118E1D2-7CE0-45F7-8C68-83F1BC3CA89D}.Release|x86.ActiveCfg = Release|x86
 		{A118E1D2-7CE0-45F7-8C68-83F1BC3CA89D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52C49835-90DA-4C23-BDBF-0BAB3838D581}
 	EndGlobalSection
 EndGlobal
