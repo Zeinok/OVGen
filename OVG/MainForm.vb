@@ -42,7 +42,6 @@ Public Class MainForm
     Dim ffmpegPath As String = ""
 
     '===GUI..etc.
-    Dim hidpi As New Windows.Shell.TaskbarItemInfo 'causes hidpi support :/
     Dim formStarted As Boolean = False
     Dim thumbnail As Microsoft.WindowsAPICodePack.Taskbar.TabbedThumbnail
     Dim originalFormSize As Size
@@ -155,10 +154,6 @@ Public Class MainForm
             arg.outputFile = outputLocation
             outputLocation = TextBoxOutputLocation.Text
             outputDirectory = ""
-
-            If Not TaskbarManager.Instance.TabbedThumbnail.IsThumbnailPreviewAdded(thumbnail) Then
-                TaskbarManager.Instance.TabbedThumbnail.AddThumbnailPreview(thumbnail)
-            End If
             drawGrid = CheckBoxGrid.Checked
             useAnalogOscilloscopeStyle = CheckBoxCRT.Checked
             If useAnalogOscilloscopeStyle Then
@@ -228,9 +223,6 @@ Public Class MainForm
             ButtonControl.Text = "Cancel"
             ButtonControl.Update()
         Else
-            If TaskbarManager.Instance.TabbedThumbnail.IsThumbnailPreviewAdded(thumbnail) Then
-                TaskbarManager.Instance.TabbedThumbnail.RemoveThumbnailPreview(thumbnail)
-            End If
             OscilloscopeBackgroundWorker.CancelAsync()
             ButtonControl.Text = "Start"
         End If
@@ -573,9 +565,6 @@ Public Class MainForm
         Dim elapsedTime As TimeSpan = Now - startTime
         TextBoxLog.AppendText("Total time spent: " & elapsedTime.ToString() & vbCrLf)
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
-        If TaskbarManager.Instance.TabbedThumbnail.IsThumbnailPreviewAdded(thumbnail) Then
-            TaskbarManager.Instance.TabbedThumbnail.RemoveThumbnailPreview(thumbnail)
-        End If
         GroupBoxOptions.Enabled = True
         LabelStatus.Text = "Finished."
         ButtonControl.Text = "Start"
