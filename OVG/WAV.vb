@@ -16,14 +16,14 @@ Public Class WAV
     Private sampleBegin As UInt32
     Public rawSample As Byte()
 
-    Sub New(ByVal filename As String)
+    Sub New(ByVal filename As String, Optional ByVal checkHeadersOnly As Boolean = False)
         Dim offset As UInt32 = 0
-        stream = New System.IO.FileStream(filename, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.Read)
+        Stream = New System.IO.FileStream(filename, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.Read)
         Dim buffer4(3) As Byte
         Dim buffer2(1) As Byte
         offset += Stream.Read(buffer4, 0, 4)
         If Encoding.ASCII.GetString(buffer4) <> "RIFF" Then
-            Dim ex As New System.Exception("Bad header at " & stream.Position & ", expected ""RIFF""")
+            Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""RIFF""")
             Throw ex
         End If
         Dim chunkSize As UInt32
@@ -31,17 +31,17 @@ Public Class WAV
         chunkSize = BitConverter.ToUInt32(buffer4, 0)
         offset += Stream.Read(buffer4, 0, 4)
         If Encoding.ASCII.GetString(buffer4) <> "WAVE" Then
-            Dim ex As New System.Exception("Bad header at " & stream.Position & ", expected ""WAVE"".")
+            Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""WAVE"".")
             Throw ex
         End If
         offset += Stream.Read(buffer4, 0, 4)
         If Encoding.ASCII.GetString(buffer4) <> "fmt " Then
-            Dim ex As New System.Exception("Bad header at " & stream.Position & ", expected ""fmt "".")
+            Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""fmt "".")
             Throw ex
         End If
         offset += Stream.Read(buffer4, 0, 4)
         If BitConverter.ToUInt32(buffer4, 0) <> 16 Then
-            Dim ex As New System.Exception("Bad header at " & stream.Position & ", expected ""16"".")
+            Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""16"".")
             Throw ex
         End If
         offset += Stream.Read(buffer2, 0, 2)
@@ -64,9 +64,13 @@ Public Class WAV
             Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""data"".")
             Throw ex
         End If
-        offset += stream.Read(buffer4, 0, 4)
+        offset += Stream.Read(buffer4, 0, 4)
         sampleLength = BitConverter.ToUInt32(buffer4, 0) / channels
         sampleBegin = Stream.Position
+        If checkHeadersOnly Then
+            Stream.Close()
+            Exit Sub
+        End If
         Stream.Seek(offset, IO.SeekOrigin.Begin)
         Dim remainBytes As UInt32 = Stream.Length - offset
         rawSample = New Byte(Stream.Length - offset - 1) {}

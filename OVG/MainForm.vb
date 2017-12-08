@@ -309,13 +309,18 @@ Public Class MainForm
             wave(z).timeScale = extraArg.timeScale
             If wave(z).rawSample.Length / wave(z).channels > sampleLength Then sampleLength = wave(z).rawSample.Length / wave(z).channels
         Next
+        If My.Computer.FileSystem.FileExists(masterAudioFile) Then 'use master audio's sample length
+            Try
+                Dim master As New WAV(masterAudioFile, True)
+                sampleLength = master.sampleLength / master.channels
+            Catch ex As Exception
+                allFilesLoaded = False
+                failedFiles.Add(masterAudioFile, ex.Message)
+            End Try
+        End If
         If Not allFilesLoaded Then
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to load file(s)."))
             Exit Sub
-        End If
-        If My.Computer.FileSystem.FileExists(masterAudioFile) Then 'use master audio's sample length
-            Dim master As New WAV(masterAudioFile)
-            sampleLength = master.rawSample.Length / master.channels
         End If
         OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("All file loaded."))
         Debug.WriteLine("Done loading waves.")
@@ -576,7 +581,7 @@ Public Class MainForm
             Next
             Exit Sub
         End If
-
+        GC.Collect()
     End Sub
 
     Private Sub ButtonAdd_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonAdd.Click
