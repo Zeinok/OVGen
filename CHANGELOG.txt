@@ -1,3 +1,6 @@
+2017/12/8 0.0.6.3
+* Catch exception on parsing master audio
+
 2017/12/6 0.0.6.2
 * Mix channel on getting sample
 

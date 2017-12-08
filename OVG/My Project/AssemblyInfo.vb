@@ -18,7 +18,7 @@ Imports System.Runtime.InteropServices
 <Assembly: ComVisible(False)>
 
 '下列 GUID 為專案公開 (Expose) 至 COM 時所要使用的 typelib ID
-<Assembly: Guid("4236aaa3-cac1-4217-b574-49580eb8dfb3")> 
+<Assembly: Guid("4236aaa3-cac1-4217-b574-49580eb8dfb3")>
 
 ' 組件的版本資訊是由下列四項值構成:
 '
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' 指定為預設值:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("0.0.6.2")> 
-<Assembly: AssemblyFileVersion("0.0.6.2")> 
+<Assembly: AssemblyVersion("0.0.6.3")>
+<Assembly: AssemblyFileVersion("0.0.6.3")>
