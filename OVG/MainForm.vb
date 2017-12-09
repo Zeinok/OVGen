@@ -2,6 +2,7 @@
 Public Class MainForm
 
     'Public timeScale As Double = 0.025
+    Dim configFileLocation As String = Environment.CurrentDirectory & "\OVG.ini"
     Dim fpsTimer As Date
     Dim frames As ULong
     Dim realFPS As Double
@@ -101,50 +102,52 @@ Public Class MainForm
     End Function
 
     Private Sub writeConfig()
-        Dim configWriter As IO.StreamWriter = My.Computer.FileSystem.OpenTextFileWriter("config.ini", False)
-        configWriter.WriteLine(ffmpegPath)
-        If Not FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio Then
-            configWriter.WriteLine(FFmpegCommandLineJoinAudio)
-        Else
-            configWriter.WriteLine()
-        End If
-        If Not FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence Then
-            configWriter.WriteLine(FFmpegCommandLineSilence)
-        Else
-            configWriter.WriteLine()
-        End If
-        configWriter.WriteLine(CheckBoxSmooth.Checked)
-        configWriter.WriteLine(NumericUpDownFrameRate.Value)
-        configWriter.WriteLine(CheckBoxVideo.Checked)
-        configWriter.WriteLine(NumericUpDownColumn.Value)
-        configWriter.WriteLine(CheckBoxCRT.Checked)
-        configWriter.WriteLine(CheckBoxGrid.Checked)
-        configWriter.WriteLine(ComboBoxCanvasSize.Text)
-        configWriter.WriteLine(ComboBoxFlowDirection.SelectedIndex)
-        configWriter.Close()
+        Dim conf As New OVGconfig
+        conf.General.SmoothLine = CheckBoxSmooth.Checked
+        conf.General.Framerate = NumericUpDownFrameRate.Value
+        conf.General.ConvertVideo = CheckBoxVideo.Checked
+        conf.General.CRTStyledRender = CheckBoxCRT.Checked
+        conf.General.DrawGrid = CheckBoxGrid.Checked
+        conf.General.CanvasSize = ComboBoxCanvasSize.Text
+        conf.General.FlowDirection = ComboBoxFlowDirection.SelectedIndex
+        conf.FFmpeg.BinaryLocation = ffmpegPath.Trim()
+        conf.FFmpeg.JoinAudioCommandLine = FFmpegCommandLineJoinAudio.Trim()
+        If FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio Then conf.FFmpeg.JoinAudioCommandLine = ""
+        conf.FFmpeg.SilenceCommandLine = FFmpegCommandLineSilence.Trim()
+        If FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence Then conf.FFmpeg.SilenceCommandLine = ""
+        Dim xml As New Xml.Serialization.XmlSerializer(conf.GetType())
+        Try
+            Dim fs As New IO.FileStream("config.xml", IO.FileMode.Create)
+            xml.Serialize(fs, conf)
+            fs.Close()
+        Catch ex As Exception
+        End Try
     End Sub
 
     Private Sub loadConfig()
-        If My.Computer.FileSystem.FileExists("config.ini") Then
-            Dim configReader As IO.StreamReader = My.Computer.FileSystem.OpenTextFileReader("config.ini")
+        If My.Computer.FileSystem.FileExists("config.xml") Then
+            Dim conf As New OVGconfig
+            Dim xml As New Xml.Serialization.XmlSerializer(conf.GetType())
             Try
-                ffmpegPath = configReader.ReadLine()
-                FFmpegCommandLineJoinAudio = configReader.ReadLine()
-                FFmpegCommandLineSilence = configReader.ReadLine()
-                If FFmpegCommandLineJoinAudio = "" Then FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio
-                If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
-                CheckBoxSmooth.Checked = configReader.ReadLine()
-                NumericUpDownFrameRate.Value = configReader.ReadLine()
-                CheckBoxVideo.Checked = configReader.ReadLine()
-                NumericUpDownColumn.Value = configReader.ReadLine()
-                CheckBoxCRT.Checked = configReader.ReadLine()
-                CheckBoxGrid.Checked = configReader.ReadLine()
-                ComboBoxCanvasSize.Text = configReader.ReadLine()
-                ComboBoxFlowDirection.SelectedIndex = configReader.ReadLine()
+                Dim fs As New IO.FileStream("config.xml", IO.FileMode.Open)
+                conf = xml.Deserialize(fs)
+                fs.Close()
             Catch ex As Exception
                 TextBoxLog.AppendText("Error occured while loading config:" & ex.Message & vbCrLf)
+                Exit Sub
             End Try
-            configReader.Close()
+            CheckBoxSmooth.Checked = conf.General.SmoothLine
+            NumericUpDownFrameRate.Value = conf.General.Framerate
+            CheckBoxVideo.Checked = conf.General.ConvertVideo
+            CheckBoxCRT.Checked = conf.General.CRTStyledRender
+            CheckBoxGrid.Checked = conf.General.DrawGrid
+            ComboBoxCanvasSize.Text = conf.General.CanvasSize
+            ComboBoxFlowDirection.SelectedIndex = conf.General.FlowDirection
+            ffmpegPath = conf.FFmpeg.BinaryLocation
+            FFmpegCommandLineJoinAudio = conf.FFmpeg.JoinAudioCommandLine
+            If FFmpegCommandLineJoinAudio = "" Then FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio
+            FFmpegCommandLineSilence = conf.FFmpeg.SilenceCommandLine
+            If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
         End If
     End Sub
 
