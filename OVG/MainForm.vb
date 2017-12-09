@@ -412,14 +412,6 @@ Public Class MainForm
             Dim g As Graphics = Graphics.FromImage(bmp)
             g.Clear(bgColor)
             If smoothLine Then g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
-            If drawGrid Then
-                For x As Integer = 1 To col - 1
-                    g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
-                Next
-                For y As Integer = 1 To maxChannelPerColumn - 1
-                    g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
-                Next
-            End If
             For c As Byte = 0 To channels - 1 'for each channel
                 Dim channelArg As channelOptions = wave(c).extraArguments
                 Dim triggerOffset As Long = 0
@@ -442,13 +434,20 @@ Public Class MainForm
                 'draw
                 drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), sampleRate, channelArg.timeScale, i, triggerOffset)
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
-
                 'and also read stderr
                 If convertVideo And Not NoFileWriting Then
                     'stderrStrBuild.AppendLine(stderr.ReadLine())
                 End If
             Next
-
+            If drawGrid Then 'draw grid
+                g.Clip = New Region()
+                For x As Integer = 1 To col - 1
+                    g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+                Next
+                For y As Integer = 1 To maxChannelPerColumn - 1
+                    g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+                Next
+            End If
 
             i += samplesPerFrame
             Dim ok As Boolean = False
@@ -517,6 +516,7 @@ Public Class MainForm
             End If
         Next
         wavePen.Color = args.waveColor
+        g.Clip = New Region(rect)
         g.DrawLines(wavePen, points.ToArray())
     End Sub
 
