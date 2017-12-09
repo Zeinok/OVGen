@@ -43,7 +43,6 @@ Public Class MainForm
 
     '===GUI..etc.
     Dim formStarted As Boolean = False
-    Dim thumbnail As Microsoft.WindowsAPICodePack.Taskbar.TabbedThumbnail
     Dim originalFormSize As Size
     Dim originalTextBoxLogHeight As Integer
 
@@ -53,39 +52,29 @@ Public Class MainForm
             Me.MinimumSize = Me.Size
         End If
         formStarted = True
-        thumbnail = New Microsoft.WindowsAPICodePack.Taskbar.TabbedThumbnail(Me.Handle, PictureBoxOutput)
-        thumbnail.Title = Me.Text
-
     End Sub
 
     Private Sub MainForm_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         If OscilloscopeBackgroundWorker.IsBusy Then
-            If OscilloscopeBackgroundWorker.IsBusy Then
-                Dim r As DialogResult = MsgBox("Do you want to stop the worker?", MsgBoxStyle.Question + MsgBoxStyle.YesNo)
-                If r = Windows.Forms.DialogResult.Yes Then
-                    ButtonControl_Click(Nothing, Nothing)
-                Else
-                    e.Cancel = True
-                End If
+            Dim r As DialogResult = MsgBox("Do you want to stop the worker?", MsgBoxStyle.Question + MsgBoxStyle.YesNo)
+            If r = Windows.Forms.DialogResult.Yes Then
+                ButtonControl_Click(Nothing, Nothing)
             Else
-                MsgBox("Please wait while encoding the video.", MsgBoxStyle.Critical)
                 e.Cancel = True
+                Exit Sub
             End If
         End If
     End Sub
+
+    Private Sub MainForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        writeConfig()
+    End Sub
+
     Private Sub MainForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         SetStyle(ControlStyles.AllPaintingInWmPaint, True)
         SetStyle(ControlStyles.DoubleBuffer, True)
         SetStyle(ControlStyles.UserPaint, True)
-        If My.Computer.FileSystem.FileExists("config.ini") Then
-            Dim configReader As IO.StreamReader = My.Computer.FileSystem.OpenTextFileReader("config.ini")
-            ffmpegPath = configReader.ReadLine()
-            FFmpegCommandLineJoinAudio = configReader.ReadLine()
-            FFmpegCommandLineSilence = configReader.ReadLine()
-            If FFmpegCommandLineJoinAudio = "" Then FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio
-            If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
-            configReader.Close()
-        End If
+        loadConfig()
         NumericUpDownFrameRate.Value = frameRate
         outputDirectory = IO.Path.GetTempPath() & "OVG-" & randStr(5)
         If Not CheckBoxVideo.Checked Then
@@ -124,8 +113,41 @@ Public Class MainForm
         Else
             configWriter.WriteLine()
         End If
+        configWriter.WriteLine(CheckBoxSmooth.Checked)
+        configWriter.WriteLine(NumericUpDownFrameRate.Value)
+        configWriter.WriteLine(CheckBoxVideo.Checked)
+        configWriter.WriteLine(NumericUpDownColumn.Value)
+        configWriter.WriteLine(CheckBoxCRT.Checked)
+        configWriter.WriteLine(CheckBoxGrid.Checked)
+        configWriter.WriteLine(ComboBoxCanvasSize.Text)
+        configWriter.WriteLine(ComboBoxFlowDirection.SelectedIndex)
         configWriter.Close()
     End Sub
+
+    Private Sub loadConfig()
+        If My.Computer.FileSystem.FileExists("config.ini") Then
+            Dim configReader As IO.StreamReader = My.Computer.FileSystem.OpenTextFileReader("config.ini")
+            Try
+                ffmpegPath = configReader.ReadLine()
+                FFmpegCommandLineJoinAudio = configReader.ReadLine()
+                FFmpegCommandLineSilence = configReader.ReadLine()
+                If FFmpegCommandLineJoinAudio = "" Then FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio
+                If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
+                CheckBoxSmooth.Checked = configReader.ReadLine()
+                NumericUpDownFrameRate.Value = configReader.ReadLine()
+                CheckBoxVideo.Checked = configReader.ReadLine()
+                NumericUpDownColumn.Value = configReader.ReadLine()
+                CheckBoxCRT.Checked = configReader.ReadLine()
+                CheckBoxGrid.Checked = configReader.ReadLine()
+                ComboBoxCanvasSize.Text = configReader.ReadLine()
+                ComboBoxFlowDirection.SelectedIndex = configReader.ReadLine()
+            Catch ex As Exception
+                TextBoxLog.AppendText("Error occured while loading config:" & ex.Message & vbCrLf)
+            End Try
+            configReader.Close()
+        End If
+    End Sub
+
     Private Sub ButtonControl_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonControl.Click
 
 
@@ -537,7 +559,6 @@ Public Class MainForm
                         ok = False
                     End Try
                 Loop Until ok = True
-                thumbnail.InvalidatePreview()
             End If
             Dim timeLeftSecond As ULong = 0
             If averageFPS <> 0 Then
