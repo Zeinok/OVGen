@@ -1,3 +1,7 @@
+2017/12/9 0.0.6.4
+* Clip region on drawing wave
++ OVG now loads and saves last used settings
+
 2017/12/8 0.0.6.3
 * Catch exception on parsing master audio
 
