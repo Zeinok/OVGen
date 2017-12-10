@@ -136,6 +136,11 @@ Public Class MainForm
                 TextBoxLog.AppendText("Error occured while loading config:" & ex.Message & vbCrLf)
                 Exit Sub
             End Try
+            ffmpegPath = conf.FFmpeg.BinaryLocation
+            FFmpegCommandLineJoinAudio = conf.FFmpeg.JoinAudioCommandLine
+            If FFmpegCommandLineJoinAudio = "" Then FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio
+            FFmpegCommandLineSilence = conf.FFmpeg.SilenceCommandLine
+            If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
             CheckBoxSmooth.Checked = conf.General.SmoothLine
             NumericUpDownFrameRate.Value = conf.General.Framerate
             CheckBoxVideo.Checked = conf.General.ConvertVideo
@@ -143,11 +148,6 @@ Public Class MainForm
             CheckBoxGrid.Checked = conf.General.DrawGrid
             ComboBoxCanvasSize.Text = conf.General.CanvasSize
             ComboBoxFlowDirection.SelectedIndex = conf.General.FlowDirection
-            ffmpegPath = conf.FFmpeg.BinaryLocation
-            FFmpegCommandLineJoinAudio = conf.FFmpeg.JoinAudioCommandLine
-            If FFmpegCommandLineJoinAudio = "" Then FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio
-            FFmpegCommandLineSilence = conf.FFmpeg.SilenceCommandLine
-            If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
         End If
     End Sub
 
@@ -543,6 +543,10 @@ Public Class MainForm
         wavePen.Color = args.waveColor
         g.Clip = New Region(rect)
         g.DrawLines(wavePen, points.ToArray())
+        If args.label <> "" Then
+            Dim bru As New SolidBrush(args.labelColor)
+            g.DrawString(args.label, args.labelFont, bru, rect)
+        End If
     End Sub
 
     Private Sub OscilloscopeBackgroundWorker_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles OscilloscopeBackgroundWorker.ProgressChanged
@@ -692,6 +696,7 @@ Public Class MainForm
                 Next
             End If
             For c As Integer = 0 To channels - 1
+                Dim currentChannel As channelOptions = optionsMap(ListBoxFiles.Items(c))
                 Dim x, y, currentColumn, currentRow As Integer
                 If channelFlowDirection = FlowDirection.LeftToRight Then
                     currentRow = (c - (c Mod col)) / col
@@ -704,7 +709,11 @@ Public Class MainForm
                 End If
                 Dim filename As String = IO.Path.GetFileName(ListBoxFiles.Items(c))
                 Dim channelColor As Color = optionsMap(ListBoxFiles.Items(c)).waveColor
-                g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(optionsMap(ListBoxFiles.Items(c)).waveColor), x, y)
+                If currentChannel.label <> "" Then
+                    g.DrawString(currentChannel.label, currentChannel.labelFont, New SolidBrush(currentChannel.labelColor), New Rectangle(x, y, channelWidth, channelHeight))
+                Else
+                    g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(currentChannel.waveColor), New Rectangle(x, y, channelWidth, channelHeight))
+                End If
 
             Next
         End If

@@ -32,16 +32,21 @@ Partial Class ChannelConfigForm
         Me.LabelTimeScale = New System.Windows.Forms.Label()
         Me.ButtonOK = New System.Windows.Forms.Button()
         Me.ButtonCancel = New System.Windows.Forms.Button()
+        Me.TextBoxLabel = New System.Windows.Forms.TextBox()
+        Me.ButtonFont = New System.Windows.Forms.Button()
+        Me.LabelChannelLabel = New System.Windows.Forms.Label()
+        Me.ButtonFontColor = New System.Windows.Forms.Button()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'ButtonColor
         '
-        Me.ButtonColor.Location = New System.Drawing.Point(9, 10)
+        Me.ButtonColor.Location = New System.Drawing.Point(11, 57)
         Me.ButtonColor.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonColor.Name = "ButtonColor"
-        Me.ButtonColor.Size = New System.Drawing.Size(144, 23)
-        Me.ButtonColor.TabIndex = 0
-        Me.ButtonColor.Text = "Set Color"
+        Me.ButtonColor.Size = New System.Drawing.Size(253, 26)
+        Me.ButtonColor.TabIndex = 3
+        Me.ButtonColor.Text = "Set Wave Color"
         Me.ButtonColor.UseVisualStyleBackColor = True
         '
         'ComboBoxAlgorithm
@@ -49,94 +54,142 @@ Partial Class ChannelConfigForm
         Me.ComboBoxAlgorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxAlgorithm.FormattingEnabled = True
         Me.ComboBoxAlgorithm.Items.AddRange(New Object() {"Zero-Crossing", "Peak Speed", "Positive Length", "Negative Length", "Crossing Length", "Auto Trigger", "No Trigger"})
-        Me.ComboBoxAlgorithm.Location = New System.Drawing.Point(9, 37)
+        Me.ComboBoxAlgorithm.Location = New System.Drawing.Point(87, 87)
         Me.ComboBoxAlgorithm.Margin = New System.Windows.Forms.Padding(2)
         Me.ComboBoxAlgorithm.Name = "ComboBoxAlgorithm"
-        Me.ComboBoxAlgorithm.Size = New System.Drawing.Size(144, 23)
-        Me.ComboBoxAlgorithm.TabIndex = 1
+        Me.ComboBoxAlgorithm.Size = New System.Drawing.Size(177, 23)
+        Me.ComboBoxAlgorithm.TabIndex = 4
         '
         'TextBoxTimeScale
         '
-        Me.TextBoxTimeScale.Location = New System.Drawing.Point(85, 64)
+        Me.TextBoxTimeScale.Location = New System.Drawing.Point(88, 119)
         Me.TextBoxTimeScale.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxTimeScale.Name = "TextBoxTimeScale"
         Me.TextBoxTimeScale.Size = New System.Drawing.Size(33, 25)
-        Me.TextBoxTimeScale.TabIndex = 3
+        Me.TextBoxTimeScale.TabIndex = 6
         '
         'LabelMS
         '
         Me.LabelMS.AutoSize = True
-        Me.LabelMS.Location = New System.Drawing.Point(131, 66)
+        Me.LabelMS.Location = New System.Drawing.Point(134, 121)
         Me.LabelMS.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelMS.Name = "LabelMS"
         Me.LabelMS.Size = New System.Drawing.Size(23, 15)
-        Me.LabelMS.TabIndex = 4
+        Me.LabelMS.TabIndex = 7
         Me.LabelMS.Text = "ms"
         '
         'LabelAmplify
         '
         Me.LabelAmplify.AutoSize = True
-        Me.LabelAmplify.Location = New System.Drawing.Point(9, 91)
+        Me.LabelAmplify.Location = New System.Drawing.Point(14, 148)
         Me.LabelAmplify.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelAmplify.Name = "LabelAmplify"
         Me.LabelAmplify.Size = New System.Drawing.Size(59, 15)
-        Me.LabelAmplify.TabIndex = 5
+        Me.LabelAmplify.TabIndex = 8
         Me.LabelAmplify.Text = "Amplify:"
         '
         'TextBoxAmplify
         '
-        Me.TextBoxAmplify.Location = New System.Drawing.Point(71, 91)
+        Me.TextBoxAmplify.Location = New System.Drawing.Point(76, 148)
         Me.TextBoxAmplify.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxAmplify.Name = "TextBoxAmplify"
         Me.TextBoxAmplify.Size = New System.Drawing.Size(50, 25)
-        Me.TextBoxAmplify.TabIndex = 6
+        Me.TextBoxAmplify.TabIndex = 9
         '
         'LabelX
         '
         Me.LabelX.AutoSize = True
-        Me.LabelX.Location = New System.Drawing.Point(125, 94)
+        Me.LabelX.Location = New System.Drawing.Point(130, 151)
         Me.LabelX.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelX.Name = "LabelX"
         Me.LabelX.Size = New System.Drawing.Size(14, 15)
-        Me.LabelX.TabIndex = 7
+        Me.LabelX.TabIndex = 10
         Me.LabelX.Text = "x"
         '
         'LabelTimeScale
         '
         Me.LabelTimeScale.AutoSize = True
-        Me.LabelTimeScale.Location = New System.Drawing.Point(9, 66)
+        Me.LabelTimeScale.Location = New System.Drawing.Point(12, 121)
         Me.LabelTimeScale.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelTimeScale.Name = "LabelTimeScale"
         Me.LabelTimeScale.Size = New System.Drawing.Size(72, 15)
-        Me.LabelTimeScale.TabIndex = 2
+        Me.LabelTimeScale.TabIndex = 5
         Me.LabelTimeScale.Text = "Time scale:"
         '
         'ButtonOK
         '
-        Me.ButtonOK.Location = New System.Drawing.Point(38, 120)
+        Me.ButtonOK.Location = New System.Drawing.Point(110, 177)
         Me.ButtonOK.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonOK.Name = "ButtonOK"
-        Me.ButtonOK.Size = New System.Drawing.Size(56, 25)
-        Me.ButtonOK.TabIndex = 9
+        Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
+        Me.ButtonOK.TabIndex = 11
         Me.ButtonOK.Text = "OK"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
         'ButtonCancel
         '
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonCancel.Location = New System.Drawing.Point(98, 120)
+        Me.ButtonCancel.Location = New System.Drawing.Point(189, 177)
         Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonCancel.Name = "ButtonCancel"
-        Me.ButtonCancel.Size = New System.Drawing.Size(56, 25)
-        Me.ButtonCancel.TabIndex = 10
+        Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
+        Me.ButtonCancel.TabIndex = 12
         Me.ButtonCancel.Text = "Cancel"
         Me.ButtonCancel.UseVisualStyleBackColor = True
+        '
+        'TextBoxLabel
+        '
+        Me.TextBoxLabel.Location = New System.Drawing.Point(12, 27)
+        Me.TextBoxLabel.Name = "TextBoxLabel"
+        Me.TextBoxLabel.Size = New System.Drawing.Size(140, 25)
+        Me.TextBoxLabel.TabIndex = 1
+        '
+        'ButtonFont
+        '
+        Me.ButtonFont.Location = New System.Drawing.Point(158, 27)
+        Me.ButtonFont.Name = "ButtonFont"
+        Me.ButtonFont.Size = New System.Drawing.Size(50, 25)
+        Me.ButtonFont.TabIndex = 2
+        Me.ButtonFont.Text = "Font"
+        Me.ButtonFont.UseVisualStyleBackColor = True
+        '
+        'LabelChannelLabel
+        '
+        Me.LabelChannelLabel.AutoSize = True
+        Me.LabelChannelLabel.Location = New System.Drawing.Point(12, 9)
+        Me.LabelChannelLabel.Name = "LabelChannelLabel"
+        Me.LabelChannelLabel.Size = New System.Drawing.Size(93, 15)
+        Me.LabelChannelLabel.TabIndex = 0
+        Me.LabelChannelLabel.Text = "Channel Label:"
+        '
+        'ButtonFontColor
+        '
+        Me.ButtonFontColor.Location = New System.Drawing.Point(214, 27)
+        Me.ButtonFontColor.Name = "ButtonFontColor"
+        Me.ButtonFontColor.Size = New System.Drawing.Size(50, 25)
+        Me.ButtonFontColor.TabIndex = 13
+        Me.ButtonFontColor.Text = "Color"
+        Me.ButtonFontColor.UseVisualStyleBackColor = True
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(12, 90)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(70, 15)
+        Me.Label1.TabIndex = 14
+        Me.Label1.Text = "Algorithm:"
         '
         'ChannelConfigForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(164, 155)
+        Me.ClientSize = New System.Drawing.Size(272, 208)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.ButtonFontColor)
+        Me.Controls.Add(Me.LabelChannelLabel)
+        Me.Controls.Add(Me.ButtonFont)
+        Me.Controls.Add(Me.TextBoxLabel)
         Me.Controls.Add(Me.ButtonCancel)
         Me.Controls.Add(Me.ButtonOK)
         Me.Controls.Add(Me.LabelTimeScale)
@@ -170,4 +223,9 @@ Partial Class ChannelConfigForm
     Friend WithEvents LabelTimeScale As System.Windows.Forms.Label
     Friend WithEvents ButtonOK As System.Windows.Forms.Button
     Friend WithEvents ButtonCancel As System.Windows.Forms.Button
+    Friend WithEvents TextBoxLabel As TextBox
+    Friend WithEvents ButtonFont As Button
+    Friend WithEvents LabelChannelLabel As Label
+    Friend WithEvents ButtonFontColor As Button
+    Friend WithEvents Label1 As Label
 End Class

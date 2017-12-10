@@ -44,5 +44,7 @@ Public Class channelOptions
     Public amplify As Single = 1
     Public trigger As Integer = 0
     Public algorithm As Byte = TriggeringAlgorithms.UsePeakSpeedScanning
-
+    Public label As String
+    Public labelFont As Font = New Font(SystemFonts.MenuFont.FontFamily, 24)
+    Public labelColor As Color = Color.White
 End Class
