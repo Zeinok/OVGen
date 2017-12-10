@@ -54,15 +54,15 @@ Partial Class ChannelConfigForm
         Me.ComboBoxAlgorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxAlgorithm.FormattingEnabled = True
         Me.ComboBoxAlgorithm.Items.AddRange(New Object() {"Zero-Crossing", "Peak Speed", "Positive Length", "Negative Length", "Crossing Length", "Auto Trigger", "No Trigger"})
-        Me.ComboBoxAlgorithm.Location = New System.Drawing.Point(87, 87)
+        Me.ComboBoxAlgorithm.Location = New System.Drawing.Point(84, 87)
         Me.ComboBoxAlgorithm.Margin = New System.Windows.Forms.Padding(2)
         Me.ComboBoxAlgorithm.Name = "ComboBoxAlgorithm"
-        Me.ComboBoxAlgorithm.Size = New System.Drawing.Size(177, 23)
+        Me.ComboBoxAlgorithm.Size = New System.Drawing.Size(180, 23)
         Me.ComboBoxAlgorithm.TabIndex = 4
         '
         'TextBoxTimeScale
         '
-        Me.TextBoxTimeScale.Location = New System.Drawing.Point(88, 119)
+        Me.TextBoxTimeScale.Location = New System.Drawing.Point(81, 113)
         Me.TextBoxTimeScale.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxTimeScale.Name = "TextBoxTimeScale"
         Me.TextBoxTimeScale.Size = New System.Drawing.Size(33, 25)
@@ -71,7 +71,7 @@ Partial Class ChannelConfigForm
         'LabelMS
         '
         Me.LabelMS.AutoSize = True
-        Me.LabelMS.Location = New System.Drawing.Point(134, 121)
+        Me.LabelMS.Location = New System.Drawing.Point(118, 116)
         Me.LabelMS.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelMS.Name = "LabelMS"
         Me.LabelMS.Size = New System.Drawing.Size(23, 15)
@@ -81,7 +81,7 @@ Partial Class ChannelConfigForm
         'LabelAmplify
         '
         Me.LabelAmplify.AutoSize = True
-        Me.LabelAmplify.Location = New System.Drawing.Point(14, 148)
+        Me.LabelAmplify.Location = New System.Drawing.Point(12, 147)
         Me.LabelAmplify.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelAmplify.Name = "LabelAmplify"
         Me.LabelAmplify.Size = New System.Drawing.Size(59, 15)
@@ -90,7 +90,7 @@ Partial Class ChannelConfigForm
         '
         'TextBoxAmplify
         '
-        Me.TextBoxAmplify.Location = New System.Drawing.Point(76, 148)
+        Me.TextBoxAmplify.Location = New System.Drawing.Point(71, 143)
         Me.TextBoxAmplify.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxAmplify.Name = "TextBoxAmplify"
         Me.TextBoxAmplify.Size = New System.Drawing.Size(50, 25)
@@ -99,7 +99,7 @@ Partial Class ChannelConfigForm
         'LabelX
         '
         Me.LabelX.AutoSize = True
-        Me.LabelX.Location = New System.Drawing.Point(130, 151)
+        Me.LabelX.Location = New System.Drawing.Point(125, 147)
         Me.LabelX.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelX.Name = "LabelX"
         Me.LabelX.Size = New System.Drawing.Size(14, 15)
@@ -109,7 +109,7 @@ Partial Class ChannelConfigForm
         'LabelTimeScale
         '
         Me.LabelTimeScale.AutoSize = True
-        Me.LabelTimeScale.Location = New System.Drawing.Point(12, 121)
+        Me.LabelTimeScale.Location = New System.Drawing.Point(8, 116)
         Me.LabelTimeScale.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelTimeScale.Name = "LabelTimeScale"
         Me.LabelTimeScale.Size = New System.Drawing.Size(72, 15)
@@ -146,7 +146,7 @@ Partial Class ChannelConfigForm
         '
         'ButtonFont
         '
-        Me.ButtonFont.Location = New System.Drawing.Point(158, 27)
+        Me.ButtonFont.Location = New System.Drawing.Point(158, 24)
         Me.ButtonFont.Name = "ButtonFont"
         Me.ButtonFont.Size = New System.Drawing.Size(50, 25)
         Me.ButtonFont.TabIndex = 2
@@ -164,7 +164,7 @@ Partial Class ChannelConfigForm
         '
         'ButtonFontColor
         '
-        Me.ButtonFontColor.Location = New System.Drawing.Point(214, 27)
+        Me.ButtonFontColor.Location = New System.Drawing.Point(214, 24)
         Me.ButtonFontColor.Name = "ButtonFontColor"
         Me.ButtonFontColor.Size = New System.Drawing.Size(50, 25)
         Me.ButtonFontColor.TabIndex = 13
@@ -174,7 +174,7 @@ Partial Class ChannelConfigForm
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 90)
+        Me.Label1.Location = New System.Drawing.Point(8, 90)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(70, 15)
         Me.Label1.TabIndex = 14
