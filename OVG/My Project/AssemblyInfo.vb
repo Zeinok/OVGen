@@ -11,8 +11,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("Oscilloscope View Generator")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("")> 
-<Assembly: AssemblyCopyright("© 2017 Zeinok")> 
+<Assembly: AssemblyProduct("")>
+<Assembly: AssemblyCopyright("© Zeinok")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' 指定為預設值:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("0.0.7.0")>
-<Assembly: AssemblyFileVersion("0.0.7.0")>
+<Assembly: AssemblyVersion("0.0.7.1")>
+<Assembly: AssemblyFileVersion("0.0.7.1")>
