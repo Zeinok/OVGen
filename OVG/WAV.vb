@@ -9,6 +9,7 @@ Public Class WAV
     Public blockAlign As UInt16
     Public bitDepth As UInt16
     Public sampleLength As UInt32
+    Public totalSamples As UInt32
     Public timeScale As Double
     Public extraArguments As Object
     Public amplify As Single = 1
@@ -65,16 +66,16 @@ Public Class WAV
             Throw ex
         End If
         offset += Stream.Read(buffer4, 0, 4)
-        sampleLength = BitConverter.ToUInt32(buffer4, 0) / channels
+        totalSamples = BitConverter.ToUInt32(buffer4, 0)
+        sampleLength = totalSamples / channels
         sampleBegin = Stream.Position
         If checkHeadersOnly Then
             Stream.Close()
             Exit Sub
         End If
         Stream.Seek(offset, IO.SeekOrigin.Begin)
-        Dim remainBytes As UInt32 = Stream.Length - offset
-        rawSample = New Byte(Stream.Length - offset - 1) {}
-        Stream.Read(rawSample, 0, remainBytes)
+        rawSample = New Byte(totalSamples - 1) {}
+        Stream.Read(rawSample, 0, totalSamples)
         Stream.Seek(sampleBegin, IO.SeekOrigin.Begin)
         Stream.Close()
     End Sub

@@ -307,12 +307,11 @@ Public Class MainForm
         OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Start."))
         startTime = Now
         canceledByUser = False
-        If Not My.Computer.FileSystem.DirectoryExists(outputDirectory) And Not NoFileWriting Then
+        If Not My.Computer.FileSystem.DirectoryExists(outputDirectory) And Not NoFileWriting And Not convertVideo Then
             My.Computer.FileSystem.CreateDirectory(outputDirectory)
+            Debug.WriteLine(outputDirectory)
         End If
-        Debug.WriteLine(outputDirectory)
         Dim args As WorkerArguments = e.Argument
-        Dim reader(args.files.Length - 1) As IO.StreamReader
         Dim wave(args.files.Length - 1) As WAV
         Dim data As New List(Of Byte())
         Dim col As Byte = args.columns
@@ -338,6 +337,7 @@ Public Class MainForm
             Try
                 Dim master As New WAV(masterAudioFile, True)
                 sampleLength = master.sampleLength / master.channels
+                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Using length of master audio."))
             Catch ex As Exception
                 allFilesLoaded = False
                 failedFiles.Add(masterAudioFile, ex.Message)
@@ -360,9 +360,6 @@ Public Class MainForm
         Dim maxChannelPerColumn As Integer = Math.Ceiling(channels / col)
         Dim channelWidth As Integer = canvasSize.Width / col
         Dim channelHeight As Integer = canvasSize.Height / maxChannelPerColumn
-
-
-        'If bitDepth = 16 Then samplesPerFrame *= 2
         Dim channelSize As New Size(channelWidth, channelHeight)
         Dim channelOffset(channels - 1) As Point
         For c As Integer = 0 To channels - 1
@@ -393,12 +390,16 @@ Public Class MainForm
         ffmpeg.UseShellExecute = False
         If args.joinAudio Then
             'join audio
-            Dim arguments As String = "-y " & FFmpegCommandLineJoinAudio.Replace("{img}", "-").Replace("{framerate}", args.FPS).Replace("{audio}", SafeFilename(args.audioFile)).Replace("{outfile}", SafeFilename(args.outputFile))
-            ffmpeg.Arguments = arguments
+            ffmpeg.Arguments = "-y " & FFmpegCommandLineJoinAudio _
+                                       .Replace("{img}", "-") _
+                                       .Replace("{framerate}", args.FPS) _
+                                       .Replace("{audio}", SafeFilename(args.audioFile)) _
+                                       .Replace("{outfile}", SafeFilename(args.outputFile))
         Else
             'silence
-            Dim arguments As String = "-y " & FFmpegCommandLineSilence.Replace("{img}", "-").Replace("{framerate}", args.FPS).Replace("{outfile}", SafeFilename(args.outputFile))
-            ffmpeg.Arguments = arguments
+            ffmpeg.Arguments = "-y " & FFmpegCommandLineSilence.Replace("{img}", "-") _
+                                       .Replace("{framerate}", args.FPS) _
+                                       .Replace("{outfile}", SafeFilename(args.outputFile))
         End If
         Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
         Dim ffmpegProc As Process = Nothing
@@ -406,9 +407,10 @@ Public Class MainForm
         Dim stdin As IO.BufferedStream = Nothing
         If convertVideo And Not NoFileWriting Then
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Starting FFmpeg."))
+            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Run: " & ffmpeg.FileName & " " & ffmpeg.Arguments))
             ffmpegProc = Process.Start(ffmpeg)
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Started FFmpeg."))
-            stdin = New IO.BufferedStream(ffmpegProc.StandardInput.BaseStream, 16384)
+            stdin = ffmpegProc.StandardInput.BaseStream
             stderr = ffmpegProc.StandardError
             FFmpegstderr = ffmpegProc.StandardError
         End If
@@ -417,9 +419,16 @@ Public Class MainForm
 
 
         'start work
+        OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Begin rendering."))
+        Dim overlayBmp As New Bitmap(canvasSize.Width, canvasSize.Height)
+        Dim overlayNeeded As Boolean = False
+        For c As Byte = 0 To channels - 1
+            Dim g As Graphics = Graphics.FromImage(overlayBmp)
+            Dim channelArg As channelOptions = wave(c).extraArguments
+            If channelArg.label <> "" Then overlayNeeded = True
+            g.DrawString(channelArg.label, channelArg.labelFont, New SolidBrush(channelArg.labelColor), New Rectangle(channelOffset(c), channelSize))
+        Next
         While i < sampleLength - 1
-
-            Dim stderrStrBuild As New System.Text.StringBuilder
             Dim bmp As Bitmap = Nothing
             Dim createdBmp As Boolean = False
             Dim bmpCreateCount As Integer = 0
@@ -427,7 +436,6 @@ Public Class MainForm
                 Try
                     bmpCreateCount += 1
                     bmp = New Bitmap(canvasSize.Width, canvasSize.Height)
-
                     createdBmp = True
                 Catch ex As Exception
                     createdBmp = False
@@ -460,12 +468,9 @@ Public Class MainForm
                 drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), sampleRate, channelArg.timeScale, i, triggerOffset)
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
                 'and also read stderr
-                If convertVideo And Not NoFileWriting Then
-                    'stderrStrBuild.AppendLine(stderr.ReadLine())
-                End If
             Next
             If drawGrid Then 'draw grid
-                g.Clip = New Region()
+                g.Clip = New Region() 'reset region
                 For x As Integer = 1 To col - 1
                     g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
                 Next
@@ -473,7 +478,9 @@ Public Class MainForm
                     g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
                 Next
             End If
-
+            If overlayNeeded Then
+                g.DrawImage(overlayBmp, 0, 0)
+            End If
             i += samplesPerFrame
             Dim ok As Boolean = False
             Dim saveRetries As Integer = 0
@@ -492,11 +499,12 @@ Public Class MainForm
                 End Try
             Loop Until ok = True Or saveRetries > 10
             Dim prog As New Progress(bmp, i \ samplesPerFrame, totalFrame)
-            prog.message = stderrStrBuild.ToString()
             OscilloscopeBackgroundWorker.ReportProgress(i, prog)
             If OscilloscopeBackgroundWorker.CancellationPending Then
                 OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Stopping!"))
-                If convertVideo And Not NoFileWriting Then ffmpegProc.Kill()
+                If convertVideo And Not NoFileWriting Then
+                    ffmpegProc.Kill()
+                End If
                 If BackgroundWorkerStdErrReader.IsBusy Then
                     BackgroundWorkerStdErrReader.CancelAsync()
                 End If
@@ -543,10 +551,6 @@ Public Class MainForm
         wavePen.Color = args.waveColor
         g.Clip = New Region(rect)
         g.DrawLines(wavePen, points.ToArray())
-        If args.label <> "" Then
-            Dim bru As New SolidBrush(args.labelColor)
-            g.DrawString(args.label, args.labelFont, bru, rect)
-        End If
     End Sub
 
     Private Sub OscilloscopeBackgroundWorker_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles OscilloscopeBackgroundWorker.ProgressChanged
@@ -752,11 +756,6 @@ Public Class MainForm
                 LabelPreviewMode.Visible = False
             End If
         End If
-    End Sub
-
-    Private Sub ToolStripStatusLabelAbout_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ToolStripStatusLabelAbout.Click
-        'Process.Start("https://zeinok.blogspot.tw")
-
     End Sub
 
     Private Sub ToolStripStatusLabelAbout_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ToolStripStatusLabelAbout.MouseDown
