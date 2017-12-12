@@ -404,7 +404,7 @@ Public Class MainForm
         Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
         Dim ffmpegProc As Process = Nothing
         Dim stderr As IO.StreamReader = Nothing
-        Dim stdin As IO.BufferedStream = Nothing
+        Dim stdin As IO.FileStream = Nothing
         If convertVideo And Not NoFileWriting Then
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Starting FFmpeg."))
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Run: " & ffmpeg.FileName & " " & ffmpeg.Arguments))
