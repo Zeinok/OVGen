@@ -331,12 +331,12 @@ Public Class MainForm
             wave(z).extraArguments = extraArg
             wave(z).amplify = extraArg.amplify
             wave(z).timeScale = extraArg.timeScale
-            If wave(z).rawSample.Length / wave(z).channels > sampleLength Then sampleLength = wave(z).rawSample.Length / wave(z).channels
+            If wave(z).sampleLength > sampleLength Then sampleLength = wave(z).sampleLength
         Next
         If My.Computer.FileSystem.FileExists(masterAudioFile) Then 'use master audio's sample length
             Try
                 Dim master As New WAV(masterAudioFile, True)
-                sampleLength = master.sampleLength / master.channels
+                sampleLength = master.sampleLength
                 OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Using length of master audio."))
             Catch ex As Exception
                 allFilesLoaded = False
@@ -352,7 +352,6 @@ Public Class MainForm
         fpsTimer = Now
         Debug.WriteLine(sampleLength)
         Dim bitDepth As Integer = wave(0).bitDepth
-        If bitDepth = 16 Then sampleLength /= 2
         Debug.WriteLine(bitDepth)
         Dim channels As Byte = args.files.Length
         Dim sampleRate As Integer = wave(0).sampleRate
@@ -404,13 +403,13 @@ Public Class MainForm
         Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
         Dim ffmpegProc As Process = Nothing
         Dim stderr As IO.StreamReader = Nothing
-        Dim stdin As IO.FileStream = Nothing
+        Dim stdin As IO.BufferedStream = Nothing
         If convertVideo And Not NoFileWriting Then
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Starting FFmpeg."))
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Run: " & ffmpeg.FileName & " " & ffmpeg.Arguments))
             ffmpegProc = Process.Start(ffmpeg)
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Started FFmpeg."))
-            stdin = ffmpegProc.StandardInput.BaseStream
+            stdin = New IO.BufferedStream(ffmpegProc.StandardInput.BaseStream)
             stderr = ffmpegProc.StandardError
             FFmpegstderr = ffmpegProc.StandardError
         End If
@@ -517,6 +516,7 @@ Public Class MainForm
         End While
         wavePen.Color = Color.White 'reset color on end
         If convertVideo And Not NoFileWriting And Not OscilloscopeBackgroundWorker.CancellationPending Then
+            stdin.Flush()
             stdin.Close()
             Do Until ffmpegProc.HasExited
             Loop

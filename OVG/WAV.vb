@@ -68,6 +68,7 @@ Public Class WAV
         offset += Stream.Read(buffer4, 0, 4)
         totalSamples = BitConverter.ToUInt32(buffer4, 0)
         sampleLength = totalSamples / channels
+        If bitDepth = 16 Then sampleLength /= 2
         sampleBegin = Stream.Position
         If checkHeadersOnly Then
             Stream.Close()
