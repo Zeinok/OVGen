@@ -342,8 +342,7 @@ Public Class MainForm
                 sampleLength = master.sampleLength
                 OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Using length of master audio."))
             Catch ex As Exception
-                allFilesLoaded = False
-                failedFiles.Add(masterAudioFile, ex.Message)
+                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to parse master audio."))
             End Try
         End If
         If Not allFilesLoaded Then
@@ -406,13 +405,13 @@ Public Class MainForm
         Debug.WriteLine(ffmpeg.FileName & " " & ffmpeg.Arguments)
         Dim ffmpegProc As Process = Nothing
         Dim stderr As IO.StreamReader = Nothing
-        Dim stdin As IO.BufferedStream = Nothing
+        Dim stdin As IO.Stream = Nothing
         If convertVideo And Not NoFileWriting Then
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Starting FFmpeg."))
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Run: " & ffmpeg.FileName & " " & ffmpeg.Arguments))
             ffmpegProc = Process.Start(ffmpeg)
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Started FFmpeg."))
-            stdin = New IO.BufferedStream(ffmpegProc.StandardInput.BaseStream)
+            stdin = ffmpegProc.StandardInput.BaseStream
             stderr = ffmpegProc.StandardError
             FFmpegstderr = ffmpegProc.StandardError
         End If
@@ -546,13 +545,8 @@ Public Class MainForm
             If useAnalogOscilloscopeStyle Then
                 points.Add(New Point(x, y + analogOscilloscopeLineWidth))
                 Dim nextX As Integer = (i + 1 - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
-                'Dim nextY As Integer
-                'nextY = (258 - wave.getSample(i + 1, False)) / 260 * rect.Height + rect.Y
-                'Dim m As Double = (nextY - y) / (nextX - x)
                 If nextX - x > 1 And x >= 0 Then
                     For dx As ULong = x To nextX
-                        'Dim drawY As Integer = (dx - x) * m + y
-                        'drawY = Math.Ceiling(drawY)
                         points.Add(New Point(dx, y + analogOscilloscopeLineWidth))
                         points.Add(New Point(dx, y))
                     Next
