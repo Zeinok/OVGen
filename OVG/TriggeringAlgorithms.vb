@@ -1,10 +1,19 @@
 ﻿Module TriggeringAlgorithms
+    Public ReadOnly Algorithms As String() = {"Zero-Crossing",
+                                              "Peak Speed",
+                                              "Positive Length",
+                                              "Negative Length",
+                                              "Crossing Length",
+                                              "Max Voltage",
+                                              "Auto Trigger",
+                                              "No Trigger"}
     Public Const UseZeroCrossing As Byte = 0
     Public Const UsePeakSpeedScanning As Byte = 1
     Public Const UsePositiveLengthScanning As Byte = 2
     Public Const UseNegativeLengthScanning As Byte = 3
     Public Const UseCrossingLengthScanning As Byte = 4
-    Public Const UseAutoTrigger As Byte = 5
+    Public Const UseMaxVoltageScanning As Byte = 5
+    Public Const UseAutoTrigger As Byte = 6
     Function zeroCrossingTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         Dim args As channelOptions = wave.extraArguments
         zeroCrossingTrigger = 0
@@ -77,22 +86,44 @@
         Dim scanLocation As Long = 0
         Dim triggerPoint As Long = 0
         Dim maxLength As Long = 0
-        Dim zeroCrossingOffset As Long = zeroCrossingTrigger(wave, offset, maxScanLength)
-        'zeroCrossingOffset = 0
         While scanLocation < maxScanLength
             Dim currentLength As Long = 0
             triggerPoint = scanLocation
-            While Math.Floor(wave.getSample(offset + zeroCrossingOffset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
+            While Math.Floor(wave.getSample(offset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
                 scanLocation += 1
                 If scanPositive Then currentLength += 1
             End While
-            While Math.Floor(wave.getSample(offset + zeroCrossingOffset + scanLocation, True)) <= args.trigger And scanLocation < maxScanLength
+            While Math.Floor(wave.getSample(offset + scanLocation, True)) <= args.trigger And scanLocation < maxScanLength
                 scanLocation += 1
                 If scanNegative Then currentLength += 1
             End While
             If currentLength > maxLength Then
                 maxLength = currentLength
-                lengthScanning = zeroCrossingOffset + triggerPoint
+                lengthScanning = triggerPoint
+            End If
+        End While
+    End Function
+
+    Function maxVoltage(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
+        Dim args As channelOptions = wave.extraArguments
+        maxVoltage = 0
+        Dim scanLocation As Long = 0
+        Dim triggerPoint As Long = 0
+        Dim totalVoltage As Long = 0
+        While scanLocation < maxScanLength
+            Dim currentVoltage As Long = 0
+            triggerPoint = scanLocation
+            While Math.Floor(wave.getSample(offset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
+                scanLocation += 1
+                currentVoltage += wave.getSample(offset + scanLocation, True)
+            End While
+            While Math.Floor(wave.getSample(offset + scanLocation, True)) <= args.trigger And scanLocation < maxScanLength
+                scanLocation += 1
+                currentVoltage -= wave.getSample(offset + scanLocation, True)
+            End While
+            If currentVoltage > totalVoltage Then
+                totalVoltage = currentVoltage
+                maxVoltage = triggerPoint
             End If
         End While
     End Function

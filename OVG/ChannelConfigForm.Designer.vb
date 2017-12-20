@@ -36,7 +36,10 @@ Partial Class ChannelConfigForm
         Me.ButtonFont = New System.Windows.Forms.Button()
         Me.LabelChannelLabel = New System.Windows.Forms.Label()
         Me.ButtonFontColor = New System.Windows.Forms.Button()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.LabelAlgorithm = New System.Windows.Forms.Label()
+        Me.LabelScanTime = New System.Windows.Forms.Label()
+        Me.RadioButton1x = New System.Windows.Forms.RadioButton()
+        Me.RadioButton2x = New System.Windows.Forms.RadioButton()
         Me.SuspendLayout()
         '
         'ButtonColor
@@ -53,7 +56,6 @@ Partial Class ChannelConfigForm
         '
         Me.ComboBoxAlgorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxAlgorithm.FormattingEnabled = True
-        Me.ComboBoxAlgorithm.Items.AddRange(New Object() {"Zero-Crossing", "Peak Speed", "Positive Length", "Negative Length", "Crossing Length", "Auto Trigger", "No Trigger"})
         Me.ComboBoxAlgorithm.Location = New System.Drawing.Point(84, 87)
         Me.ComboBoxAlgorithm.Margin = New System.Windows.Forms.Padding(2)
         Me.ComboBoxAlgorithm.Name = "ComboBoxAlgorithm"
@@ -62,6 +64,7 @@ Partial Class ChannelConfigForm
         '
         'TextBoxTimeScale
         '
+        Me.TextBoxTimeScale.ImeMode = System.Windows.Forms.ImeMode.Off
         Me.TextBoxTimeScale.Location = New System.Drawing.Point(81, 113)
         Me.TextBoxTimeScale.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxTimeScale.Name = "TextBoxTimeScale"
@@ -90,6 +93,7 @@ Partial Class ChannelConfigForm
         '
         'TextBoxAmplify
         '
+        Me.TextBoxAmplify.ImeMode = System.Windows.Forms.ImeMode.Off
         Me.TextBoxAmplify.Location = New System.Drawing.Point(71, 143)
         Me.TextBoxAmplify.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxAmplify.Name = "TextBoxAmplify"
@@ -118,7 +122,7 @@ Partial Class ChannelConfigForm
         '
         'ButtonOK
         '
-        Me.ButtonOK.Location = New System.Drawing.Point(110, 177)
+        Me.ButtonOK.Location = New System.Drawing.Point(110, 197)
         Me.ButtonOK.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
@@ -129,7 +133,7 @@ Partial Class ChannelConfigForm
         'ButtonCancel
         '
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonCancel.Location = New System.Drawing.Point(189, 177)
+        Me.ButtonCancel.Location = New System.Drawing.Point(189, 197)
         Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
@@ -171,21 +175,56 @@ Partial Class ChannelConfigForm
         Me.ButtonFontColor.Text = "Color"
         Me.ButtonFontColor.UseVisualStyleBackColor = True
         '
-        'Label1
+        'LabelAlgorithm
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(8, 90)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(70, 15)
-        Me.Label1.TabIndex = 14
-        Me.Label1.Text = "Algorithm:"
+        Me.LabelAlgorithm.AutoSize = True
+        Me.LabelAlgorithm.Location = New System.Drawing.Point(8, 90)
+        Me.LabelAlgorithm.Name = "LabelAlgorithm"
+        Me.LabelAlgorithm.Size = New System.Drawing.Size(70, 15)
+        Me.LabelAlgorithm.TabIndex = 14
+        Me.LabelAlgorithm.Text = "Algorithm:"
+        '
+        'LabelScanTime
+        '
+        Me.LabelScanTime.AutoSize = True
+        Me.LabelScanTime.Location = New System.Drawing.Point(8, 175)
+        Me.LabelScanTime.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.LabelScanTime.Name = "LabelScanTime"
+        Me.LabelScanTime.Size = New System.Drawing.Size(102, 15)
+        Me.LabelScanTime.TabIndex = 15
+        Me.LabelScanTime.Text = "Max Scan Time:"
+        '
+        'RadioButton1x
+        '
+        Me.RadioButton1x.AutoSize = True
+        Me.RadioButton1x.Location = New System.Drawing.Point(115, 173)
+        Me.RadioButton1x.Name = "RadioButton1x"
+        Me.RadioButton1x.Size = New System.Drawing.Size(42, 19)
+        Me.RadioButton1x.TabIndex = 16
+        Me.RadioButton1x.TabStop = True
+        Me.RadioButton1x.Text = "1x"
+        Me.RadioButton1x.UseVisualStyleBackColor = True
+        '
+        'RadioButton2x
+        '
+        Me.RadioButton2x.AutoSize = True
+        Me.RadioButton2x.Location = New System.Drawing.Point(163, 173)
+        Me.RadioButton2x.Name = "RadioButton2x"
+        Me.RadioButton2x.Size = New System.Drawing.Size(42, 19)
+        Me.RadioButton2x.TabIndex = 17
+        Me.RadioButton2x.TabStop = True
+        Me.RadioButton2x.Text = "2x"
+        Me.RadioButton2x.UseVisualStyleBackColor = True
         '
         'ChannelConfigForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(272, 208)
-        Me.Controls.Add(Me.Label1)
+        Me.ClientSize = New System.Drawing.Size(272, 232)
+        Me.Controls.Add(Me.RadioButton2x)
+        Me.Controls.Add(Me.RadioButton1x)
+        Me.Controls.Add(Me.LabelScanTime)
+        Me.Controls.Add(Me.LabelAlgorithm)
         Me.Controls.Add(Me.ButtonFontColor)
         Me.Controls.Add(Me.LabelChannelLabel)
         Me.Controls.Add(Me.ButtonFont)
@@ -227,5 +266,8 @@ Partial Class ChannelConfigForm
     Friend WithEvents ButtonFont As Button
     Friend WithEvents LabelChannelLabel As Label
     Friend WithEvents ButtonFontColor As Button
-    Friend WithEvents Label1 As Label
+    Friend WithEvents LabelAlgorithm As Label
+    Friend WithEvents LabelScanTime As Label
+    Friend WithEvents RadioButton1x As RadioButton
+    Friend WithEvents RadioButton2x As RadioButton
 End Class

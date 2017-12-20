@@ -3,6 +3,8 @@
     Dim labelFont As Font
 
     Private Sub ChannelConfigForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ComboBoxAlgorithm.Items.Clear()
+        ComboBoxAlgorithm.Items.AddRange(TriggeringAlgorithms.Algorithms)
         If Not MainForm.currentChannelToBeSet = "" Then
             currentOptions = MainForm.optionsMap.Item(MainForm.currentChannelToBeSet)
         Else
@@ -15,6 +17,11 @@
         TextBoxLabel.Text = currentOptions.label
         labelFont = currentOptions.labelFont
         ButtonFontColor.BackColor = currentOptions.labelColor
+        If currentOptions.maxScan = 1 Then
+            RadioButton1x.Checked = True
+        Else
+            RadioButton2x.Checked = True
+        End If
     End Sub
 
     Private Sub ChannelConfigForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
@@ -73,6 +80,8 @@
             currentOptions.label = TextBoxLabel.Text
             currentOptions.labelFont = labelFont
             currentOptions.labelColor = ButtonFontColor.BackColor
+            currentOptions.maxScan = 1
+            If RadioButton2x.Checked Then currentOptions.maxScan = 2
         Else
             For Each key In MainForm.optionsMap.Keys
                 Dim currentChannel As channelOptions = MainForm.optionsMap.Item(key)
@@ -83,6 +92,8 @@
                 currentChannel.label = TextBoxLabel.Text
                 currentChannel.labelFont = labelFont
                 currentChannel.labelColor = ButtonFontColor.BackColor
+                currentChannel.maxScan = 1
+                If RadioButton2x.Checked Then currentChannel.maxScan = 2
             Next
         End If
         Me.DialogResult = Windows.Forms.DialogResult.OK

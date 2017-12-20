@@ -82,7 +82,7 @@ Public Class MainForm
             TextBoxOutputLocation.Text = outputDirectory
         End If
         LabelStatus.Text = ""
-        ComboBoxFlowDirection.SelectedIndex = 0
+        ButtonFlowDirection_Click(Nothing, Nothing)
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         originalTextBoxLogHeight = TextBoxLog.Height
     End Sub
@@ -109,7 +109,7 @@ Public Class MainForm
         conf.General.CRTStyledRender = CheckBoxCRT.Checked
         conf.General.DrawGrid = CheckBoxGrid.Checked
         conf.General.CanvasSize = ComboBoxCanvasSize.Text
-        conf.General.FlowDirection = ComboBoxFlowDirection.SelectedIndex
+        conf.General.FlowDirection = channelFlowDirection
         conf.FFmpeg.BinaryLocation = ffmpegPath.Trim()
         conf.FFmpeg.JoinAudioCommandLine = FFmpegCommandLineJoinAudio.Trim()
         If FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio Then conf.FFmpeg.JoinAudioCommandLine = ""
@@ -147,7 +147,8 @@ Public Class MainForm
             CheckBoxCRT.Checked = conf.General.CRTStyledRender
             CheckBoxGrid.Checked = conf.General.DrawGrid
             ComboBoxCanvasSize.Text = conf.General.CanvasSize
-            ComboBoxFlowDirection.SelectedIndex = conf.General.FlowDirection
+            channelFlowDirection = conf.General.FlowDirection
+            ButtonFlowDirection.Invalidate()
         End If
     End Sub
 
@@ -450,17 +451,19 @@ Public Class MainForm
                 'trigger
                 Select Case channelArg.algorithm
                     Case TriggeringAlgorithms.UseZeroCrossing
-                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(wave(c), i, sampleRate / 50)
+                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan)
                     Case TriggeringAlgorithms.UsePeakSpeedScanning
-                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(wave(c), i, sampleRate / 25)
+                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan)
                     Case TriggeringAlgorithms.UsePositiveLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate / 50, True, False)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan, True, False)
                     Case TriggeringAlgorithms.UseNegativeLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate / 50, False, True)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan, False, True)
                     Case TriggeringAlgorithms.UseCrossingLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate / 50, True, True)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan, True, True)
+                    Case TriggeringAlgorithms.UseMaxVoltageScanning
+                        triggerOffset = TriggeringAlgorithms.maxVoltage(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan)
                     Case TriggeringAlgorithms.UseAutoTrigger
-                        triggerOffset = TriggeringAlgorithms.autoTrigger(wave(c), i, sampleRate / 50)
+                        triggerOffset = TriggeringAlgorithms.autoTrigger(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan)
                 End Select
 
                 'draw
@@ -808,8 +811,21 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub ComboBoxFlowDirection_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBoxFlowDirection.SelectedIndexChanged
-        channelFlowDirection = ComboBoxFlowDirection.SelectedIndex
+    Private Sub ButtonFlowDirection_Click(sender As Object, e As EventArgs) Handles ButtonFlowDirection.Click
+        If channelFlowDirection = FlowDirection.LeftToRight Then
+            channelFlowDirection = FlowDirection.TopDown
+        Else
+            channelFlowDirection = FlowDirection.LeftToRight
+        End If
+        ButtonFlowDirection.Invalidate()
         previewLayout()
+    End Sub
+
+    Private Sub ButtonFlowDirection_Invalidated(sender As Object, e As InvalidateEventArgs) Handles ButtonFlowDirection.Invalidated
+        If channelFlowDirection = FlowDirection.LeftToRight Then
+            ButtonFlowDirection.Text = "Left to right"
+        Else
+            ButtonFlowDirection.Text = "Top to down"
+        End If
     End Sub
 End Class
