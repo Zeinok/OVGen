@@ -31,8 +31,8 @@ Public Class MainForm
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
     Dim FFmpegExitCode As Integer = 0
-    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-f image2pipe -r {framerate} -vcodec png -i {img} -i {audio} -acodec aac -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
-    Public Const DefaultFFmpegCommandLineSilence As String = "-f image2pipe -r {framerate} -vcodec png -i {img} -vcodec libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-f image2pipe -r {framerate} -c:v png -i {img} -i {audio} -c:a aac -b:a 384k -c:v libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineSilence As String = "-f image2pipe -r {framerate} -c:v png -i {img} -c:v libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
     Public FFmpegCommandLineJoinAudio As String = DefaultFFmpegCommandLineJoinAudio
     Public FFmpegCommandLineSilence As String = DefaultFFmpegCommandLineSilence
     Dim FFmpegRegex As New System.Text.RegularExpressions.Regex("frame=\s*(.+?)\s+fps=\s*(.+?)\s+")
@@ -104,6 +104,7 @@ Public Class MainForm
     Private Sub writeConfig()
         Dim conf As New OVGconfig
         conf.General.SmoothLine = CheckBoxSmooth.Checked
+        conf.General.DetailedDrawing = CheckBoxDetailedDrawing.Checked
         conf.General.Framerate = NumericUpDownFrameRate.Value
         conf.General.ConvertVideo = CheckBoxVideo.Checked
         conf.General.CRTStyledRender = CheckBoxCRT.Checked
@@ -142,6 +143,7 @@ Public Class MainForm
             FFmpegCommandLineSilence = conf.FFmpeg.SilenceCommandLine
             If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
             CheckBoxSmooth.Checked = conf.General.SmoothLine
+            CheckBoxDetailedDrawing.Checked = conf.General.DetailedDrawing
             NumericUpDownFrameRate.Value = conf.General.Framerate
             CheckBoxVideo.Checked = conf.General.ConvertVideo
             CheckBoxCRT.Checked = conf.General.CRTStyledRender
@@ -225,11 +227,11 @@ Public Class MainForm
             End If
             Debug.WriteLine(String.Format("Output directory:{0}", outputDirectory))
             frameRate = NumericUpDownFrameRate.Value
-            smoothLine = CheckBoxSmooth.Checked
+            arg.smoothLine = CheckBoxSmooth.Checked
             arg.FPS = NumericUpDownFrameRate.Value
             arg.noFileWriting = CheckBoxNoFileWriting.Checked
             arg.convertVideo = CheckBoxVideo.Checked
-
+            arg.detailedDrawing = CheckBoxDetailedDrawing.Checked
             arg.columns = NumericUpDownColumn.Value
             Dim fileArray(ListBoxFiles.Items.Count - 1) As String
             For i As Integer = 0 To fileArray.Length - 1
@@ -444,7 +446,7 @@ Public Class MainForm
             If bmpCreateCount > 3 Then Continue While
             Dim g As Graphics = Graphics.FromImage(bmp)
             g.Clear(bgColor)
-            If smoothLine Then g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+            If args.smoothLine Then g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
             For c As Byte = 0 To channels - 1 'for each channel
                 Dim channelArg As channelOptions = wave(c).extraArguments
                 Dim triggerOffset As Long = 0
@@ -467,7 +469,7 @@ Public Class MainForm
                 End Select
 
                 'draw
-                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), sampleRate, channelArg.timeScale, i, triggerOffset)
+                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), args.detailedDrawing, sampleRate, channelArg.timeScale, i, triggerOffset)
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
                 'and also read stderr
             Next
@@ -526,12 +528,18 @@ Public Class MainForm
             stderr.Close()
         End If
     End Sub
-    Private Sub drawWave(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal sampleRate As Long, ByVal timeScale As Double, ByVal offset As Long, ByVal triggerOffset As Long)
+    Private Sub drawWave(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal detailedDrawing As Boolean, ByVal sampleRate As Long, ByVal timeScale As Double, ByVal offset As Long, ByVal triggerOffset As Long)
         Dim args As channelOptions = wave.extraArguments
         Dim points As New List(Of Point)
         Dim triggerPoint As Long = offset + triggerOffset
+        Dim prevX As Integer = -1
         For i As Integer = triggerPoint - sampleRate * args.timeScale / 2 To triggerPoint + sampleRate * args.timeScale / 2 '+ sampleRate * timeScale
             Dim x As Integer = (i - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
+            If prevX = x And Not detailedDrawing Then
+                Continue For
+            Else
+                prevX = x
+            End If
             Dim y As Integer
             y = (258 - wave.getSample(i, False)) / 256 * rect.Height + rect.Y
             points.Add(New Point(x, y))

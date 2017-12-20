@@ -7,6 +7,7 @@
     End Sub
     Public Class GeneralSection
         Public SmoothLine As Boolean
+        Public DetailedDrawing As Boolean
         Public Framerate As Integer
         Public ConvertVideo As Boolean
         Public CRTStyledRender As Boolean

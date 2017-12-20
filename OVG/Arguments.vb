@@ -28,6 +28,8 @@ Public Class WorkerArguments
     Public joinAudio As Boolean
     Public audioFile As String
     Public canceled As Boolean = False
+    Public smoothLine As Boolean
+    Public detailedDrawing As Boolean
 End Class
 
 Public Class channelOptions
@@ -43,5 +45,5 @@ Public Class channelOptions
     Public label As String
     Public labelFont As Font = New Font(SystemFonts.MenuFont.FontFamily, 24)
     Public labelColor As Color = Color.White
-    Public maxScan As Byte = 2
+    Public maxScan As Byte = 1
 End Class

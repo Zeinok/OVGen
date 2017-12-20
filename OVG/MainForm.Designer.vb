@@ -31,6 +31,7 @@ Partial Class MainForm
         Me.ButtonControl = New System.Windows.Forms.Button()
         Me.CheckBoxShowOutput = New System.Windows.Forms.CheckBox()
         Me.GroupBoxOptions = New System.Windows.Forms.GroupBox()
+        Me.CheckBoxDetailedDrawing = New System.Windows.Forms.CheckBox()
         Me.ButtonFlowDirection = New System.Windows.Forms.Button()
         Me.LabelFlowDirecton = New System.Windows.Forms.Label()
         Me.LinkLabelCustomCommandLine = New System.Windows.Forms.LinkLabel()
@@ -135,6 +136,7 @@ Partial Class MainForm
         '
         'GroupBoxOptions
         '
+        Me.GroupBoxOptions.Controls.Add(Me.CheckBoxDetailedDrawing)
         Me.GroupBoxOptions.Controls.Add(Me.ButtonFlowDirection)
         Me.GroupBoxOptions.Controls.Add(Me.LabelFlowDirecton)
         Me.GroupBoxOptions.Controls.Add(Me.LinkLabelCustomCommandLine)
@@ -168,12 +170,22 @@ Partial Class MainForm
         Me.GroupBoxOptions.TabStop = False
         Me.GroupBoxOptions.Text = "Options"
         '
+        'CheckBoxDetailedDrawing
+        '
+        Me.CheckBoxDetailedDrawing.AutoSize = True
+        Me.CheckBoxDetailedDrawing.Location = New System.Drawing.Point(119, 48)
+        Me.CheckBoxDetailedDrawing.Name = "CheckBoxDetailedDrawing"
+        Me.CheckBoxDetailedDrawing.Size = New System.Drawing.Size(126, 19)
+        Me.CheckBoxDetailedDrawing.TabIndex = 2
+        Me.CheckBoxDetailedDrawing.Text = "Detailed drawing"
+        Me.CheckBoxDetailedDrawing.UseVisualStyleBackColor = True
+        '
         'ButtonFlowDirection
         '
         Me.ButtonFlowDirection.Location = New System.Drawing.Point(113, 276)
         Me.ButtonFlowDirection.Name = "ButtonFlowDirection"
         Me.ButtonFlowDirection.Size = New System.Drawing.Size(133, 26)
-        Me.ButtonFlowDirection.TabIndex = 24
+        Me.ButtonFlowDirection.TabIndex = 17
         Me.ButtonFlowDirection.Text = "FlowDirection"
         Me.ButtonFlowDirection.UseVisualStyleBackColor = True
         '
@@ -184,7 +196,7 @@ Partial Class MainForm
         Me.LabelFlowDirecton.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LabelFlowDirecton.Name = "LabelFlowDirecton"
         Me.LabelFlowDirecton.Size = New System.Drawing.Size(97, 15)
-        Me.LabelFlowDirecton.TabIndex = 22
+        Me.LabelFlowDirecton.TabIndex = 16
         Me.LabelFlowDirecton.Text = "Flow Direction:"
         '
         'LinkLabelCustomCommandLine
@@ -194,7 +206,7 @@ Partial Class MainForm
         Me.LinkLabelCustomCommandLine.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LinkLabelCustomCommandLine.Name = "LinkLabelCustomCommandLine"
         Me.LinkLabelCustomCommandLine.Size = New System.Drawing.Size(111, 15)
-        Me.LinkLabelCustomCommandLine.TabIndex = 5
+        Me.LinkLabelCustomCommandLine.TabIndex = 6
         Me.LinkLabelCustomCommandLine.TabStop = True
         Me.LinkLabelCustomCommandLine.Text = "Edit commandline"
         '
@@ -205,7 +217,7 @@ Partial Class MainForm
         Me.CheckBoxGrid.Margin = New System.Windows.Forms.Padding(4)
         Me.CheckBoxGrid.Name = "CheckBoxGrid"
         Me.CheckBoxGrid.Size = New System.Drawing.Size(55, 19)
-        Me.CheckBoxGrid.TabIndex = 12
+        Me.CheckBoxGrid.TabIndex = 13
         Me.CheckBoxGrid.Text = "Grid"
         Me.CheckBoxGrid.UseVisualStyleBackColor = True
         '
@@ -216,7 +228,7 @@ Partial Class MainForm
         Me.LabelCanvasSize.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LabelCanvasSize.Name = "LabelCanvasSize"
         Me.LabelCanvasSize.Size = New System.Drawing.Size(79, 15)
-        Me.LabelCanvasSize.TabIndex = 13
+        Me.LabelCanvasSize.TabIndex = 14
         Me.LabelCanvasSize.Text = "Canvas Size:"
         '
         'ComboBoxCanvasSize
@@ -227,7 +239,7 @@ Partial Class MainForm
         Me.ComboBoxCanvasSize.Margin = New System.Windows.Forms.Padding(4)
         Me.ComboBoxCanvasSize.Name = "ComboBoxCanvasSize"
         Me.ComboBoxCanvasSize.Size = New System.Drawing.Size(150, 23)
-        Me.ComboBoxCanvasSize.TabIndex = 14
+        Me.ComboBoxCanvasSize.TabIndex = 15
         Me.ComboBoxCanvasSize.Text = "1280x720"
         '
         'ButtonSetAll
@@ -236,7 +248,7 @@ Partial Class MainForm
         Me.ButtonSetAll.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonSetAll.Name = "ButtonSetAll"
         Me.ButtonSetAll.Size = New System.Drawing.Size(78, 30)
-        Me.ButtonSetAll.TabIndex = 21
+        Me.ButtonSetAll.TabIndex = 24
         Me.ButtonSetAll.Text = "Set All"
         Me.ButtonSetAll.UseVisualStyleBackColor = True
         '
@@ -247,7 +259,7 @@ Partial Class MainForm
         Me.CheckBoxCRT.Margin = New System.Windows.Forms.Padding(2)
         Me.CheckBoxCRT.Name = "CheckBoxCRT"
         Me.CheckBoxCRT.Size = New System.Drawing.Size(164, 19)
-        Me.CheckBoxCRT.TabIndex = 11
+        Me.CheckBoxCRT.TabIndex = 12
         Me.CheckBoxCRT.Text = "CRT Oscilloscope Style"
         Me.CheckBoxCRT.UseVisualStyleBackColor = True
         '
@@ -259,7 +271,7 @@ Partial Class MainForm
         Me.NumericUpDownLineWidth.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownLineWidth.Name = "NumericUpDownLineWidth"
         Me.NumericUpDownLineWidth.Size = New System.Drawing.Size(49, 25)
-        Me.NumericUpDownLineWidth.TabIndex = 10
+        Me.NumericUpDownLineWidth.TabIndex = 11
         Me.NumericUpDownLineWidth.Value = New Decimal(New Integer() {2, 0, 0, 0})
         '
         'CheckBoxNoFileWriting
@@ -284,7 +296,7 @@ Partial Class MainForm
         Me.LabelLineWidth.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelLineWidth.Name = "LabelLineWidth"
         Me.LabelLineWidth.Size = New System.Drawing.Size(76, 15)
-        Me.LabelLineWidth.TabIndex = 9
+        Me.LabelLineWidth.TabIndex = 10
         Me.LabelLineWidth.Text = "Line Width:"
         '
         'ListBoxFiles
@@ -296,7 +308,7 @@ Partial Class MainForm
         Me.ListBoxFiles.Margin = New System.Windows.Forms.Padding(2)
         Me.ListBoxFiles.Name = "ListBoxFiles"
         Me.ListBoxFiles.Size = New System.Drawing.Size(243, 184)
-        Me.ListBoxFiles.TabIndex = 15
+        Me.ListBoxFiles.TabIndex = 18
         '
         'ButtonOptions
         '
@@ -305,7 +317,7 @@ Partial Class MainForm
         Me.ButtonOptions.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonOptions.Name = "ButtonOptions"
         Me.ButtonOptions.Size = New System.Drawing.Size(28, 30)
-        Me.ButtonOptions.TabIndex = 20
+        Me.ButtonOptions.TabIndex = 23
         Me.ToolTips.SetToolTip(Me.ButtonOptions, "Channel config")
         Me.ButtonOptions.UseVisualStyleBackColor = True
         '
@@ -316,7 +328,7 @@ Partial Class MainForm
         Me.ButtonMoveDown.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonMoveDown.Name = "ButtonMoveDown"
         Me.ButtonMoveDown.Size = New System.Drawing.Size(28, 30)
-        Me.ButtonMoveDown.TabIndex = 19
+        Me.ButtonMoveDown.TabIndex = 22
         Me.ToolTips.SetToolTip(Me.ButtonMoveDown, "Move down")
         Me.ButtonMoveDown.UseVisualStyleBackColor = True
         '
@@ -327,7 +339,7 @@ Partial Class MainForm
         Me.ButtonMoveUp.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonMoveUp.Name = "ButtonMoveUp"
         Me.ButtonMoveUp.Size = New System.Drawing.Size(28, 30)
-        Me.ButtonMoveUp.TabIndex = 18
+        Me.ButtonMoveUp.TabIndex = 21
         Me.ToolTips.SetToolTip(Me.ButtonMoveUp, "Move up")
         Me.ButtonMoveUp.UseVisualStyleBackColor = True
         '
@@ -338,7 +350,7 @@ Partial Class MainForm
         Me.ButtonRemove.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonRemove.Name = "ButtonRemove"
         Me.ButtonRemove.Size = New System.Drawing.Size(28, 30)
-        Me.ButtonRemove.TabIndex = 17
+        Me.ButtonRemove.TabIndex = 20
         Me.ToolTips.SetToolTip(Me.ButtonRemove, "Remove file")
         Me.ButtonRemove.UseVisualStyleBackColor = True
         '
@@ -349,7 +361,7 @@ Partial Class MainForm
         Me.ButtonAdd.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonAdd.Name = "ButtonAdd"
         Me.ButtonAdd.Size = New System.Drawing.Size(28, 30)
-        Me.ButtonAdd.TabIndex = 16
+        Me.ButtonAdd.TabIndex = 19
         Me.ToolTips.SetToolTip(Me.ButtonAdd, "Add file")
         Me.ButtonAdd.UseVisualStyleBackColor = True
         '
@@ -360,7 +372,7 @@ Partial Class MainForm
         Me.NumericUpDownColumn.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownColumn.Name = "NumericUpDownColumn"
         Me.NumericUpDownColumn.Size = New System.Drawing.Size(48, 25)
-        Me.NumericUpDownColumn.TabIndex = 8
+        Me.NumericUpDownColumn.TabIndex = 9
         Me.ToolTips.SetToolTip(Me.NumericUpDownColumn, "Change column count")
         Me.NumericUpDownColumn.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
@@ -371,7 +383,7 @@ Partial Class MainForm
         Me.LabelColumn.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelColumn.Name = "LabelColumn"
         Me.LabelColumn.Size = New System.Drawing.Size(61, 15)
-        Me.LabelColumn.TabIndex = 7
+        Me.LabelColumn.TabIndex = 8
         Me.LabelColumn.Text = "Columns:"
         '
         'CheckBoxSmooth
@@ -393,7 +405,7 @@ Partial Class MainForm
         Me.ButtonAudio.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonAudio.Name = "ButtonAudio"
         Me.ButtonAudio.Size = New System.Drawing.Size(242, 22)
-        Me.ButtonAudio.TabIndex = 6
+        Me.ButtonAudio.TabIndex = 7
         Me.ButtonAudio.Text = "Master Audio"
         Me.ButtonAudio.UseVisualStyleBackColor = True
         '
@@ -404,7 +416,7 @@ Partial Class MainForm
         Me.CheckBoxVideo.Margin = New System.Windows.Forms.Padding(2)
         Me.CheckBoxVideo.Name = "CheckBoxVideo"
         Me.CheckBoxVideo.Size = New System.Drawing.Size(103, 19)
-        Me.CheckBoxVideo.TabIndex = 4
+        Me.CheckBoxVideo.TabIndex = 5
         Me.CheckBoxVideo.Text = "Output video"
         Me.ToolTips.SetToolTip(Me.CheckBoxVideo, "Auto convert frames to video after finished." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Requires FFmpeg.")
         Me.CheckBoxVideo.UseVisualStyleBackColor = True
@@ -417,7 +429,7 @@ Partial Class MainForm
         Me.NumericUpDownFrameRate.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownFrameRate.Name = "NumericUpDownFrameRate"
         Me.NumericUpDownFrameRate.Size = New System.Drawing.Size(48, 25)
-        Me.NumericUpDownFrameRate.TabIndex = 3
+        Me.NumericUpDownFrameRate.TabIndex = 4
         Me.NumericUpDownFrameRate.Value = New Decimal(New Integer() {60, 0, 0, 0})
         '
         'LabelFrameRate
@@ -427,7 +439,7 @@ Partial Class MainForm
         Me.LabelFrameRate.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelFrameRate.Name = "LabelFrameRate"
         Me.LabelFrameRate.Size = New System.Drawing.Size(68, 15)
-        Me.LabelFrameRate.TabIndex = 2
+        Me.LabelFrameRate.TabIndex = 3
         Me.LabelFrameRate.Text = "Framerate:"
         '
         'PictureBoxOutput
@@ -584,4 +596,5 @@ Partial Class MainForm
     Friend WithEvents BackgroundWorkerStdErrReader As System.ComponentModel.BackgroundWorker
     Friend WithEvents LabelFlowDirecton As System.Windows.Forms.Label
     Friend WithEvents ButtonFlowDirection As Button
+    Friend WithEvents CheckBoxDetailedDrawing As CheckBox
 End Class
