@@ -30,14 +30,15 @@ Public Class WorkerArguments
     Public canceled As Boolean = False
     Public smoothLine As Boolean
     Public detailedDrawing As Boolean
+    Public useAnalogOscilloscopeStyle As Boolean = False
+    Public analogOscilloscopeLineWidth As Byte = 4
+    Public drawGrid As Boolean
 End Class
 
 Public Class channelOptions
     'Public color As Color
     Public pen As Pen = MainForm.wavePen
     Public waveColor As Color = MainForm.wavePen.Color
-    Public useAnalogOscilloscopeStyle As Boolean = False
-    Public analogOscilloscopeLineWidth As Byte = 4
     Public timeScale As Double = 0.025
     Public amplify As Single = 1
     Public trigger As Integer = 0

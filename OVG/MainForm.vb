@@ -1,8 +1,8 @@
 ﻿Imports Microsoft.WindowsAPICodePack.Taskbar
 Public Class MainForm
 
-    'Public timeScale As Double = 0.025
     Dim configFileLocation As String = Environment.CurrentDirectory & "\OVG.ini"
+    '== FPS counter
     Dim fpsTimer As Date
     Dim frames As ULong
     Dim realFPS As Double
@@ -14,13 +14,7 @@ Public Class MainForm
     Dim canvasSize As New Size(1280, 720)
     Dim bgColor As Color = Color.Black
     Public wavePen As New Pen(Color.White, 2)
-    Dim useAnalogOscilloscopeStyle As Boolean = False
-    Dim analogOscilloscopeLineWidth As Integer = 4
-    Dim drawGrid As Boolean = False
-    Dim frameRate As UInt16 = 60
     Dim totalFrame As ULong
-    Dim smoothLine As Boolean = False
-    Dim triggerPos As Integer = 0
     Dim masterAudioFile As String = ""
     Dim outputLocation As String = ""
     Dim outputDirectory As String = ""
@@ -35,7 +29,6 @@ Public Class MainForm
     Public Const DefaultFFmpegCommandLineSilence As String = "-f image2pipe -r {framerate} -c:v png -i {img} -c:v libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
     Public FFmpegCommandLineJoinAudio As String = DefaultFFmpegCommandLineJoinAudio
     Public FFmpegCommandLineSilence As String = DefaultFFmpegCommandLineSilence
-    Dim FFmpegRegex As New System.Text.RegularExpressions.Regex("frame=\s*(.+?)\s+fps=\s*(.+?)\s+")
     Public FFmpegstderr As IO.StreamReader
     '===For file operation
     Const FileFilter As String = "WAVE File(*.wav)|*.wav"
@@ -76,7 +69,6 @@ Public Class MainForm
         SetStyle(ControlStyles.DoubleBuffer, True)
         SetStyle(ControlStyles.UserPaint, True)
         loadConfig()
-        NumericUpDownFrameRate.Value = frameRate
         outputDirectory = IO.Path.GetTempPath() & "OVG-" & randStr(5)
         If Not CheckBoxVideo.Checked Then
             TextBoxOutputLocation.Text = outputDirectory
@@ -156,7 +148,6 @@ Public Class MainForm
 
     Private Sub ButtonControl_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonControl.Click
 
-
         If Not OscilloscopeBackgroundWorker.IsBusy Then
             TextBoxLog.Clear()
             Dim arg As New WorkerArguments
@@ -182,10 +173,10 @@ Public Class MainForm
             arg.outputFile = outputLocation
             outputLocation = TextBoxOutputLocation.Text
             outputDirectory = ""
-            drawGrid = CheckBoxGrid.Checked
-            useAnalogOscilloscopeStyle = CheckBoxCRT.Checked
-            If useAnalogOscilloscopeStyle Then
-                analogOscilloscopeLineWidth = NumericUpDownLineWidth.Value
+            arg.drawGrid = CheckBoxGrid.Checked
+            arg.useAnalogOscilloscopeStyle = CheckBoxCRT.Checked
+            If arg.useAnalogOscilloscopeStyle Then
+                arg.analogOscilloscopeLineWidth = NumericUpDownLineWidth.Value
                 wavePen.Width = 1
             Else
                 wavePen.Width = NumericUpDownLineWidth.Value
@@ -226,7 +217,7 @@ Public Class MainForm
                 Exit Sub
             End If
             Debug.WriteLine(String.Format("Output directory:{0}", outputDirectory))
-            frameRate = NumericUpDownFrameRate.Value
+            arg.FPS = NumericUpDownFrameRate.Value
             arg.smoothLine = CheckBoxSmooth.Checked
             arg.FPS = NumericUpDownFrameRate.Value
             arg.noFileWriting = CheckBoxNoFileWriting.Checked
@@ -357,7 +348,7 @@ Public Class MainForm
         Debug.WriteLine(bitDepth)
         Dim channels As Byte = args.files.Length
         Dim sampleRate As Integer = wave(0).sampleRate
-        Dim samplesPerFrame As Integer = sampleRate / frameRate
+        Dim samplesPerFrame As Integer = sampleRate / args.FPS
         Dim maxChannelPerColumn As Integer = Math.Ceiling(channels / col)
         Dim channelWidth As Integer = canvasSize.Width / col
         Dim channelHeight As Integer = canvasSize.Height / maxChannelPerColumn
@@ -468,11 +459,11 @@ Public Class MainForm
                 End Select
 
                 'draw
-                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), args.detailedDrawing, sampleRate, channelArg.timeScale, i, triggerOffset)
+                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), args, sampleRate, channelArg.timeScale, i, triggerOffset)
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
                 'and also read stderr
             Next
-            If drawGrid Then 'draw grid
+            If args.drawGrid Then 'draw grid
                 g.Clip = New Region() 'reset region
                 For x As Integer = 1 To col - 1
                     g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
@@ -527,14 +518,14 @@ Public Class MainForm
             stderr.Close()
         End If
     End Sub
-    Private Sub drawWave(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal detailedDrawing As Boolean, ByVal sampleRate As Long, ByVal timeScale As Double, ByVal offset As Long, ByVal triggerOffset As Long)
+    Private Sub drawWave(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal sampleRate As Long, ByVal timeScale As Double, ByVal offset As Long, ByVal triggerOffset As Long)
         Dim args As channelOptions = wave.extraArguments
         Dim points As New List(Of Point)
         Dim triggerPoint As Long = offset + triggerOffset
         Dim prevX As Integer = -1
         For i As Integer = triggerPoint - sampleRate * args.timeScale / 2 To triggerPoint + sampleRate * args.timeScale / 2 '+ sampleRate * timeScale
             Dim x As Integer = (i - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
-            If prevX = x And Not detailedDrawing Then
+            If prevX = x And Not workerArg.detailedDrawing Then
                 Continue For
             Else
                 prevX = x
@@ -542,12 +533,12 @@ Public Class MainForm
             Dim y As Integer
             y = (258 - wave.getSample(i, False)) / 256 * rect.Height + rect.Y
             points.Add(New Point(x, y))
-            If useAnalogOscilloscopeStyle Then
-                points.Add(New Point(x, y + analogOscilloscopeLineWidth))
+            If workerArg.useAnalogOscilloscopeStyle Then
+                points.Add(New Point(x, y + workerArg.analogOscilloscopeLineWidth))
                 Dim nextX As Integer = (i + 1 - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
                 If nextX - x > 1 And x >= 0 Then
                     For dx As ULong = x To nextX
-                        points.Add(New Point(dx, y + analogOscilloscopeLineWidth))
+                        points.Add(New Point(dx, y + workerArg.analogOscilloscopeLineWidth))
                         points.Add(New Point(dx, y))
                     Next
                 End If

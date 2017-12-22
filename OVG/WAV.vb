@@ -13,7 +13,7 @@ Public Class WAV
     Public timeScale As Double
     Public extraArguments As Object
     Public amplify As Single = 1
-    Public limit As UInteger = 10
+    Public limit As UInteger = 0
     Private sampleBegin As UInt32
     Public rawSample As Byte()
 
@@ -100,7 +100,7 @@ Public Class WAV
                     If signed Then
                         Return 0
                     Else
-                        Return SByte.MaxValue + 1
+                        Return SByte.MaxValue
                     End If
                 End If
                 Dim value As Double = BitConverter.ToInt16({rawSample(index), rawSample(index + 1)}, 0) / 258 * amplify
