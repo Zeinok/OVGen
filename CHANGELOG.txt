@@ -1,6 +1,6 @@
 2017/12/22 0.0.8.0
 + Added detailed drawing option.
-+ Added Algorithm: Max Voltage, derrived from Length Scanning.
++ Added Algorithm: Max Voltage, derived from Length Scanning.
 + Allow choosing scanning time.
 * Include -b:a 384k to ffmpeg audio commandline to reduce noise.
 * [WAV class] Return 127 when sample location exceeded and need to return unsigned. 
