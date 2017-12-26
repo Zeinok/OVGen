@@ -1,0 +1,7 @@
+Peak Speed (Most stable):
++ Complex FM waves.
++ Audio samples.
++ Simple waves with filters.
+
+Postive/Negative/Crossing Length,Max Voltage:
++ Simple FM/waves without filters.
