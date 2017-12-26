@@ -1,3 +1,8 @@
+2017/12/26 0.0.9.0
++ Allow selecting audio channel or mixing it.
++ Scan time: 1.5x.
+- Remove some unnecessary code.
+
 2017/12/22 0.0.8.0
 + Added detailed drawing option.
 + Added Algorithm: Max Voltage, derived from Length Scanning.
