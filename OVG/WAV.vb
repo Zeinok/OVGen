@@ -10,10 +10,11 @@ Public Class WAV
     Public bitDepth As UInt16
     Public sampleLength As UInt32
     Public totalSamples As UInt32
-    Public timeScale As Double
     Public extraArguments As Object
     Public amplify As Single = 1
     Public limit As UInteger = 0
+    Public mixChannel As Boolean = True
+    Public selectedChannel As Byte = 0
     Private sampleBegin As UInt32
     Public rawSample As Byte()
 
@@ -92,6 +93,7 @@ Public Class WAV
         'returns value between -128 to 128
         'if unsigned, 0 to 256
         index *= channels
+        If Not mixChannel Then index += selectedChannel
         Select Case bitDepth
             Case 16
                 index *= 2
@@ -104,10 +106,12 @@ Public Class WAV
                     End If
                 End If
                 Dim value As Double = BitConverter.ToInt16({rawSample(index), rawSample(index + 1)}, 0) / 258 * amplify
-                For i As Integer = 2 To (channels - 1) * 2 Step 2
-                    value += BitConverter.ToInt16({rawSample(index + i), rawSample(index + 1 + i)}, 0) / 258 * amplify
-                    value /= 2
-                Next
+                If mixChannel Then
+                    For i As Integer = 2 To (channels - 1) * 2 Step 2
+                        value += BitConverter.ToInt16({rawSample(index + i), rawSample(index + 1 + i)}, 0) / 258 * amplify
+                        value /= 2
+                    Next
+                End If
                 If signed Then
                     Select Case value
                         Case Is < -128 + limit
@@ -136,10 +140,12 @@ Public Class WAV
                     End If
                 End If
                 Dim value As Double = (rawSample(index) - 128) * amplify
-                For i As Integer = 2 To channels
-                    value += (rawSample(index) - 128) * amplify
-                    value /= 2
-                Next
+                If mixChannel Then
+                    For i As Integer = 2 To channels
+                        value += (rawSample(index) - 128) * amplify
+                        value /= 2
+                    Next
+                End If
                 If signed Then
                     Select Case value
                         Case Is < -128

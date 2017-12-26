@@ -46,5 +46,7 @@ Public Class channelOptions
     Public label As String
     Public labelFont As Font = New Font(SystemFonts.MenuFont.FontFamily, 24)
     Public labelColor As Color = Color.White
-    Public maxScan As Byte = 1
+    Public maxScan As Single = 1.5F
+    Public mixChannel As Boolean = True
+    Public selectedChannel As Byte = 0
 End Class

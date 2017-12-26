@@ -324,7 +324,8 @@ Public Class MainForm
             Dim extraArg As channelOptions = optionsMap(args.files(z))
             wave(z).extraArguments = extraArg
             wave(z).amplify = extraArg.amplify
-            wave(z).timeScale = extraArg.timeScale
+            wave(z).mixChannel = extraArg.mixChannel
+            wave(z).selectedChannel = extraArg.selectedChannel
             If wave(z).sampleLength > sampleLength Then sampleLength = wave(z).sampleLength
         Next
         If My.Computer.FileSystem.FileExists(masterAudioFile) Then 'use master audio's sample length
