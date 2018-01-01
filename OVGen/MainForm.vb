@@ -575,8 +575,6 @@ Public Class MainForm
             Dim timeLeft As New TimeSpan(0, 0, timeLeftSecond)
             LabelStatus.Text = String.Format("{0:P1} {1}/{2}, {3:N1} FPS , Time left: {4}", prog.CurrentFrame / prog.TotalFrame, prog.CurrentFrame, prog.TotalFrame, realFPS, timeLeft.ToString())
             frames += 1
-            'realFPS = frames
-            'Debug.WriteLine((TimeOfDay - fpsTimer).TotalMilliseconds)
             Dim ms As ULong = Math.Abs((Now - fpsTimer).TotalMilliseconds)
             If ms >= 1000 Then
                 fpsTimer = Now
@@ -584,7 +582,6 @@ Public Class MainForm
                 averageFPS = (averageFPS + realFPS) / 2
                 frames = 0
             End If
-            TaskbarManager.Instance.TabbedThumbnail.InvalidateThumbnails()
             TaskbarManager.Instance.SetProgressValue(prog.CurrentFrame, prog.TotalFrame)
         ElseIf prog.canceled Then 'canceled
             LabelStatus.Text = "Canceled."
@@ -609,6 +606,9 @@ Public Class MainForm
                 TextBoxLog.AppendText("Failed to load " & msg.Key & ":" & msg.Value & vbCrLf)
             Next
             Exit Sub
+        End If
+        If BackgroundWorkerStdErrReader.IsBusy Then
+            BackgroundWorkerStdErrReader.CancelAsync()
         End If
         GC.Collect()
     End Sub
