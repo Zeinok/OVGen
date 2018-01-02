@@ -238,7 +238,8 @@ Public Class MainForm
             arg.ffmpegBinary = ffmpegPath
             LabelStatus.Text = "Start."
             OscilloscopeBackgroundWorker.RunWorkerAsync(arg)
-            GroupBoxOptions.Enabled = False
+            GroupBoxRenderingOptions.Enabled = False
+            GroupBoxFiles.Enabled = False
             ButtonControl.Text = "Cancel"
             ButtonControl.Update()
         Else
@@ -596,7 +597,8 @@ Public Class MainForm
         Dim elapsedTime As TimeSpan = Now - startTime
         TextBoxLog.AppendText("Total time spent: " & elapsedTime.ToString() & vbCrLf)
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
-        GroupBoxOptions.Enabled = True
+        GroupBoxRenderingOptions.Enabled = True
+        GroupBoxFiles.Enabled = True
         LabelStatus.Text = "Finished."
         ButtonControl.Text = "Start"
         ButtonControl.Enabled = True
