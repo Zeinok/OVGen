@@ -74,7 +74,6 @@ Public Class MainForm
             TextBoxOutputLocation.Text = outputDirectory
         End If
         LabelStatus.Text = ""
-        ButtonFlowDirection_Click(Nothing, Nothing)
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         originalTextBoxLogHeight = TextBoxLog.Height
     End Sub

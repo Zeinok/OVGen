@@ -3,6 +3,8 @@ Imports System
 
 Public Class WAV
     Public Stream As System.IO.Stream
+    'Public rawSample As Byte()
+    Private mmf As System.IO.MemoryMappedFiles.MemoryMappedFile
     Public channels As UInt16
     Public sampleRate As UInt32
     Public byteRate As UInt32
@@ -16,11 +18,11 @@ Public Class WAV
     Public mixChannel As Boolean = True
     Public selectedChannel As Byte = 0
     Private sampleBegin As UInt32
-    Public rawSample As Byte()
 
     Sub New(ByVal filename As String, Optional ByVal checkHeadersOnly As Boolean = False)
         Dim offset As UInt32 = 0
-        Stream = New System.IO.FileStream(filename, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.Read)
+        mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateFromFile(filename, IO.FileMode.Open)
+        Stream = mmf.CreateViewStream()
         Dim buffer4(3) As Byte
         Dim buffer2(1) As Byte
         offset += Stream.Read(buffer4, 0, 4)
@@ -75,11 +77,11 @@ Public Class WAV
             Stream.Close()
             Exit Sub
         End If
-        Stream.Seek(offset, IO.SeekOrigin.Begin)
-        rawSample = New Byte(totalSamples - 1) {}
-        Stream.Read(rawSample, 0, totalSamples)
-        Stream.Seek(sampleBegin, IO.SeekOrigin.Begin)
-        Stream.Close()
+        'Stream.Seek(offset, IO.SeekOrigin.Begin)
+        'rawSample = New Byte(totalSamples - 1) {}
+        'Stream.Read(rawSample, 0, totalSamples)
+        'Stream.Seek(sampleBegin, IO.SeekOrigin.Begin)
+        'Stream.Close()
     End Sub
     ''' <summary>
     ''' Returns value between -128 to 128
@@ -97,18 +99,22 @@ Public Class WAV
         Select Case bitDepth
             Case 16
                 index *= 2
-                If index < 0 Or index >= rawSample.Length Then
-                    'Debug.WriteLine("exceed length {0}", index)
+                If index < 0 Or index > totalSamples Then
                     If signed Then
                         Return 0
                     Else
                         Return SByte.MaxValue
                     End If
                 End If
-                Dim value As Double = BitConverter.ToInt16({rawSample(index), rawSample(index + 1)}, 0) / 258 * amplify
+                Stream.Position = sampleBegin + index
+                Dim buffer(1) As Byte
+                Stream.Read(buffer, 0, 2)
+                Dim value As Double = BitConverter.ToInt16(buffer, 0) / 258 * amplify
                 If mixChannel Then
                     For i As Integer = 2 To (channels - 1) * 2 Step 2
-                        value += BitConverter.ToInt16({rawSample(index + i), rawSample(index + 1 + i)}, 0) / 258 * amplify
+                        Stream.Position += i
+                        Stream.Read(buffer, 0, 2)
+                        value += BitConverter.ToInt16(buffer, 0) / 258 * amplify
                         value /= 2
                     Next
                 End If
@@ -132,17 +138,18 @@ Public Class WAV
                     End Select
                 End If
             Case 8
-                If index < 0 Or index >= rawSample.Length Then
+                If index < 0 Or index > totalSamples Then
                     If signed Then
                         Return 0
                     Else
                         Return SByte.MaxValue + 1
                     End If
                 End If
-                Dim value As Double = (rawSample(index) - 128) * amplify
+                Stream.Position = sampleBegin + index
+                Dim value As Double = (Stream.ReadByte() - 128) * amplify
                 If mixChannel Then
                     For i As Integer = 2 To channels
-                        value += (rawSample(index) - 128) * amplify
+                        value += (Stream.ReadByte() - 128) * amplify
                         value /= 2
                     Next
                 End If
