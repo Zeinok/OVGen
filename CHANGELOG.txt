@@ -1,3 +1,7 @@
+2018/1/5 0.0.10.0
++ Use MemoryMappedFile for WAV reading.
+* Fix channel flow direction is not correctly loaded.
+
 2017/12/26 0.0.9.0
 + Allow selecting audio channel or mixing it.
 + Scan time: 1.5x.
