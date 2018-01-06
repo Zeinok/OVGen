@@ -1,4 +1,4 @@
-Peak Speed (Most stable):
+Peak Speed (Most stable, by OPNA2608):
 + Complex FM waves.
 + Audio samples.
 + Simple waves with filters.
