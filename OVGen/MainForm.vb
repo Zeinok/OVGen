@@ -464,8 +464,8 @@ Public Class MainForm
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
                 'and also read stderr
             Next
+            g.Clip = New Region() 'reset region
             If args.drawGrid Then 'draw grid
-                g.Clip = New Region() 'reset region
                 For x As Integer = 1 To col - 1
                     g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
                 Next
