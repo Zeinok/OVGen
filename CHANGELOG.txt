@@ -1,3 +1,6 @@
+2018/1/7 0.0.10.1
+* Fix channel label not drawn correctly when not drawing the grid.
+
 2018/1/5 0.0.10.0
 + Use MemoryMappedFile for WAV reading.
 * Fix channel flow direction is not correctly loaded.
