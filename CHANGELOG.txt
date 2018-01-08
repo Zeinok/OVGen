@@ -1,3 +1,8 @@
+2018/1/8 0.0.11.0
++ Added option drawing middle line.
+* Terminate render when FFmpeg exited.
+* [WAV.vb] Dispose MemoryMappedFile on read the header only.
+
 2018/1/7 0.0.10.1
 * Fix channel label not drawn correctly when not drawing the grid.
 
