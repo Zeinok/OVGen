@@ -75,6 +75,7 @@ Public Class WAV
         sampleBegin = Stream.Position
         If checkHeadersOnly Then
             Stream.Close()
+            mmf.Dispose()
             Exit Sub
         End If
         'Stream.Seek(offset, IO.SeekOrigin.Begin)

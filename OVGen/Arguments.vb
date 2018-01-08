@@ -29,7 +29,7 @@ Public Class WorkerArguments
     Public audioFile As String
     Public canceled As Boolean = False
     Public smoothLine As Boolean
-    Public detailedDrawing As Boolean
+    Public drawMiddleLine As Boolean
     Public useAnalogOscilloscopeStyle As Boolean = False
     Public analogOscilloscopeLineWidth As Byte = 4
     Public drawGrid As Boolean

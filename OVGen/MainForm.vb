@@ -95,7 +95,7 @@ Public Class MainForm
     Private Sub writeConfig()
         Dim conf As New OVGconfig
         conf.General.SmoothLine = CheckBoxSmooth.Checked
-        conf.General.DetailedDrawing = CheckBoxDetailedDrawing.Checked
+        conf.General.DrawMiddleLine = CheckBoxDrawMiddleLine.Checked
         conf.General.Framerate = NumericUpDownFrameRate.Value
         conf.General.ConvertVideo = CheckBoxVideo.Checked
         conf.General.CRTStyledRender = CheckBoxCRT.Checked
@@ -134,7 +134,7 @@ Public Class MainForm
             FFmpegCommandLineSilence = conf.FFmpeg.SilenceCommandLine
             If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
             CheckBoxSmooth.Checked = conf.General.SmoothLine
-            CheckBoxDetailedDrawing.Checked = conf.General.DetailedDrawing
+            CheckBoxDrawMiddleLine.Checked = conf.General.DrawMiddleLine
             NumericUpDownFrameRate.Value = conf.General.Framerate
             CheckBoxVideo.Checked = conf.General.ConvertVideo
             CheckBoxCRT.Checked = conf.General.CRTStyledRender
@@ -221,7 +221,7 @@ Public Class MainForm
             arg.FPS = NumericUpDownFrameRate.Value
             arg.noFileWriting = CheckBoxNoFileWriting.Checked
             arg.convertVideo = CheckBoxVideo.Checked
-            arg.detailedDrawing = CheckBoxDetailedDrawing.Checked
+            arg.drawMiddleLine = CheckBoxDrawMiddleLine.Checked
             arg.columns = NumericUpDownColumn.Value
             Dim fileArray(ListBoxFiles.Items.Count - 1) As String
             For i As Integer = 0 To fileArray.Length - 1
@@ -438,6 +438,12 @@ Public Class MainForm
             Dim g As Graphics = Graphics.FromImage(bmp)
             g.Clear(bgColor)
             If args.smoothLine Then g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+            If args.drawMiddleLine Then
+                For c As Byte = 0 To channels - 1
+                    g.DrawLine(Pens.DarkGray, channelOffset(c).X, channelOffset(c).Y + channelHeight \ 2,
+                                              channelOffset(c).X + channelWidth, channelOffset(c).Y + channelHeight \ 2)
+                Next
+            End If
             For c As Byte = 0 To channels - 1 'for each channel
                 Dim channelArg As channelOptions = wave(c).extraArguments
                 Dim triggerOffset As Long = 0
@@ -464,6 +470,7 @@ Public Class MainForm
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
                 'and also read stderr
             Next
+
             g.Clip = New Region() 'reset region
             If args.drawGrid Then 'draw grid
                 For x As Integer = 1 To col - 1
@@ -477,6 +484,13 @@ Public Class MainForm
                 g.DrawImage(overlayBmp, 0, 0)
             End If
             i += samplesPerFrame
+            If Not NoFileWriting And convertVideo Then
+                If ffmpegProc.HasExited Then
+                    OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("FFmpeg has exited, terminating render..."))
+                    OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("FFmpeg exit code:" & ffmpegProc.ExitCode))
+                    Exit Sub
+                End If
+            End If
             Dim ok As Boolean = False
             Dim saveRetries As Integer = 0
             Do
@@ -526,23 +540,25 @@ Public Class MainForm
         Dim prevX As Integer = -1
         For i As Integer = triggerPoint - sampleRate * args.timeScale / 2 To triggerPoint + sampleRate * args.timeScale / 2 '+ sampleRate * timeScale
             Dim x As Integer = (i - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
-            If prevX = x And Not workerArg.detailedDrawing Then
+            If prevX = x Then
                 Continue For
             Else
                 prevX = x
             End If
             Dim y As Integer
-            y = (258 - wave.getSample(i, False)) / 256 * rect.Height + rect.Y
-            points.Add(New Point(x, y))
+            y = (256 - wave.getSample(i, False)) / 254 * rect.Height + rect.Y
             If workerArg.useAnalogOscilloscopeStyle Then
-                points.Add(New Point(x, y + workerArg.analogOscilloscopeLineWidth))
+                points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth))
+                points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2))
                 Dim nextX As Integer = (i + 1 - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
                 If nextX - x > 1 And x >= 0 Then
                     For dx As ULong = x To nextX
-                        points.Add(New Point(dx, y + workerArg.analogOscilloscopeLineWidth))
-                        points.Add(New Point(dx, y))
+                        points.Add(New Point(dx, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth))
+                        points.Add(New Point(dx, y - workerArg.analogOscilloscopeLineWidth \ 2))
                     Next
                 End If
+            Else
+                points.Add(New Point(x, y - wavePen.Width \ 2))
             End If
         Next
         wavePen.Color = args.waveColor
@@ -716,7 +732,9 @@ Public Class MainForm
                 Else
                     g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(currentChannel.waveColor), New Rectangle(x, y, channelWidth, channelHeight))
                 End If
-
+                If CheckBoxDrawMiddleLine.Checked Then
+                    g.DrawLine(Pens.DarkGray, x, y + channelHeight \ 2, x + channelWidth, y + channelHeight \ 2)
+                End If
             Next
         End If
 
@@ -822,5 +840,9 @@ Public Class MainForm
         Else
             ButtonFlowDirection.Text = "Top to down"
         End If
+    End Sub
+
+    Private Sub CheckBoxDrawMiddleLine_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxDrawMiddleLine.CheckedChanged
+        previewLayout()
     End Sub
 End Class
