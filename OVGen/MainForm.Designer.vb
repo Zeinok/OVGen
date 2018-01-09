@@ -165,7 +165,7 @@ Partial Class MainForm
         'CheckBoxDrawMiddleLine
         '
         Me.CheckBoxDrawMiddleLine.AutoSize = True
-        Me.CheckBoxDrawMiddleLine.Location = New System.Drawing.Point(105, 131)
+        Me.CheckBoxDrawMiddleLine.Location = New System.Drawing.Point(107, 131)
         Me.CheckBoxDrawMiddleLine.Name = "CheckBoxDrawMiddleLine"
         Me.CheckBoxDrawMiddleLine.Size = New System.Drawing.Size(135, 19)
         Me.CheckBoxDrawMiddleLine.TabIndex = 2
@@ -197,9 +197,9 @@ Partial Class MainForm
         Me.CheckBoxGrid.Location = New System.Drawing.Point(12, 131)
         Me.CheckBoxGrid.Margin = New System.Windows.Forms.Padding(4)
         Me.CheckBoxGrid.Name = "CheckBoxGrid"
-        Me.CheckBoxGrid.Size = New System.Drawing.Size(86, 19)
+        Me.CheckBoxGrid.Size = New System.Drawing.Size(90, 19)
         Me.CheckBoxGrid.TabIndex = 10
-        Me.CheckBoxGrid.Text = "DrawGrid"
+        Me.CheckBoxGrid.Text = "Draw Grid"
         Me.CheckBoxGrid.UseVisualStyleBackColor = True
         '
         'LabelCanvasSize
@@ -496,7 +496,7 @@ Partial Class MainForm
         Me.LabelPreviewMode.AutoSize = True
         Me.LabelPreviewMode.BackColor = System.Drawing.SystemColors.Control
         Me.LabelPreviewMode.ForeColor = System.Drawing.Color.Red
-        Me.LabelPreviewMode.Location = New System.Drawing.Point(626, 59)
+        Me.LabelPreviewMode.Location = New System.Drawing.Point(620, 59)
         Me.LabelPreviewMode.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LabelPreviewMode.Name = "LabelPreviewMode"
         Me.LabelPreviewMode.Size = New System.Drawing.Size(90, 15)
