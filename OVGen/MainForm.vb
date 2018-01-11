@@ -547,7 +547,7 @@ Public Class MainForm
                 prevX = x
             End If
             Dim y As Integer
-            y = (256 - wave.getSample(i, False)) / 254 * rect.Height + rect.Y
+            y = (256 - wave.getSample(i, False)) / 256 * (rect.Height - 1) + rect.Y
             If workerArg.useAnalogOscilloscopeStyle Then
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth - 1))
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 - 1))
@@ -559,7 +559,7 @@ Public Class MainForm
                     Next
                 End If
             Else
-                points.Add(New Point(x, y - wavePen.Width \ 2))
+                points.Add(New Point(x, y))
             End If
         Next
         wavePen.Color = args.waveColor
