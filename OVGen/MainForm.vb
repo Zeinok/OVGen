@@ -338,6 +338,7 @@ Public Class MainForm
             End Try
         End If
         If Not allFilesLoaded Then
+            wave = Nothing
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to load file(s)."))
             Exit Sub
         End If
@@ -548,13 +549,13 @@ Public Class MainForm
             Dim y As Integer
             y = (256 - wave.getSample(i, False)) / 254 * rect.Height + rect.Y
             If workerArg.useAnalogOscilloscopeStyle Then
-                points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth))
-                points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2))
+                points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth - 1))
+                points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 - 1))
                 Dim nextX As Integer = (i + 1 - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
                 If nextX - x > 1 And x >= 0 Then
                     For dx As ULong = x To nextX
-                        points.Add(New Point(dx, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth))
-                        points.Add(New Point(dx, y - workerArg.analogOscilloscopeLineWidth \ 2))
+                        points.Add(New Point(dx, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth - 1))
+                        points.Add(New Point(dx, y - workerArg.analogOscilloscopeLineWidth \ 2 - 1))
                     Next
                 End If
             Else

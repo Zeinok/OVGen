@@ -21,8 +21,8 @@ Public Class WAV
 
     Sub New(ByVal filename As String, Optional ByVal checkHeadersOnly As Boolean = False)
         Dim offset As UInt32 = 0
-        mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateFromFile(filename, IO.FileMode.Open)
-        Stream = mmf.CreateViewStream()
+        mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateFromFile(filename, IO.FileMode.Open, Guid.NewGuid().ToString(), 0, IO.MemoryMappedFiles.MemoryMappedFileAccess.Read)
+        Stream = mmf.CreateViewStream(0, New IO.FileInfo(filename).Length, IO.MemoryMappedFiles.MemoryMappedFileAccess.Read)
         Dim buffer4(3) As Byte
         Dim buffer2(1) As Byte
         offset += Stream.Read(buffer4, 0, 4)
