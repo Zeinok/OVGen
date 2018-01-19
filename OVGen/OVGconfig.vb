@@ -9,6 +9,7 @@
         Public SmoothLine As Boolean
         Public DrawMiddleLine As Boolean
         Public Framerate As Integer
+        Public LineWidth As Integer
         Public ConvertVideo As Boolean
         Public CRTStyledRender As Boolean
         Public DrawGrid As Boolean

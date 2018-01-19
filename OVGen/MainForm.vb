@@ -97,6 +97,7 @@ Public Class MainForm
         conf.General.SmoothLine = CheckBoxSmooth.Checked
         conf.General.DrawMiddleLine = CheckBoxDrawMiddleLine.Checked
         conf.General.Framerate = NumericUpDownFrameRate.Value
+        conf.General.LineWidth = NumericUpDownLineWidth.Value
         conf.General.ConvertVideo = CheckBoxVideo.Checked
         conf.General.CRTStyledRender = CheckBoxCRT.Checked
         conf.General.DrawGrid = CheckBoxGrid.Checked
@@ -124,24 +125,25 @@ Public Class MainForm
                 Dim fs As New IO.FileStream("config.xml", IO.FileMode.Open)
                 conf = xml.Deserialize(fs)
                 fs.Close()
+                ffmpegPath = conf.FFmpeg.BinaryLocation
+                FFmpegCommandLineJoinAudio = conf.FFmpeg.JoinAudioCommandLine
+                If FFmpegCommandLineJoinAudio = "" Then FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio
+                FFmpegCommandLineSilence = conf.FFmpeg.SilenceCommandLine
+                If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
+                CheckBoxSmooth.Checked = conf.General.SmoothLine
+                CheckBoxDrawMiddleLine.Checked = conf.General.DrawMiddleLine
+                NumericUpDownFrameRate.Value = conf.General.Framerate
+                NumericUpDownLineWidth.Value = conf.General.LineWidth
+                CheckBoxVideo.Checked = conf.General.ConvertVideo
+                CheckBoxCRT.Checked = conf.General.CRTStyledRender
+                CheckBoxGrid.Checked = conf.General.DrawGrid
+                ComboBoxCanvasSize.Text = conf.General.CanvasSize
+                channelFlowDirection = conf.General.FlowDirection
+                ButtonFlowDirection.Invalidate()
             Catch ex As Exception
                 TextBoxLog.AppendText("Error occured while loading config:" & ex.Message & vbCrLf)
                 Exit Sub
             End Try
-            ffmpegPath = conf.FFmpeg.BinaryLocation
-            FFmpegCommandLineJoinAudio = conf.FFmpeg.JoinAudioCommandLine
-            If FFmpegCommandLineJoinAudio = "" Then FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio
-            FFmpegCommandLineSilence = conf.FFmpeg.SilenceCommandLine
-            If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
-            CheckBoxSmooth.Checked = conf.General.SmoothLine
-            CheckBoxDrawMiddleLine.Checked = conf.General.DrawMiddleLine
-            NumericUpDownFrameRate.Value = conf.General.Framerate
-            CheckBoxVideo.Checked = conf.General.ConvertVideo
-            CheckBoxCRT.Checked = conf.General.CRTStyledRender
-            CheckBoxGrid.Checked = conf.General.DrawGrid
-            ComboBoxCanvasSize.Text = conf.General.CanvasSize
-            channelFlowDirection = conf.General.FlowDirection
-            ButtonFlowDirection.Invalidate()
         End If
     End Sub
 
@@ -547,7 +549,7 @@ Public Class MainForm
                 prevX = x
             End If
             Dim y As Integer
-            y = (256 - wave.getSample(i, False)) / 256 * (rect.Height - 1) + rect.Y
+            y = -wave.getSample(i, True) / 256 * (rect.Height - 1) + rect.Y + rect.Height / 2
             If workerArg.useAnalogOscilloscopeStyle Then
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth - 1))
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 - 1))
