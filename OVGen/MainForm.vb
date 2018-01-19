@@ -21,6 +21,8 @@ Public Class MainForm
     Dim NoFileWriting As Boolean = False
     Dim allFilesLoaded As Boolean = False
     Dim failedFiles As New Dictionary(Of String, String)
+    Dim gridColor As Color = Color.Gray
+    Dim middleLineColor As Color = Color.FromArgb(64, 64, 64)
     '===FFmpeg
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
@@ -443,7 +445,7 @@ Public Class MainForm
             If args.smoothLine Then g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
             If args.drawMiddleLine Then
                 For c As Byte = 0 To channels - 1
-                    g.DrawLine(Pens.DarkGray, channelOffset(c).X, channelOffset(c).Y + channelHeight \ 2,
+                    g.DrawLine(New Pen(middleLineColor), channelOffset(c).X, channelOffset(c).Y + channelHeight \ 2,
                                               channelOffset(c).X + channelWidth, channelOffset(c).Y + channelHeight \ 2)
                 Next
             End If
@@ -477,10 +479,10 @@ Public Class MainForm
             g.Clip = New Region() 'reset region
             If args.drawGrid Then 'draw grid
                 For x As Integer = 1 To col - 1
-                    g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+                    g.DrawLine(New Pen(gridColor), channelWidth * x, 0, channelWidth * x, canvasSize.Height)
                 Next
                 For y As Integer = 1 To maxChannelPerColumn - 1
-                    g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+                    g.DrawLine(New Pen(gridColor), 0, channelHeight * y, canvasSize.Width, channelHeight * y)
                 Next
             End If
             If overlayNeeded Then
@@ -549,7 +551,7 @@ Public Class MainForm
                 prevX = x
             End If
             Dim y As Integer
-            y = -wave.getSample(i, True) / 256 * (rect.Height - 1) + rect.Y + rect.Height / 2
+            y = -wave.getSample(i, True) / 256 * rect.Height + rect.Y + rect.Height / 2
             If workerArg.useAnalogOscilloscopeStyle Then
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth - 1))
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 - 1))
@@ -710,10 +712,10 @@ Public Class MainForm
             Dim channelOffset(channels - 1) As Point
             If CheckBoxGrid.Checked Then 'draw grid
                 For x As Integer = 1 To col - 1
-                    g.DrawLine(Pens.Gray, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+                    g.DrawLine(New Pen(gridColor), channelWidth * x, 0, channelWidth * x, canvasSize.Height)
                 Next
                 For y As Integer = 1 To maxChannelPerColumn - 1
-                    g.DrawLine(Pens.Gray, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+                    g.DrawLine(New Pen(gridColor), 0, channelHeight * y, canvasSize.Width, channelHeight * y)
                 Next
             End If
             For c As Integer = 0 To channels - 1
@@ -736,7 +738,7 @@ Public Class MainForm
                     g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(currentChannel.waveColor), New Rectangle(x, y, channelWidth, channelHeight))
                 End If
                 If CheckBoxDrawMiddleLine.Checked Then
-                    g.DrawLine(Pens.DarkGray, x, y + channelHeight \ 2, x + channelWidth, y + channelHeight \ 2)
+                    g.DrawLine(New Pen(middleLineColor), x, y + channelHeight \ 2, x + channelWidth, y + channelHeight \ 2)
                 End If
             Next
         End If
