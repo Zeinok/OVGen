@@ -21,13 +21,27 @@ Public Class WAV
 
     Sub New(ByVal filename As String, Optional ByVal checkHeadersOnly As Boolean = False)
         Dim offset As UInt32 = 0
-        mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateFromFile(filename, IO.FileMode.Open, Guid.NewGuid().ToString(), 0, IO.MemoryMappedFiles.MemoryMappedFileAccess.Read)
-        Stream = mmf.CreateViewStream(0, New IO.FileInfo(filename).Length, IO.MemoryMappedFiles.MemoryMappedFileAccess.Read)
+        mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateFromFile(IO.File.Open(filename, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.Read),
+                                                                          Nothing,
+                                                                          0,
+                                                                          IO.MemoryMappedFiles.MemoryMappedFileAccess.Read,
+                                                                          Nothing,
+                                                                          IO.HandleInheritability.None,
+                                                                          False)
+        Try
+            Stream = mmf.CreateViewStream(0, 0, IO.MemoryMappedFiles.MemoryMappedFileAccess.Read)
+        Catch ex As Exception
+            mmf.Dispose()
+            Stream = Nothing
+            Throw ex
+        End Try
         Dim buffer4(3) As Byte
         Dim buffer2(1) As Byte
         offset += Stream.Read(buffer4, 0, 4)
         If Encoding.ASCII.GetString(buffer4) <> "RIFF" Then
             Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""RIFF""")
+            Stream.Close()
+            mmf.Dispose()
             Throw ex
         End If
         Dim chunkSize As UInt32
@@ -36,21 +50,29 @@ Public Class WAV
         offset += Stream.Read(buffer4, 0, 4)
         If Encoding.ASCII.GetString(buffer4) <> "WAVE" Then
             Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""WAVE"".")
+            Stream.Close()
+            mmf.Dispose()
             Throw ex
         End If
         offset += Stream.Read(buffer4, 0, 4)
         If Encoding.ASCII.GetString(buffer4) <> "fmt " Then
             Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""fmt "".")
+            Stream.Close()
+            mmf.Dispose()
             Throw ex
         End If
         offset += Stream.Read(buffer4, 0, 4)
         If BitConverter.ToUInt32(buffer4, 0) <> 16 Then
             Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""16"".")
+            Stream.Close()
+            mmf.Dispose()
             Throw ex
         End If
         offset += Stream.Read(buffer2, 0, 2)
         If BitConverter.ToUInt16(buffer2, 0) <> 1 Then
             Dim ex As New System.Exception("Not a PCM encoded audio.")
+            Stream.Close()
+            mmf.Dispose()
             Throw ex
         End If
         offset += Stream.Read(buffer2, 0, 2)
@@ -66,6 +88,8 @@ Public Class WAV
         offset += Stream.Read(buffer4, 0, 4)
         If Encoding.ASCII.GetString(buffer4) <> "data" Then
             Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""data"".")
+            Stream.Close()
+            mmf.Dispose()
             Throw ex
         End If
         offset += Stream.Read(buffer4, 0, 4)
