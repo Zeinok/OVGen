@@ -1,0 +1,35 @@
+﻿# Oscilloscope View Generator
+
+A program that does same thing as well as SIDWiz2 but more advanced.
+
+## Installing
+
+Decompress the zip file to any directory and run `OVGen.exe`
+
+### Requirements:
+
+Windows XP or up
+.NET Framework 4.0 Runtime
+
+## How to use it
+
+Please refer to [wiki](https://github.com/Zeinok/OVGen/wiki).
+
+## Deployment
+
+Build OVGen with Visual Studio 2017.
+
+## License
+
+OVGen is licensed under the MIT License, see LICENSE.md for more information.
+
+## Specs
++ Open 16-bit or 8-bit depth WAV
++ Output as PNG (image each frame) or MP4 (video,requires FFmpeg)
++ If output as video, directly feed raw image into FFmpeg. 
++ In-program amplification
++ Per channel time scaling
++ Set color for each channel
++ Preview mode
++ Toggleable output displaying
++ CRT oscilloscope rendering mode
