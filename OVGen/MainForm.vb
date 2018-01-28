@@ -316,19 +316,6 @@ Public Class MainForm
         Dim sampleLength As UInteger = 0
         allFilesLoaded = True
         failedFiles.Clear()
-        If My.Computer.FileSystem.FileExists(masterAudioFile) Then 'use master audio's sample length
-            Dim master As WAV
-            Try
-                master = New WAV(masterAudioFile, True)
-                sampleLength = master.sampleLength
-                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Using length of master audio."))
-                master = Nothing
-            Catch ex As Exception
-                master = Nothing
-                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to parse master audio: " & ex.Message))
-
-            End Try
-        End If
         For z As Byte = 0 To args.files.Length - 1
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress(Nothing, 0, 0, "Loading wav file: " & args.files(z)))
             Try
@@ -343,9 +330,17 @@ Public Class MainForm
             wave(z).amplify = extraArg.amplify
             wave(z).mixChannel = extraArg.mixChannel
             wave(z).selectedChannel = extraArg.selectedChannel
-            If wave(z).sampleLength > sampleLength And My.Computer.FileSystem.FileExists(masterAudioFile) Then sampleLength = wave(z).sampleLength
+            If wave(z).sampleLength > sampleLength Then sampleLength = wave(z).sampleLength
         Next
-
+        If My.Computer.FileSystem.FileExists(masterAudioFile) Then 'use master audio's sample length
+            Try
+                Dim master As New WAV(masterAudioFile, True)
+                sampleLength = master.sampleLength
+                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Using length of master audio."))
+            Catch ex As Exception
+                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to parse master audio: " & ex.Message))
+            End Try
+        End If
         If Not allFilesLoaded Then
             wave = Nothing
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to load file(s)."))
