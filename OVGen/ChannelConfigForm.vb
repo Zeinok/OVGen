@@ -13,7 +13,7 @@
         End If
         ButtonColor.BackColor = currentOptions.waveColor
         ComboBoxAlgorithm.SelectedIndex = currentOptions.algorithm
-        TextBoxTimeScale.Text = currentOptions.timeScale * 1000
+        TextBoxHorizontalTime.Text = currentOptions.horizontalTime * 1000
         TextBoxAmplify.Text = currentOptions.amplify
         TextBoxLabel.Text = currentOptions.label
         labelFont = currentOptions.labelFont
@@ -37,7 +37,7 @@
     End Sub
 
     Sub checkValueValid()
-        If IsNumeric(TextBoxTimeScale.Text) And IsNumeric(TextBoxAmplify.Text) Then
+        If IsNumeric(TextBoxHorizontalTime.Text) And IsNumeric(TextBoxAmplify.Text) Then
             ButtonOK.Enabled = True
         Else
             ButtonOK.Enabled = False
@@ -68,7 +68,7 @@
         End If
     End Sub
 
-    Private Sub TextBoxTimeScale_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBoxTimeScale.TextChanged
+    Private Sub TextBoxTimeScale_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBoxHorizontalTime.TextChanged
         checkValueValid()
     End Sub
 
@@ -81,7 +81,7 @@
         If Not MainForm.currentChannelToBeSet = "" Then
             currentOptions.waveColor = ButtonColor.BackColor
             currentOptions.algorithm = ComboBoxAlgorithm.SelectedIndex
-            currentOptions.timeScale = TextBoxTimeScale.Text / 1000
+            currentOptions.horizontalTime = TextBoxHorizontalTime.Text / 1000
             currentOptions.amplify = TextBoxAmplify.Text
             currentOptions.label = TextBoxLabel.Text
             currentOptions.labelFont = labelFont
@@ -102,7 +102,7 @@
                 Dim currentChannel As channelOptions = MainForm.optionsMap.Item(key)
                 currentChannel.waveColor = ButtonColor.BackColor
                 currentChannel.algorithm = ComboBoxAlgorithm.SelectedIndex
-                currentChannel.timeScale = TextBoxTimeScale.Text / 1000
+                currentChannel.horizontalTime = TextBoxHorizontalTime.Text / 1000
                 currentChannel.amplify = TextBoxAmplify.Text
                 currentChannel.label = TextBoxLabel.Text
                 currentChannel.labelFont = labelFont

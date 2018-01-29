@@ -24,7 +24,7 @@ Partial Class ChannelConfigForm
     Private Sub InitializeComponent()
         Me.ButtonColor = New System.Windows.Forms.Button()
         Me.ComboBoxAlgorithm = New System.Windows.Forms.ComboBox()
-        Me.TextBoxTimeScale = New System.Windows.Forms.TextBox()
+        Me.TextBoxHorizontalTime = New System.Windows.Forms.TextBox()
         Me.LabelMS = New System.Windows.Forms.Label()
         Me.LabelAmplify = New System.Windows.Forms.Label()
         Me.TextBoxAmplify = New System.Windows.Forms.TextBox()
@@ -67,19 +67,19 @@ Partial Class ChannelConfigForm
         Me.ComboBoxAlgorithm.Size = New System.Drawing.Size(180, 23)
         Me.ComboBoxAlgorithm.TabIndex = 6
         '
-        'TextBoxTimeScale
+        'TextBoxHorizontalTime
         '
-        Me.TextBoxTimeScale.ImeMode = System.Windows.Forms.ImeMode.Off
-        Me.TextBoxTimeScale.Location = New System.Drawing.Point(81, 113)
-        Me.TextBoxTimeScale.Margin = New System.Windows.Forms.Padding(2)
-        Me.TextBoxTimeScale.Name = "TextBoxTimeScale"
-        Me.TextBoxTimeScale.Size = New System.Drawing.Size(33, 25)
-        Me.TextBoxTimeScale.TabIndex = 8
+        Me.TextBoxHorizontalTime.ImeMode = System.Windows.Forms.ImeMode.Off
+        Me.TextBoxHorizontalTime.Location = New System.Drawing.Point(112, 113)
+        Me.TextBoxHorizontalTime.Margin = New System.Windows.Forms.Padding(2)
+        Me.TextBoxHorizontalTime.Name = "TextBoxHorizontalTime"
+        Me.TextBoxHorizontalTime.Size = New System.Drawing.Size(33, 25)
+        Me.TextBoxHorizontalTime.TabIndex = 8
         '
         'LabelMS
         '
         Me.LabelMS.AutoSize = True
-        Me.LabelMS.Location = New System.Drawing.Point(118, 116)
+        Me.LabelMS.Location = New System.Drawing.Point(149, 116)
         Me.LabelMS.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelMS.Name = "LabelMS"
         Me.LabelMS.Size = New System.Drawing.Size(23, 15)
@@ -121,9 +121,9 @@ Partial Class ChannelConfigForm
         Me.LabelTimeScale.Location = New System.Drawing.Point(8, 116)
         Me.LabelTimeScale.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelTimeScale.Name = "LabelTimeScale"
-        Me.LabelTimeScale.Size = New System.Drawing.Size(72, 15)
+        Me.LabelTimeScale.Size = New System.Drawing.Size(100, 15)
         Me.LabelTimeScale.TabIndex = 7
-        Me.LabelTimeScale.Text = "Time scale:"
+        Me.LabelTimeScale.Text = "Horizontal time:"
         '
         'ButtonOK
         '
@@ -283,7 +283,7 @@ Partial Class ChannelConfigForm
         Me.Controls.Add(Me.TextBoxAmplify)
         Me.Controls.Add(Me.LabelAmplify)
         Me.Controls.Add(Me.LabelMS)
-        Me.Controls.Add(Me.TextBoxTimeScale)
+        Me.Controls.Add(Me.TextBoxHorizontalTime)
         Me.Controls.Add(Me.ComboBoxAlgorithm)
         Me.Controls.Add(Me.ButtonColor)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
@@ -302,7 +302,7 @@ Partial Class ChannelConfigForm
     End Sub
     Friend WithEvents ButtonColor As System.Windows.Forms.Button
     Friend WithEvents ComboBoxAlgorithm As System.Windows.Forms.ComboBox
-    Friend WithEvents TextBoxTimeScale As System.Windows.Forms.TextBox
+    Friend WithEvents TextBoxHorizontalTime As System.Windows.Forms.TextBox
     Friend WithEvents LabelMS As System.Windows.Forms.Label
     Friend WithEvents LabelAmplify As System.Windows.Forms.Label
     Friend WithEvents TextBoxAmplify As System.Windows.Forms.TextBox

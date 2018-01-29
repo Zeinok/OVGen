@@ -39,7 +39,7 @@ Public Class channelOptions
     'Public color As Color
     Public pen As Pen = MainForm.wavePen
     Public waveColor As Color = MainForm.wavePen.Color
-    Public timeScale As Double = 0.025
+    Public horizontalTime As Double = 0.025
     Public amplify As Single = 1
     Public trigger As Integer = 0
     Public algorithm As Byte = TriggeringAlgorithms.UsePeakSpeedScanning

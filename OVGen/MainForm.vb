@@ -455,23 +455,23 @@ Public Class MainForm
                 'trigger
                 Select Case channelArg.algorithm
                     Case TriggeringAlgorithms.UseZeroCrossing
-                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UsePeakSpeedScanning
-                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UsePositiveLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan, True, False)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, False)
                     Case TriggeringAlgorithms.UseNegativeLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan, False, True)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, False, True)
                     Case TriggeringAlgorithms.UseCrossingLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan, True, True)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, True)
                     Case TriggeringAlgorithms.UseMaxVoltageScanning
-                        triggerOffset = TriggeringAlgorithms.maxVoltage(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.maxVoltage(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UseAutoTrigger
-                        triggerOffset = TriggeringAlgorithms.autoTrigger(wave(c), i, sampleRate * channelArg.timeScale * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.autoTrigger(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                 End Select
 
                 'draw
-                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), args, sampleRate, channelArg.timeScale, i, triggerOffset)
+                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), args, sampleRate, channelArg.horizontalTime, i, triggerOffset)
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
                 'and also read stderr
             Next
@@ -543,8 +543,8 @@ Public Class MainForm
         Dim points As New List(Of Point)
         Dim triggerPoint As Long = offset + triggerOffset
         Dim prevX As Integer = -1
-        For i As Integer = triggerPoint - sampleRate * args.timeScale / 2 To triggerPoint + sampleRate * args.timeScale / 2 '+ sampleRate * timeScale
-            Dim x As Integer = (i - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
+        For i As Integer = triggerPoint - sampleRate * args.horizontalTime / 2 To triggerPoint + sampleRate * args.horizontalTime / 2 '+ sampleRate * timeScale
+            Dim x As Integer = (i - (offset + triggerOffset - sampleRate * args.horizontalTime / 2)) / sampleRate / args.horizontalTime * rect.Width + rect.X
             If prevX = x Then
                 Continue For
             Else
@@ -555,7 +555,7 @@ Public Class MainForm
             If workerArg.useAnalogOscilloscopeStyle Then
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth - 1))
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 - 1))
-                Dim nextX As Integer = (i + 1 - (offset + triggerOffset - sampleRate * args.timeScale / 2)) / sampleRate / args.timeScale * rect.Width + rect.X
+                Dim nextX As Integer = (i + 1 - (offset + triggerOffset - sampleRate * args.horizontalTime / 2)) / sampleRate / args.horizontalTime * rect.Width + rect.X
                 If nextX - x > 1 And x >= 0 Then
                     For dx As ULong = x To nextX
                         points.Add(New Point(dx, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth - 1))
