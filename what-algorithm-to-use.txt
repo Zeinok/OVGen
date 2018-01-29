@@ -1,7 +1,60 @@
-Peak Speed (Most stable, by OPNA2608):
-+ Complex FM waves.
-+ Audio samples.
-+ Simple waves with filters.
+Zero Crossing:
 
-Postive/Negative/Crossing Length,Max Voltage:
-+ Simple FM/waves without filters.
+	Good for any really basic waveforms (Square, Saw, ect.) 
+	Wave can be complicated as long it stays under the "Zero Line"
+
+		Ex. NES Chiptune (No DCPM)
+
+Peak Speed:
+
+	Default. Slow but stable for all waveforms.
+	All around good trigger. If you don't know which
+	trigger to use, use this one.
+		
+		Ex. Mega Drive Chiptune
+
+
+Positive Length:
+
+	Sum up the positive length every zero-cross, and pick the biggest value.
+	Good if a wave is complicated underneath the "Zero Line".
+
+		Ex. Low Pass Filtered Saw
+
+Negative Length:
+
+	Sum up the negative length every zero-cross, and pick the biggest value.
+	Good if a wave is complicated over the "Zero Line"
+
+		Ex. Inverted Low Pass Filtered Saw
+
+Crossing Length:
+
+	A combination of Positive Length and Negative Length.
+	Sum up the length every zero-cross, and pick the biggest value.
+	Use it if there is a very special wave that Positive Length or 
+	Negative Length can't handle.
+
+		Ex. 
+
+Max Rectified Area:
+
+	Sum up the absolute amplification value every zero-cross, and pick the biggest value.
+	Good for "sync" waves, Amplitude Modulation, and Ring Modulation
+
+		Ex. Comlicated C64 Chiptune
+
+Auto Trigger:
+
+	Seek for highest and lowest value, calculate the average, and set it as trigger value.
+	Good if the wave is simple, and has DC offset. (Currently the only 
+	trigger that triggers on a wave doesn't cross the "Zero Line").
+
+		Ex. VOSIM
+
+None:
+
+	If a wave perfectly matches the frame rate, it is the 
+	best trigger out of all of them.
+
+		Ex. A finely tuned Modular Synth
