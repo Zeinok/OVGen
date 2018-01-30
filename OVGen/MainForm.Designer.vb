@@ -170,6 +170,7 @@ Partial Class MainForm
         Me.CheckBoxDrawMiddleLine.Size = New System.Drawing.Size(135, 19)
         Me.CheckBoxDrawMiddleLine.TabIndex = 2
         Me.CheckBoxDrawMiddleLine.Text = "Draw Middle Line"
+        Me.ToolTips.SetToolTip(Me.CheckBoxDrawMiddleLine, "Draws a horizontal line at 0V")
         Me.CheckBoxDrawMiddleLine.UseVisualStyleBackColor = True
         '
         'ButtonFlowDirection

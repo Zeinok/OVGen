@@ -464,8 +464,8 @@ Public Class MainForm
                         triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, False, True)
                     Case TriggeringAlgorithms.UseCrossingLengthScanning
                         triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, True)
-                    Case TriggeringAlgorithms.UseMaxVoltageScanning
-                        triggerOffset = TriggeringAlgorithms.maxVoltage(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
+                    Case TriggeringAlgorithms.UseMaxRectifiedAreaScanning
+                        triggerOffset = TriggeringAlgorithms.maxRectifiedArea(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UseAutoTrigger
                         triggerOffset = TriggeringAlgorithms.autoTrigger(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                 End Select

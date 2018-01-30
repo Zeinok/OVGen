@@ -14,6 +14,7 @@
         ButtonColor.BackColor = currentOptions.waveColor
         ComboBoxAlgorithm.SelectedIndex = currentOptions.algorithm
         TextBoxHorizontalTime.Text = currentOptions.horizontalTime * 1000
+        NumericUpDownTriggerLevel.Value = currentOptions.trigger
         TextBoxAmplify.Text = currentOptions.amplify
         TextBoxLabel.Text = currentOptions.label
         labelFont = currentOptions.labelFont
@@ -82,6 +83,7 @@
             currentOptions.waveColor = ButtonColor.BackColor
             currentOptions.algorithm = ComboBoxAlgorithm.SelectedIndex
             currentOptions.horizontalTime = TextBoxHorizontalTime.Text / 1000
+            currentOptions.trigger = NumericUpDownTriggerLevel.Value
             currentOptions.amplify = TextBoxAmplify.Text
             currentOptions.label = TextBoxLabel.Text
             currentOptions.labelFont = labelFont
@@ -103,6 +105,7 @@
                 currentChannel.waveColor = ButtonColor.BackColor
                 currentChannel.algorithm = ComboBoxAlgorithm.SelectedIndex
                 currentChannel.horizontalTime = TextBoxHorizontalTime.Text / 1000
+                currentChannel.trigger = NumericUpDownTriggerLevel.Value
                 currentChannel.amplify = TextBoxAmplify.Text
                 currentChannel.label = TextBoxLabel.Text
                 currentChannel.labelFont = labelFont
