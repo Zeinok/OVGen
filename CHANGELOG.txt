@@ -1,3 +1,6 @@
+2018/2/7 0.0.13.1
+* Adjust channel config form size.
+
 2018/2/7 0.0.13.0
 + External Trigger Feature
 * Change default FFmpeg commandline: replace "-r" with "-framerate"

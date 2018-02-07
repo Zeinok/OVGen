@@ -305,7 +305,7 @@ Partial Class ChannelConfigForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(272, 371)
+        Me.ClientSize = New System.Drawing.Size(272, 322)
         Me.Controls.Add(Me.ButtonExternalTrigger)
         Me.Controls.Add(Me.CheckBoxExternalTrigger)
         Me.Controls.Add(Me.NumericUpDownTriggerLevel)
