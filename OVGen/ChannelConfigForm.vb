@@ -2,6 +2,7 @@
     Dim currentOptions As channelOptions
     Dim globalOptions As New channelOptions
     Dim labelFont As Font
+    Dim externalTrigger As String
 
     Private Sub ChannelConfigForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         ComboBoxAlgorithm.Items.Clear()
@@ -15,6 +16,15 @@
         ComboBoxAlgorithm.SelectedIndex = currentOptions.algorithm
         TextBoxHorizontalTime.Text = currentOptions.horizontalTime * 1000
         NumericUpDownTriggerLevel.Value = currentOptions.trigger
+        CheckBoxExternalTrigger.Checked = currentOptions.externalTriggerEnabled
+        ButtonExternalTrigger.Enabled = currentOptions.externalTriggerEnabled
+        If IO.File.Exists(currentOptions.externalTriggerFile) Then
+            ButtonExternalTrigger.Text = New IO.FileInfo(currentOptions.externalTriggerFile).Name
+            externalTrigger = currentOptions.externalTriggerFile
+        Else
+            ButtonExternalTrigger.Text = "(None)"
+            externalTrigger = ""
+        End If
         TextBoxAmplify.Text = currentOptions.amplify
         TextBoxLabel.Text = currentOptions.label
         labelFont = currentOptions.labelFont
@@ -78,12 +88,17 @@
     End Sub
 
     Private Sub ButtonOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonOK.Click
+        If CheckBoxExternalTrigger.Checked Then
+            CheckBoxExternalTrigger.Checked = IO.File.Exists(externalTrigger)
+        End If
         If TextBoxLabel.Text.Replace(" ", "").Length = 0 Then TextBoxLabel.Text = ""
         If Not MainForm.currentChannelToBeSet = "" Then
             currentOptions.waveColor = ButtonColor.BackColor
             currentOptions.algorithm = ComboBoxAlgorithm.SelectedIndex
             currentOptions.horizontalTime = TextBoxHorizontalTime.Text / 1000
             currentOptions.trigger = NumericUpDownTriggerLevel.Value
+            currentOptions.externalTriggerEnabled = CheckBoxExternalTrigger.Checked
+            currentOptions.externalTriggerFile = externalTrigger
             currentOptions.amplify = TextBoxAmplify.Text
             currentOptions.label = TextBoxLabel.Text
             currentOptions.labelFont = labelFont
@@ -106,6 +121,8 @@
                 currentChannel.algorithm = ComboBoxAlgorithm.SelectedIndex
                 currentChannel.horizontalTime = TextBoxHorizontalTime.Text / 1000
                 currentChannel.trigger = NumericUpDownTriggerLevel.Value
+                currentChannel.externalTriggerEnabled = CheckBoxExternalTrigger.Checked
+                currentChannel.externalTriggerFile = externalTrigger
                 currentChannel.amplify = TextBoxAmplify.Text
                 currentChannel.label = TextBoxLabel.Text
                 currentChannel.labelFont = labelFont
@@ -135,5 +152,17 @@
     Private Sub CheckBoxStereo_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxMixAudioChannel.CheckedChanged
         LabelAudioChannel.Enabled = Not CheckBoxMixAudioChannel.Checked
         NumericUpDownAudioChannel.Enabled = Not CheckBoxMixAudioChannel.Checked
+    End Sub
+
+    Private Sub ButtonExternalTrigger_Click(sender As Object, e As EventArgs) Handles ButtonExternalTrigger.Click
+        Dim ofd As New OpenFileDialog
+        If ofd.ShowDialog() = DialogResult.OK Then
+            ButtonExternalTrigger.Text = ofd.SafeFileName
+            externalTrigger = ofd.FileName
+        End If
+    End Sub
+
+    Private Sub CheckBoxExternalTrigger_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxExternalTrigger.CheckedChanged
+        ButtonExternalTrigger.Enabled = CheckBoxExternalTrigger.Checked
     End Sub
 End Class

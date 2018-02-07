@@ -46,6 +46,8 @@ Partial Class ChannelConfigForm
         Me.RadioButton1dot5x = New System.Windows.Forms.RadioButton()
         Me.LabelTriggerLevel = New System.Windows.Forms.Label()
         Me.NumericUpDownTriggerLevel = New System.Windows.Forms.NumericUpDown()
+        Me.CheckBoxExternalTrigger = New System.Windows.Forms.CheckBox()
+        Me.ButtonExternalTrigger = New System.Windows.Forms.Button()
         CType(Me.NumericUpDownAudioChannel, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownTriggerLevel, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -92,7 +94,7 @@ Partial Class ChannelConfigForm
         'LabelAmplify
         '
         Me.LabelAmplify.AutoSize = True
-        Me.LabelAmplify.Location = New System.Drawing.Point(11, 177)
+        Me.LabelAmplify.Location = New System.Drawing.Point(9, 209)
         Me.LabelAmplify.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelAmplify.Name = "LabelAmplify"
         Me.LabelAmplify.Size = New System.Drawing.Size(59, 15)
@@ -102,7 +104,7 @@ Partial Class ChannelConfigForm
         'TextBoxAmplify
         '
         Me.TextBoxAmplify.ImeMode = System.Windows.Forms.ImeMode.Off
-        Me.TextBoxAmplify.Location = New System.Drawing.Point(73, 173)
+        Me.TextBoxAmplify.Location = New System.Drawing.Point(71, 205)
         Me.TextBoxAmplify.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxAmplify.Name = "TextBoxAmplify"
         Me.TextBoxAmplify.Size = New System.Drawing.Size(50, 25)
@@ -111,7 +113,7 @@ Partial Class ChannelConfigForm
         'LabelX
         '
         Me.LabelX.AutoSize = True
-        Me.LabelX.Location = New System.Drawing.Point(127, 177)
+        Me.LabelX.Location = New System.Drawing.Point(125, 209)
         Me.LabelX.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelX.Name = "LabelX"
         Me.LabelX.Size = New System.Drawing.Size(14, 15)
@@ -130,7 +132,7 @@ Partial Class ChannelConfigForm
         '
         'ButtonOK
         '
-        Me.ButtonOK.Location = New System.Drawing.Point(108, 258)
+        Me.ButtonOK.Location = New System.Drawing.Point(106, 290)
         Me.ButtonOK.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
@@ -141,7 +143,7 @@ Partial Class ChannelConfigForm
         'ButtonCancel
         '
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonCancel.Location = New System.Drawing.Point(187, 258)
+        Me.ButtonCancel.Location = New System.Drawing.Point(185, 290)
         Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
@@ -195,7 +197,7 @@ Partial Class ChannelConfigForm
         'LabelScanTime
         '
         Me.LabelScanTime.AutoSize = True
-        Me.LabelScanTime.Location = New System.Drawing.Point(10, 205)
+        Me.LabelScanTime.Location = New System.Drawing.Point(8, 237)
         Me.LabelScanTime.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelScanTime.Name = "LabelScanTime"
         Me.LabelScanTime.Size = New System.Drawing.Size(102, 15)
@@ -205,7 +207,7 @@ Partial Class ChannelConfigForm
         'RadioButton1x
         '
         Me.RadioButton1x.AutoSize = True
-        Me.RadioButton1x.Location = New System.Drawing.Point(117, 203)
+        Me.RadioButton1x.Location = New System.Drawing.Point(115, 235)
         Me.RadioButton1x.Name = "RadioButton1x"
         Me.RadioButton1x.Size = New System.Drawing.Size(42, 19)
         Me.RadioButton1x.TabIndex = 14
@@ -216,7 +218,7 @@ Partial Class ChannelConfigForm
         'RadioButton2x
         '
         Me.RadioButton2x.AutoSize = True
-        Me.RadioButton2x.Location = New System.Drawing.Point(224, 203)
+        Me.RadioButton2x.Location = New System.Drawing.Point(222, 235)
         Me.RadioButton2x.Name = "RadioButton2x"
         Me.RadioButton2x.Size = New System.Drawing.Size(42, 19)
         Me.RadioButton2x.TabIndex = 15
@@ -227,7 +229,7 @@ Partial Class ChannelConfigForm
         'CheckBoxMixAudioChannel
         '
         Me.CheckBoxMixAudioChannel.AutoSize = True
-        Me.CheckBoxMixAudioChannel.Location = New System.Drawing.Point(176, 230)
+        Me.CheckBoxMixAudioChannel.Location = New System.Drawing.Point(174, 262)
         Me.CheckBoxMixAudioChannel.Name = "CheckBoxMixAudioChannel"
         Me.CheckBoxMixAudioChannel.Size = New System.Drawing.Size(90, 19)
         Me.CheckBoxMixAudioChannel.TabIndex = 18
@@ -237,7 +239,7 @@ Partial Class ChannelConfigForm
         'LabelAudioChannel
         '
         Me.LabelAudioChannel.AutoSize = True
-        Me.LabelAudioChannel.Location = New System.Drawing.Point(10, 231)
+        Me.LabelAudioChannel.Location = New System.Drawing.Point(8, 263)
         Me.LabelAudioChannel.Name = "LabelAudioChannel"
         Me.LabelAudioChannel.Size = New System.Drawing.Size(93, 15)
         Me.LabelAudioChannel.TabIndex = 16
@@ -245,7 +247,7 @@ Partial Class ChannelConfigForm
         '
         'NumericUpDownAudioChannel
         '
-        Me.NumericUpDownAudioChannel.Location = New System.Drawing.Point(109, 229)
+        Me.NumericUpDownAudioChannel.Location = New System.Drawing.Point(107, 261)
         Me.NumericUpDownAudioChannel.Maximum = New Decimal(New Integer() {255, 0, 0, 0})
         Me.NumericUpDownAudioChannel.Name = "NumericUpDownAudioChannel"
         Me.NumericUpDownAudioChannel.Size = New System.Drawing.Size(61, 25)
@@ -254,7 +256,7 @@ Partial Class ChannelConfigForm
         'RadioButton1dot5x
         '
         Me.RadioButton1dot5x.AutoSize = True
-        Me.RadioButton1dot5x.Location = New System.Drawing.Point(165, 203)
+        Me.RadioButton1dot5x.Location = New System.Drawing.Point(163, 235)
         Me.RadioButton1dot5x.Name = "RadioButton1dot5x"
         Me.RadioButton1dot5x.Size = New System.Drawing.Size(53, 19)
         Me.RadioButton1dot5x.TabIndex = 22
@@ -280,11 +282,32 @@ Partial Class ChannelConfigForm
         Me.NumericUpDownTriggerLevel.Size = New System.Drawing.Size(60, 25)
         Me.NumericUpDownTriggerLevel.TabIndex = 24
         '
+        'CheckBoxExternalTrigger
+        '
+        Me.CheckBoxExternalTrigger.AutoSize = True
+        Me.CheckBoxExternalTrigger.Location = New System.Drawing.Point(12, 177)
+        Me.CheckBoxExternalTrigger.Name = "CheckBoxExternalTrigger"
+        Me.CheckBoxExternalTrigger.Size = New System.Drawing.Size(90, 19)
+        Me.CheckBoxExternalTrigger.TabIndex = 26
+        Me.CheckBoxExternalTrigger.Text = "Ext. Trig.:"
+        Me.CheckBoxExternalTrigger.UseVisualStyleBackColor = True
+        '
+        'ButtonExternalTrigger
+        '
+        Me.ButtonExternalTrigger.Location = New System.Drawing.Point(104, 175)
+        Me.ButtonExternalTrigger.Name = "ButtonExternalTrigger"
+        Me.ButtonExternalTrigger.Size = New System.Drawing.Size(156, 23)
+        Me.ButtonExternalTrigger.TabIndex = 27
+        Me.ButtonExternalTrigger.Text = "(None)"
+        Me.ButtonExternalTrigger.UseVisualStyleBackColor = True
+        '
         'ChannelConfigForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(272, 294)
+        Me.ClientSize = New System.Drawing.Size(272, 371)
+        Me.Controls.Add(Me.ButtonExternalTrigger)
+        Me.Controls.Add(Me.CheckBoxExternalTrigger)
         Me.Controls.Add(Me.NumericUpDownTriggerLevel)
         Me.Controls.Add(Me.LabelTriggerLevel)
         Me.Controls.Add(Me.RadioButton1dot5x)
@@ -348,4 +371,6 @@ Partial Class ChannelConfigForm
     Friend WithEvents RadioButton1dot5x As RadioButton
     Friend WithEvents LabelTriggerLevel As Label
     Friend WithEvents NumericUpDownTriggerLevel As NumericUpDown
+    Friend WithEvents CheckBoxExternalTrigger As CheckBox
+    Friend WithEvents ButtonExternalTrigger As Button
 End Class

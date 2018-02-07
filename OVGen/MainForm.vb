@@ -311,13 +311,14 @@ Public Class MainForm
         End If
         Dim args As WorkerArguments = e.Argument
         Dim wave(args.files.Length - 1) As WAV
+        Dim extTrig As New Dictionary(Of Byte, WAV)
         Dim data As New List(Of Byte())
         Dim col As Byte = args.columns
         Dim sampleLength As UInteger = 0
         allFilesLoaded = True
         failedFiles.Clear()
         For z As Byte = 0 To args.files.Length - 1
-            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress(Nothing, 0, 0, "Loading wav file: " & args.files(z)))
+            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Loading wav file: " & args.files(z)))
             Try
                 wave(z) = New WAV(args.files(z))
             Catch ex As Exception
@@ -331,6 +332,20 @@ Public Class MainForm
             wave(z).mixChannel = extraArg.mixChannel
             wave(z).selectedChannel = extraArg.selectedChannel
             If wave(z).sampleLength > sampleLength Then sampleLength = wave(z).sampleLength
+            If extraArg.externalTriggerEnabled Then
+                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("  Loading external trigger: " & extraArg.externalTriggerFile))
+                Try
+                    extTrig.Add(z, New WAV(extraArg.externalTriggerFile))
+                    extTrig(z).extraArguments = extraArg
+                    extTrig(z).amplify = extraArg.amplify
+                    extTrig(z).mixChannel = extraArg.mixChannel
+                    extTrig(z).selectedChannel = extraArg.selectedChannel
+                Catch ex As Exception
+                    allFilesLoaded = False
+                    failedFiles.Add(extraArg.externalTriggerFile, ex.Message)
+                    Continue For
+                End Try
+            End If
         Next
         If My.Computer.FileSystem.FileExists(masterAudioFile) Then 'use master audio's sample length
             Try
@@ -452,28 +467,33 @@ Public Class MainForm
             For c As Byte = 0 To channels - 1 'for each channel
                 Dim channelArg As channelOptions = wave(c).extraArguments
                 Dim triggerOffset As Long = 0
+                Dim currentWAV As WAV
+                If channelArg.externalTriggerEnabled Then
+                    currentWAV = extTrig(c)
+                Else
+                    currentWAV = wave(c)
+                End If
                 'trigger
                 Select Case channelArg.algorithm
                     Case TriggeringAlgorithms.UseZeroCrossing
-                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UsePeakSpeedScanning
-                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UsePositiveLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, False)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, False)
                     Case TriggeringAlgorithms.UseNegativeLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, False, True)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, False, True)
                     Case TriggeringAlgorithms.UseCrossingLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, True)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, True)
                     Case TriggeringAlgorithms.UseMaxRectifiedAreaScanning
-                        triggerOffset = TriggeringAlgorithms.maxRectifiedArea(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UseAutoTrigger
-                        triggerOffset = TriggeringAlgorithms.autoTrigger(wave(c), i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.autoTrigger(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                 End Select
 
                 'draw
                 drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), args, sampleRate, channelArg.horizontalTime, i, triggerOffset)
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
-                'and also read stderr
             Next
 
             g.Clip = New Region() 'reset region

@@ -42,6 +42,8 @@ Public Class channelOptions
     Public horizontalTime As Double = 0.025
     Public amplify As Single = 1
     Public trigger As Integer = 0
+    Public externalTriggerEnabled As Boolean = False
+    Public externalTriggerFile As String = ""
     Public algorithm As Byte = TriggeringAlgorithms.UsePeakSpeedScanning
     Public label As String
     Public labelFont As Font = New Font(SystemFonts.MenuFont.FontFamily, 24)
