@@ -1,3 +1,7 @@
+2018/2/7 0.0.13.0
++ External Trigger Feature
+* Change default FFmpeg commandline: replace "-r" with "-framerate"
+
 2018/1/30 0.0.12.0
 + Trigger level are now programmable (Affects Positive/Negative/Crossing Length, Zero crossing, Max rectified area)
 * Rename Max Voltage to Max Rectified Area
