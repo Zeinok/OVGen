@@ -27,8 +27,8 @@ Public Class MainForm
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
     Dim FFmpegExitCode As Integer = 0
-    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-f image2pipe -r {framerate} -c:v png -i {img} -i {audio} -c:a aac -b:a 384k -c:v libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
-    Public Const DefaultFFmpegCommandLineSilence As String = "-f image2pipe -r {framerate} -c:v png -i {img} -c:v libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineJoinAudio As String = "-f image2pipe -framerate {framerate} -c:v png -i {img} -i {audio} -c:a aac -b:a 384k -c:v libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
+    Public Const DefaultFFmpegCommandLineSilence As String = "-f image2pipe -framerate {framerate} -c:v png -i {img} -c:v libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -movflags faststart {outfile}"
     Public FFmpegCommandLineJoinAudio As String = DefaultFFmpegCommandLineJoinAudio
     Public FFmpegCommandLineSilence As String = DefaultFFmpegCommandLineSilence
     Public FFmpegstderr As IO.StreamReader
