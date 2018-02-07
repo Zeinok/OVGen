@@ -28,7 +28,8 @@ OVGen is licensed under the MIT License, see LICENSE.md for more information.
 + Output as PNG (image each frame) or MP4 (video,requires FFmpeg)
 + If output as video, directly feed raw image into FFmpeg. 
 + In-program amplification
-+ Per channel time scaling
++ External trigger option
++ Per channel horizontal time
 + Set color for each channel
 + Preview mode
 + Toggleable output displaying
