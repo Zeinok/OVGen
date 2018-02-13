@@ -202,7 +202,9 @@ Public Class MainForm
             arg.smoothLine = CheckBoxSmooth.Checked
             arg.FPS = NumericUpDownFrameRate.Value
             arg.noFileWriting = CheckBoxNoFileWriting.Checked
+            NoFileWriting = arg.noFileWriting
             arg.convertVideo = CheckBoxVideo.Checked
+            convertVideo = arg.convertVideo
             If arg.convertVideo And Not arg.noFileWriting Then
                 Debug.WriteLine(Strings.Right(outputLocation, 4).ToLower)
                 If Strings.Right(outputLocation, 4).ToLower <> ".mp4" Then
@@ -859,7 +861,7 @@ Public Class MainForm
 
     Private Sub BackgroundWorkerStdErrReader_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles BackgroundWorkerStdErrReader.ProgressChanged
         Dim stderr As String = e.UserState
-        If stderr <> "" Then
+        If stderr <> "" And Not TextBoxLog.IsDisposed Then
             TextBoxLog.AppendText(stderr & vbCrLf)
         End If
     End Sub
