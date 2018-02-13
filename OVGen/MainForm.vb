@@ -4,7 +4,7 @@ Public Class MainForm
     Dim configFileLocation As String = Environment.CurrentDirectory & "\OVG.ini"
     '== FPS counter
     Dim fpsTimer As Date
-    Dim frames As ULong
+    Dim fpsFrames As ULong
     Dim realFPS As Double
     Dim averageFPS As Double
     Dim startTime As DateTime
@@ -14,7 +14,7 @@ Public Class MainForm
     Dim canvasSize As New Size(1280, 720)
     Dim bgColor As Color = Color.Black
     Public wavePen As New Pen(Color.White, 2)
-    Dim totalFrame As ULong
+
     Dim masterAudioFile As String = ""
     Dim outputLocation As String = ""
     Dim outputDirectory As String = ""
@@ -315,6 +315,8 @@ Public Class MainForm
         Dim data As New List(Of Byte())
         Dim col As Byte = args.columns
         Dim sampleLength As UInteger = 0
+        Dim frames As ULong = 0
+        Dim totalFrame As ULong = 0
         allFilesLoaded = True
         failedFiles.Clear()
         For z As Byte = 0 To args.files.Length - 1
@@ -331,7 +333,10 @@ Public Class MainForm
             wave(z).amplify = extraArg.amplify
             wave(z).mixChannel = extraArg.mixChannel
             wave(z).selectedChannel = extraArg.selectedChannel
-            If wave(z).sampleLength > sampleLength Then sampleLength = wave(z).sampleLength
+            If wave(z).sampleLength > sampleLength Then
+                sampleLength = wave(z).sampleLength
+                totalFrame = sampleLength \ (wave(z).sampleRate \ args.FPS) + 1
+            End If
             If extraArg.externalTriggerEnabled Then
                 OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("  Loading external trigger: " & extraArg.externalTriggerFile))
                 Try
@@ -352,6 +357,7 @@ Public Class MainForm
                 Dim master As New WAV(masterAudioFile, True)
                 sampleLength = master.sampleLength
                 OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Using length of master audio."))
+                totalFrame = sampleLength \ (master.sampleRate \ args.FPS) + 1
             Catch ex As Exception
                 OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to parse master audio: " & ex.Message))
             End Try
@@ -368,8 +374,6 @@ Public Class MainForm
         Dim bitDepth As Integer = wave(0).bitDepth
         Debug.WriteLine(bitDepth)
         Dim channels As Byte = args.files.Length
-        Dim sampleRate As Integer = wave(0).sampleRate
-        Dim samplesPerFrame As Integer = sampleRate / args.FPS
         Dim maxChannelPerColumn As Integer = Math.Ceiling(channels / col)
         Dim channelWidth As Integer = canvasSize.Width / col
         Dim channelHeight As Integer = canvasSize.Height / maxChannelPerColumn
@@ -391,9 +395,7 @@ Public Class MainForm
         Next
 
 
-        Dim i As Integer = 0
-        Dim sampleStep As Byte = 1
-        totalFrame = sampleLength \ samplesPerFrame + 1
+
         'ffmpeg
         Dim ffmpeg As New ProcessStartInfo
         ffmpeg.FileName = args.ffmpegBinary
@@ -441,7 +443,7 @@ Public Class MainForm
             If channelArg.label <> "" Then overlayNeeded = True
             g.DrawString(channelArg.label, channelArg.labelFont, New SolidBrush(channelArg.labelColor), New Rectangle(channelOffset(c), channelSize))
         Next
-        While i < sampleLength - 1
+        While frames < totalFrame
             Dim bmp As Bitmap = Nothing
             Dim createdBmp As Boolean = False
             Dim bmpCreateCount As Integer = 0
@@ -473,26 +475,28 @@ Public Class MainForm
                 Else
                     currentWAV = wave(c)
                 End If
+                Dim sampleLocation As ULong = frames * currentWAV.sampleRate / args.FPS
                 'trigger
+
                 Select Case channelArg.algorithm
                     Case TriggeringAlgorithms.UseZeroCrossing
-                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UsePeakSpeedScanning
-                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UsePositiveLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, False)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, False)
                     Case TriggeringAlgorithms.UseNegativeLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, False, True)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan, False, True)
                     Case TriggeringAlgorithms.UseCrossingLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, True)
+                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, True)
                     Case TriggeringAlgorithms.UseMaxRectifiedAreaScanning
-                        triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                     Case TriggeringAlgorithms.UseAutoTrigger
-                        triggerOffset = TriggeringAlgorithms.autoTrigger(currentWAV, i, sampleRate * channelArg.horizontalTime * channelArg.maxScan)
+                        triggerOffset = TriggeringAlgorithms.autoTrigger(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan)
                 End Select
 
                 'draw
-                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), args, sampleRate, channelArg.horizontalTime, i, triggerOffset)
+                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation, triggerOffset)
                 'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
             Next
 
@@ -508,7 +512,7 @@ Public Class MainForm
             If overlayNeeded Then
                 g.DrawImage(overlayBmp, 0, 0)
             End If
-            i += samplesPerFrame
+            frames += 1
             If Not NoFileWriting And convertVideo Then
                 If ffmpegProc.HasExited Then
                     OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("FFmpeg has exited, terminating render..."))
@@ -525,15 +529,15 @@ Public Class MainForm
                     If convertVideo Then
                         bmp.Save(stdin, Imaging.ImageFormat.Png)
                     Else
-                        bmp.Clone().Save(outputDirectory & "\" & i \ samplesPerFrame & ".png", Imaging.ImageFormat.Png)
+                        bmp.Clone().Save(outputDirectory & "\" & frames & ".png", Imaging.ImageFormat.Png)
                     End If
                     ok = True
                 Catch ex As InvalidOperationException
                     ok = False
                 End Try
             Loop Until ok = True Or saveRetries > 10
-            Dim prog As New Progress(bmp, i \ samplesPerFrame, totalFrame)
-            OscilloscopeBackgroundWorker.ReportProgress(i, prog)
+            Dim prog As New Progress(bmp, frames, totalFrame)
+            OscilloscopeBackgroundWorker.ReportProgress(frames, prog)
             If OscilloscopeBackgroundWorker.CancellationPending Then
                 OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Stopping!"))
                 If convertVideo And Not NoFileWriting Then
@@ -615,13 +619,13 @@ Public Class MainForm
             End If
             Dim timeLeft As New TimeSpan(0, 0, timeLeftSecond)
             LabelStatus.Text = String.Format("{0:P1} {1}/{2}, {3:N1} FPS , Time left: {4}", prog.CurrentFrame / prog.TotalFrame, prog.CurrentFrame, prog.TotalFrame, realFPS, timeLeft.ToString())
-            frames += 1
+            fpsFrames += 1
             Dim ms As ULong = Math.Abs((Now - fpsTimer).TotalMilliseconds)
             If ms >= 1000 Then
                 fpsTimer = Now
-                realFPS = frames * 1000 / ms
+                realFPS = fpsFrames * 1000 / ms
                 averageFPS = (averageFPS + realFPS) / 2
-                frames = 0
+                fpsFrames = 0
             End If
             TaskbarManager.Instance.SetProgressValue(prog.CurrentFrame, prog.TotalFrame)
         ElseIf prog.canceled Then 'canceled
