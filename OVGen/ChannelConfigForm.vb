@@ -49,7 +49,11 @@
 
     Sub checkValueValid()
         If IsNumeric(TextBoxHorizontalTime.Text) And IsNumeric(TextBoxAmplify.Text) Then
-            ButtonOK.Enabled = True
+            If TextBoxHorizontalTime.Text >= 1 Then
+                ButtonOK.Enabled = True
+            Else
+                ButtonOK.Enabled = False
+            End If
         Else
             ButtonOK.Enabled = False
         End If
