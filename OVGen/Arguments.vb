@@ -29,14 +29,16 @@ Public Class WorkerArguments
     Public audioFile As String
     Public canceled As Boolean = False
     Public smoothLine As Boolean
+    Public backgroundColor As Color = Color.Black
     Public drawMiddleLine As Boolean
+    Public middleLinePen As Pen
     Public useAnalogOscilloscopeStyle As Boolean = False
     Public analogOscilloscopeLineWidth As Byte = 4
     Public drawGrid As Boolean
+    Public gridPen As Pen
 End Class
 
 Public Class channelOptions
-    'Public color As Color
     Public pen As Pen = MainForm.wavePen
     Public waveColor As Color = MainForm.wavePen.Color
     Public horizontalTime As Double = 0.025

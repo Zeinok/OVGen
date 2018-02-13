@@ -12,17 +12,13 @@ Public Class MainForm
     '===For Worker
     Public optionsMap As New Dictionary(Of String, channelOptions)
     Dim canvasSize As New Size(1280, 720)
-    Dim bgColor As Color = Color.Black
     Public wavePen As New Pen(Color.White, 2)
-
     Dim masterAudioFile As String = ""
     Dim outputLocation As String = ""
     Dim outputDirectory As String = ""
     Dim NoFileWriting As Boolean = False
     Dim allFilesLoaded As Boolean = False
     Dim failedFiles As New Dictionary(Of String, String)
-    Dim gridColor As Color = Color.Gray
-    Dim middleLineColor As Color = Color.FromArgb(64, 64, 64)
     '===FFmpeg
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
@@ -71,6 +67,7 @@ Public Class MainForm
         SetStyle(ControlStyles.DoubleBuffer, True)
         SetStyle(ControlStyles.UserPaint, True)
         loadConfig()
+        previewLayout()
         outputDirectory = IO.Path.GetTempPath() & "OVG-" & randStr(5)
         If Not CheckBoxVideo.Checked Then
             TextBoxOutputLocation.Text = outputDirectory
@@ -98,11 +95,16 @@ Public Class MainForm
         Dim conf As New OVGconfig
         conf.General.SmoothLine = CheckBoxSmooth.Checked
         conf.General.DrawMiddleLine = CheckBoxDrawMiddleLine.Checked
+        conf.General.BackgroundColor = New ColorSerializable(ButtonBackgroundColor.BackColor)
+        conf.General.MiddleLineColor = New ColorSerializable(ButtonMiddleLineColor.BackColor)
+        conf.General.MiddleLineWidth = NumericUpDownMiddleLine.Value
         conf.General.Framerate = NumericUpDownFrameRate.Value
         conf.General.LineWidth = NumericUpDownLineWidth.Value
         conf.General.ConvertVideo = CheckBoxVideo.Checked
         conf.General.CRTStyledRender = CheckBoxCRT.Checked
         conf.General.DrawGrid = CheckBoxGrid.Checked
+        conf.General.GridColor = New ColorSerializable(ButtonGridColor.BackColor)
+        conf.General.GridWidth = NumericUpDownGrid.Value
         conf.General.CanvasSize = ComboBoxCanvasSize.Text
         conf.General.FlowDirection = channelFlowDirection
         conf.FFmpeg.BinaryLocation = ffmpegPath.Trim()
@@ -133,12 +135,17 @@ Public Class MainForm
                 FFmpegCommandLineSilence = conf.FFmpeg.SilenceCommandLine
                 If FFmpegCommandLineSilence = "" Then FFmpegCommandLineSilence = DefaultFFmpegCommandLineSilence
                 CheckBoxSmooth.Checked = conf.General.SmoothLine
+                ButtonBackgroundColor.BackColor = conf.General.BackgroundColor.GetColor()
                 CheckBoxDrawMiddleLine.Checked = conf.General.DrawMiddleLine
+                ButtonMiddleLineColor.BackColor = conf.General.MiddleLineColor.GetColor()
+                NumericUpDownMiddleLine.Value = conf.General.MiddleLineWidth
                 NumericUpDownFrameRate.Value = conf.General.Framerate
                 NumericUpDownLineWidth.Value = conf.General.LineWidth
                 CheckBoxVideo.Checked = conf.General.ConvertVideo
                 CheckBoxCRT.Checked = conf.General.CRTStyledRender
                 CheckBoxGrid.Checked = conf.General.DrawGrid
+                ButtonGridColor.BackColor = conf.General.GridColor.GetColor()
+                NumericUpDownGrid.Value = conf.General.GridWidth
                 ComboBoxCanvasSize.Text = conf.General.CanvasSize
                 channelFlowDirection = conf.General.FlowDirection
                 ButtonFlowDirection.Invalidate()
@@ -172,11 +179,12 @@ Public Class MainForm
                 MsgBox("Invalid canvas size!" & vbCrLf & ex.Message, MsgBoxStyle.Critical)
                 Exit Sub
             End Try
-
+            arg.backgroundColor = ButtonBackgroundColor.BackColor
             arg.outputFile = outputLocation
             outputLocation = TextBoxOutputLocation.Text
             outputDirectory = ""
             arg.drawGrid = CheckBoxGrid.Checked
+            arg.gridPen = New Pen(ButtonGridColor.BackColor, NumericUpDownGrid.Value)
             arg.useAnalogOscilloscopeStyle = CheckBoxCRT.Checked
             If arg.useAnalogOscilloscopeStyle Then
                 arg.analogOscilloscopeLineWidth = NumericUpDownLineWidth.Value
@@ -188,9 +196,14 @@ Public Class MainForm
                 MsgBox("Please add at least one file!", MsgBoxStyle.Exclamation)
                 Exit Sub
             End If
-            convertVideo = CheckBoxVideo.Checked
-            NoFileWriting = CheckBoxNoFileWriting.Checked
-            If convertVideo And Not NoFileWriting Then
+
+            Debug.WriteLine(String.Format("Output directory:{0}", outputDirectory))
+            arg.FPS = NumericUpDownFrameRate.Value
+            arg.smoothLine = CheckBoxSmooth.Checked
+            arg.FPS = NumericUpDownFrameRate.Value
+            arg.noFileWriting = CheckBoxNoFileWriting.Checked
+            arg.convertVideo = CheckBoxVideo.Checked
+            If arg.convertVideo And Not arg.noFileWriting Then
                 Debug.WriteLine(Strings.Right(outputLocation, 4).ToLower)
                 If Strings.Right(outputLocation, 4).ToLower <> ".mp4" Then
                     MsgBox("Please set a proper filename!", MsgBoxStyle.Critical)
@@ -215,17 +228,12 @@ Public Class MainForm
                 arg.outputDirectory = TextBoxOutputLocation.Text
                 outputDirectory = outputLocation
             End If
-            If outputDirectory = "" And Not NoFileWriting And Not convertVideo Then
+            If outputDirectory = "" And Not arg.noFileWriting And Not arg.convertVideo Then
                 MsgBox("Please select a directory!", MsgBoxStyle.Exclamation)
                 Exit Sub
             End If
-            Debug.WriteLine(String.Format("Output directory:{0}", outputDirectory))
-            arg.FPS = NumericUpDownFrameRate.Value
-            arg.smoothLine = CheckBoxSmooth.Checked
-            arg.FPS = NumericUpDownFrameRate.Value
-            arg.noFileWriting = CheckBoxNoFileWriting.Checked
-            arg.convertVideo = CheckBoxVideo.Checked
             arg.drawMiddleLine = CheckBoxDrawMiddleLine.Checked
+            arg.middleLinePen = New Pen(ButtonMiddleLineColor.BackColor, NumericUpDownMiddleLine.Value)
             arg.columns = NumericUpDownColumn.Value
             Dim fileArray(ListBoxFiles.Items.Count - 1) As String
             For i As Integer = 0 To fileArray.Length - 1
@@ -304,12 +312,13 @@ Public Class MainForm
     Private Sub OscilloscopeBackgroundWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles OscilloscopeBackgroundWorker.DoWork
         OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Start."))
         startTime = Now
+        Dim args As WorkerArguments = e.Argument
         canceledByUser = False
-        If Not My.Computer.FileSystem.DirectoryExists(outputDirectory) And Not NoFileWriting And Not convertVideo Then
+        If Not My.Computer.FileSystem.DirectoryExists(outputDirectory) And Not args.noFileWriting And Not args.convertVideo Then
             My.Computer.FileSystem.CreateDirectory(outputDirectory)
             Debug.WriteLine(outputDirectory)
         End If
-        Dim args As WorkerArguments = e.Argument
+
         Dim wave(args.files.Length - 1) As WAV
         Dim extTrig As New Dictionary(Of Byte, WAV)
         Dim data As New List(Of Byte())
@@ -420,7 +429,7 @@ Public Class MainForm
         Dim ffmpegProc As Process = Nothing
         Dim stderr As IO.StreamReader = Nothing
         Dim stdin As IO.Stream = Nothing
-        If convertVideo And Not NoFileWriting Then
+        If args.convertVideo And Not args.noFileWriting Then
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Starting FFmpeg."))
             OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Run: " & ffmpeg.FileName & " " & ffmpeg.Arguments))
             ffmpegProc = Process.Start(ffmpeg)
@@ -458,11 +467,11 @@ Public Class MainForm
             Loop Until createdBmp Or bmpCreateCount > 3
             If bmpCreateCount > 3 Then Continue While
             Dim g As Graphics = Graphics.FromImage(bmp)
-            g.Clear(bgColor)
+            g.Clear(args.backgroundColor)
             If args.smoothLine Then g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
             If args.drawMiddleLine Then
                 For c As Byte = 0 To channels - 1
-                    g.DrawLine(New Pen(middleLineColor), channelOffset(c).X, channelOffset(c).Y + channelHeight \ 2,
+                    g.DrawLine(args.middleLinePen, channelOffset(c).X, channelOffset(c).Y + channelHeight \ 2,
                                               channelOffset(c).X + channelWidth, channelOffset(c).Y + channelHeight \ 2)
                 Next
             End If
@@ -503,17 +512,17 @@ Public Class MainForm
             g.Clip = New Region() 'reset region
             If args.drawGrid Then 'draw grid
                 For x As Integer = 1 To col - 1
-                    g.DrawLine(New Pen(gridColor), channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+                    g.DrawLine(args.gridPen, channelWidth * x, 0, channelWidth * x, canvasSize.Height)
                 Next
                 For y As Integer = 1 To maxChannelPerColumn - 1
-                    g.DrawLine(New Pen(gridColor), 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+                    g.DrawLine(args.gridPen, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
                 Next
             End If
             If overlayNeeded Then
                 g.DrawImage(overlayBmp, 0, 0)
             End If
             frames += 1
-            If Not NoFileWriting And convertVideo Then
+            If Not args.noFileWriting And args.convertVideo Then
                 If ffmpegProc.HasExited Then
                     OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("FFmpeg has exited, terminating render..."))
                     OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("FFmpeg exit code:" & ffmpegProc.ExitCode))
@@ -523,10 +532,10 @@ Public Class MainForm
             Dim ok As Boolean = False
             Dim saveRetries As Integer = 0
             Do
-                If NoFileWriting Then Exit Do
+                If args.noFileWriting Then Exit Do
                 Try
                     saveRetries += 1
-                    If convertVideo Then
+                    If args.convertVideo Then
                         bmp.Save(stdin, Imaging.ImageFormat.Png)
                     Else
                         bmp.Clone().Save(outputDirectory & "\" & frames & ".png", Imaging.ImageFormat.Png)
@@ -540,7 +549,7 @@ Public Class MainForm
             OscilloscopeBackgroundWorker.ReportProgress(frames, prog)
             If OscilloscopeBackgroundWorker.CancellationPending Then
                 OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Stopping!"))
-                If convertVideo And Not NoFileWriting Then
+                If args.convertVideo And Not args.noFileWriting Then
                     ffmpegProc.Kill()
                 End If
                 If BackgroundWorkerStdErrReader.IsBusy Then
@@ -554,7 +563,7 @@ Public Class MainForm
             End If
         End While
         wavePen.Color = Color.White 'reset color on end
-        If convertVideo And Not NoFileWriting And Not OscilloscopeBackgroundWorker.CancellationPending Then
+        If args.convertVideo And Not args.noFileWriting And Not OscilloscopeBackgroundWorker.CancellationPending Then
             stdin.Flush()
             stdin.Close()
             Do Until ffmpegProc.HasExited
@@ -726,7 +735,7 @@ Public Class MainForm
 
         Dim bmpLayout As New Bitmap(canvasSize.Width, canvasSize.Height)
         Dim g As Graphics = Graphics.FromImage(bmpLayout)
-        g.Clear(bgColor)
+        g.Clear(ButtonBackgroundColor.BackColor)
         If ListBoxFiles.Items.Count <> 0 Then
             Dim col As Byte = NumericUpDownColumn.Value
             Dim channels As UInteger = ListBoxFiles.Items.Count
@@ -736,10 +745,10 @@ Public Class MainForm
             Dim channelOffset(channels - 1) As Point
             If CheckBoxGrid.Checked Then 'draw grid
                 For x As Integer = 1 To col - 1
-                    g.DrawLine(New Pen(gridColor), channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+                    g.DrawLine(New Pen(ButtonGridColor.BackColor, NumericUpDownGrid.Value), channelWidth * x, 0, channelWidth * x, canvasSize.Height)
                 Next
                 For y As Integer = 1 To maxChannelPerColumn - 1
-                    g.DrawLine(New Pen(gridColor), 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+                    g.DrawLine(New Pen(ButtonGridColor.BackColor, NumericUpDownGrid.Value), 0, channelHeight * y, canvasSize.Width, channelHeight * y)
                 Next
             End If
             For c As Integer = 0 To channels - 1
@@ -762,13 +771,23 @@ Public Class MainForm
                     g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(currentChannel.waveColor), New Rectangle(x, y, channelWidth, channelHeight))
                 End If
                 If CheckBoxDrawMiddleLine.Checked Then
-                    g.DrawLine(New Pen(middleLineColor), x, y + channelHeight \ 2, x + channelWidth, y + channelHeight \ 2)
+                    g.DrawLine(New Pen(ButtonMiddleLineColor.BackColor, NumericUpDownMiddleLine.Value), x, y + channelHeight \ 2, x + channelWidth, y + channelHeight \ 2)
                 End If
             Next
         End If
 
         PictureBoxOutput.Image = bmpLayout
     End Sub
+
+    Function getTextColor(ByVal color As Color) As Color
+        Dim Y As Single = 0.2126 * color.R / 255 + 0.7152 * color.G / 255 + 0.0722 * color.B / 255
+        'calculate luminance
+        If Y < 0.5 Then
+            Return Color.White
+        Else
+            Return Color.Black
+        End If
+    End Function
 
     Private Sub NumericUpDownColumn_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NumericUpDownColumn.ValueChanged
         'If formStarted Then
@@ -873,5 +892,44 @@ Public Class MainForm
 
     Private Sub CheckBoxDrawMiddleLine_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxDrawMiddleLine.CheckedChanged
         previewLayout()
+    End Sub
+
+    Private Sub ButtonGridColor_Click(sender As Object, e As EventArgs) Handles ButtonGridColor.Click
+        Dim cd As New ColorDialog
+        cd.Color = ButtonGridColor.BackColor
+        If cd.ShowDialog() = DialogResult.OK Then
+            ButtonGridColor.BackColor = cd.Color
+        End If
+        previewLayout()
+    End Sub
+
+    Private Sub ButtonMiddleLineColor_Click(sender As Object, e As EventArgs) Handles ButtonMiddleLineColor.Click
+        Dim cd As New ColorDialog
+        cd.Color = ButtonMiddleLineColor.BackColor
+        If cd.ShowDialog() = DialogResult.OK Then
+            ButtonMiddleLineColor.BackColor = cd.Color
+        End If
+        previewLayout()
+    End Sub
+
+    Private Sub ButtonBackgroundColor_Click(sender As Object, e As EventArgs) Handles ButtonBackgroundColor.Click
+        Dim cd As New ColorDialog
+        cd.Color = ButtonBackgroundColor.BackColor
+        If cd.ShowDialog() = DialogResult.OK Then
+            ButtonBackgroundColor.BackColor = cd.Color
+        End If
+        previewLayout()
+    End Sub
+
+    Private Sub ButtonBackgroundColor_BackColorChanged(sender As Object, e As EventArgs) Handles ButtonBackgroundColor.BackColorChanged
+        ButtonBackgroundColor.ForeColor = getTextColor(ButtonBackgroundColor.BackColor)
+    End Sub
+
+    Private Sub ButtonMiddleLineColor_BackColorChanged(sender As Object, e As EventArgs) Handles ButtonMiddleLineColor.BackColorChanged
+        ButtonMiddleLineColor.ForeColor = getTextColor(ButtonMiddleLineColor.BackColor)
+    End Sub
+
+    Private Sub ButtonGridColor_BackColorChanged(sender As Object, e As EventArgs) Handles ButtonGridColor.BackColorChanged
+        ButtonGridColor.ForeColor = getTextColor(ButtonGridColor.ForeColor)
     End Sub
 End Class

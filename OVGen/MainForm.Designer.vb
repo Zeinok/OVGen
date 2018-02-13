@@ -31,6 +31,11 @@ Partial Class MainForm
         Me.ButtonControl = New System.Windows.Forms.Button()
         Me.CheckBoxShowOutput = New System.Windows.Forms.CheckBox()
         Me.GroupBoxRenderingOptions = New System.Windows.Forms.GroupBox()
+        Me.ButtonBackgroundColor = New System.Windows.Forms.Button()
+        Me.NumericUpDownMiddleLine = New System.Windows.Forms.NumericUpDown()
+        Me.NumericUpDownGrid = New System.Windows.Forms.NumericUpDown()
+        Me.ButtonMiddleLineColor = New System.Windows.Forms.Button()
+        Me.ButtonGridColor = New System.Windows.Forms.Button()
         Me.CheckBoxDrawMiddleLine = New System.Windows.Forms.CheckBox()
         Me.ButtonFlowDirection = New System.Windows.Forms.Button()
         Me.LabelFlowDirecton = New System.Windows.Forms.Label()
@@ -68,6 +73,8 @@ Partial Class MainForm
         Me.BackgroundWorkerStdErrReader = New System.ComponentModel.BackgroundWorker()
         Me.GroupBoxFiles = New System.Windows.Forms.GroupBox()
         Me.GroupBoxRenderingOptions.SuspendLayout()
+        CType(Me.NumericUpDownMiddleLine, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.NumericUpDownGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownLineWidth, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownColumn, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownFrameRate, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -138,6 +145,11 @@ Partial Class MainForm
         '
         'GroupBoxRenderingOptions
         '
+        Me.GroupBoxRenderingOptions.Controls.Add(Me.ButtonBackgroundColor)
+        Me.GroupBoxRenderingOptions.Controls.Add(Me.NumericUpDownMiddleLine)
+        Me.GroupBoxRenderingOptions.Controls.Add(Me.NumericUpDownGrid)
+        Me.GroupBoxRenderingOptions.Controls.Add(Me.ButtonMiddleLineColor)
+        Me.GroupBoxRenderingOptions.Controls.Add(Me.ButtonGridColor)
         Me.GroupBoxRenderingOptions.Controls.Add(Me.CheckBoxDrawMiddleLine)
         Me.GroupBoxRenderingOptions.Controls.Add(Me.ButtonFlowDirection)
         Me.GroupBoxRenderingOptions.Controls.Add(Me.LabelFlowDirecton)
@@ -157,25 +169,76 @@ Partial Class MainForm
         Me.GroupBoxRenderingOptions.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupBoxRenderingOptions.Name = "GroupBoxRenderingOptions"
         Me.GroupBoxRenderingOptions.Padding = New System.Windows.Forms.Padding(2)
-        Me.GroupBoxRenderingOptions.Size = New System.Drawing.Size(254, 220)
+        Me.GroupBoxRenderingOptions.Size = New System.Drawing.Size(254, 253)
         Me.GroupBoxRenderingOptions.TabIndex = 6
         Me.GroupBoxRenderingOptions.TabStop = False
         Me.GroupBoxRenderingOptions.Text = "Rendering"
         '
+        'ButtonBackgroundColor
+        '
+        Me.ButtonBackgroundColor.BackColor = System.Drawing.Color.Black
+        Me.ButtonBackgroundColor.ForeColor = System.Drawing.Color.White
+        Me.ButtonBackgroundColor.Location = New System.Drawing.Point(119, 46)
+        Me.ButtonBackgroundColor.Name = "ButtonBackgroundColor"
+        Me.ButtonBackgroundColor.Size = New System.Drawing.Size(129, 23)
+        Me.ButtonBackgroundColor.TabIndex = 19
+        Me.ButtonBackgroundColor.Text = "Background Color"
+        Me.ButtonBackgroundColor.UseVisualStyleBackColor = False
+        '
+        'NumericUpDownMiddleLine
+        '
+        Me.NumericUpDownMiddleLine.Location = New System.Drawing.Point(198, 162)
+        Me.NumericUpDownMiddleLine.Maximum = New Decimal(New Integer() {10, 0, 0, 0})
+        Me.NumericUpDownMiddleLine.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.NumericUpDownMiddleLine.Name = "NumericUpDownMiddleLine"
+        Me.NumericUpDownMiddleLine.Size = New System.Drawing.Size(48, 25)
+        Me.NumericUpDownMiddleLine.TabIndex = 18
+        Me.NumericUpDownMiddleLine.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'NumericUpDownGrid
+        '
+        Me.NumericUpDownGrid.Location = New System.Drawing.Point(154, 133)
+        Me.NumericUpDownGrid.Maximum = New Decimal(New Integer() {10, 0, 0, 0})
+        Me.NumericUpDownGrid.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.NumericUpDownGrid.Name = "NumericUpDownGrid"
+        Me.NumericUpDownGrid.Size = New System.Drawing.Size(48, 25)
+        Me.NumericUpDownGrid.TabIndex = 17
+        Me.NumericUpDownGrid.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'ButtonMiddleLineColor
+        '
+        Me.ButtonMiddleLineColor.BackColor = System.Drawing.Color.Gray
+        Me.ButtonMiddleLineColor.Location = New System.Drawing.Point(117, 162)
+        Me.ButtonMiddleLineColor.Name = "ButtonMiddleLineColor"
+        Me.ButtonMiddleLineColor.Size = New System.Drawing.Size(75, 23)
+        Me.ButtonMiddleLineColor.TabIndex = 16
+        Me.ButtonMiddleLineColor.Text = "Color"
+        Me.ButtonMiddleLineColor.UseVisualStyleBackColor = False
+        '
+        'ButtonGridColor
+        '
+        Me.ButtonGridColor.BackColor = System.Drawing.Color.LightGray
+        Me.ButtonGridColor.Location = New System.Drawing.Point(73, 133)
+        Me.ButtonGridColor.Name = "ButtonGridColor"
+        Me.ButtonGridColor.Size = New System.Drawing.Size(75, 23)
+        Me.ButtonGridColor.TabIndex = 15
+        Me.ButtonGridColor.Text = "Color"
+        Me.ButtonGridColor.UseVisualStyleBackColor = False
+        '
         'CheckBoxDrawMiddleLine
         '
         Me.CheckBoxDrawMiddleLine.AutoSize = True
-        Me.CheckBoxDrawMiddleLine.Location = New System.Drawing.Point(107, 131)
+        Me.CheckBoxDrawMiddleLine.Location = New System.Drawing.Point(11, 165)
         Me.CheckBoxDrawMiddleLine.Name = "CheckBoxDrawMiddleLine"
-        Me.CheckBoxDrawMiddleLine.Size = New System.Drawing.Size(135, 19)
+        Me.CheckBoxDrawMiddleLine.Size = New System.Drawing.Size(100, 19)
         Me.CheckBoxDrawMiddleLine.TabIndex = 2
-        Me.CheckBoxDrawMiddleLine.Text = "Draw Middle Line"
+        Me.CheckBoxDrawMiddleLine.Text = "Middle Line"
         Me.ToolTips.SetToolTip(Me.CheckBoxDrawMiddleLine, "Draws a horizontal line at 0V")
         Me.CheckBoxDrawMiddleLine.UseVisualStyleBackColor = True
         '
         'ButtonFlowDirection
         '
-        Me.ButtonFlowDirection.Location = New System.Drawing.Point(113, 188)
+        Me.ButtonFlowDirection.Location = New System.Drawing.Point(113, 221)
         Me.ButtonFlowDirection.Name = "ButtonFlowDirection"
         Me.ButtonFlowDirection.Size = New System.Drawing.Size(133, 26)
         Me.ButtonFlowDirection.TabIndex = 14
@@ -185,7 +248,7 @@ Partial Class MainForm
         'LabelFlowDirecton
         '
         Me.LabelFlowDirecton.AutoSize = True
-        Me.LabelFlowDirecton.Location = New System.Drawing.Point(9, 194)
+        Me.LabelFlowDirecton.Location = New System.Drawing.Point(9, 227)
         Me.LabelFlowDirecton.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LabelFlowDirecton.Name = "LabelFlowDirecton"
         Me.LabelFlowDirecton.Size = New System.Drawing.Size(97, 15)
@@ -195,18 +258,18 @@ Partial Class MainForm
         'CheckBoxGrid
         '
         Me.CheckBoxGrid.AutoSize = True
-        Me.CheckBoxGrid.Location = New System.Drawing.Point(12, 131)
+        Me.CheckBoxGrid.Location = New System.Drawing.Point(11, 136)
         Me.CheckBoxGrid.Margin = New System.Windows.Forms.Padding(4)
         Me.CheckBoxGrid.Name = "CheckBoxGrid"
-        Me.CheckBoxGrid.Size = New System.Drawing.Size(90, 19)
+        Me.CheckBoxGrid.Size = New System.Drawing.Size(55, 19)
         Me.CheckBoxGrid.TabIndex = 10
-        Me.CheckBoxGrid.Text = "Draw Grid"
+        Me.CheckBoxGrid.Text = "Grid"
         Me.CheckBoxGrid.UseVisualStyleBackColor = True
         '
         'LabelCanvasSize
         '
         Me.LabelCanvasSize.AutoSize = True
-        Me.LabelCanvasSize.Location = New System.Drawing.Point(9, 162)
+        Me.LabelCanvasSize.Location = New System.Drawing.Point(9, 195)
         Me.LabelCanvasSize.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LabelCanvasSize.Name = "LabelCanvasSize"
         Me.LabelCanvasSize.Size = New System.Drawing.Size(79, 15)
@@ -217,7 +280,7 @@ Partial Class MainForm
         '
         Me.ComboBoxCanvasSize.FormattingEnabled = True
         Me.ComboBoxCanvasSize.Items.AddRange(New Object() {"1280x720", "1920x1080"})
-        Me.ComboBoxCanvasSize.Location = New System.Drawing.Point(96, 158)
+        Me.ComboBoxCanvasSize.Location = New System.Drawing.Point(96, 191)
         Me.ComboBoxCanvasSize.Margin = New System.Windows.Forms.Padding(4)
         Me.ComboBoxCanvasSize.Name = "ComboBoxCanvasSize"
         Me.ComboBoxCanvasSize.Size = New System.Drawing.Size(150, 23)
@@ -338,7 +401,7 @@ Partial Class MainForm
         '
         'ButtonSetAll
         '
-        Me.ButtonSetAll.Location = New System.Drawing.Point(173, 271)
+        Me.ButtonSetAll.Location = New System.Drawing.Point(173, 228)
         Me.ButtonSetAll.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonSetAll.Name = "ButtonSetAll"
         Me.ButtonSetAll.Size = New System.Drawing.Size(78, 30)
@@ -354,13 +417,13 @@ Partial Class MainForm
         Me.ListBoxFiles.Location = New System.Drawing.Point(5, 70)
         Me.ListBoxFiles.Margin = New System.Windows.Forms.Padding(2)
         Me.ListBoxFiles.Name = "ListBoxFiles"
-        Me.ListBoxFiles.Size = New System.Drawing.Size(243, 199)
+        Me.ListBoxFiles.Size = New System.Drawing.Size(243, 154)
         Me.ListBoxFiles.TabIndex = 3
         '
         'ButtonOptions
         '
         Me.ButtonOptions.Image = Global.OVG.My.Resources.Resources.gear_16xLG
-        Me.ButtonOptions.Location = New System.Drawing.Point(140, 271)
+        Me.ButtonOptions.Location = New System.Drawing.Point(140, 228)
         Me.ButtonOptions.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonOptions.Name = "ButtonOptions"
         Me.ButtonOptions.Size = New System.Drawing.Size(28, 30)
@@ -371,7 +434,7 @@ Partial Class MainForm
         'ButtonMoveDown
         '
         Me.ButtonMoveDown.Image = Global.OVG.My.Resources.Resources.arrow_Down_16xLG
-        Me.ButtonMoveDown.Location = New System.Drawing.Point(106, 271)
+        Me.ButtonMoveDown.Location = New System.Drawing.Point(106, 228)
         Me.ButtonMoveDown.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonMoveDown.Name = "ButtonMoveDown"
         Me.ButtonMoveDown.Size = New System.Drawing.Size(28, 30)
@@ -382,7 +445,7 @@ Partial Class MainForm
         'ButtonMoveUp
         '
         Me.ButtonMoveUp.Image = Global.OVG.My.Resources.Resources.arrow_Up_16xLG
-        Me.ButtonMoveUp.Location = New System.Drawing.Point(72, 271)
+        Me.ButtonMoveUp.Location = New System.Drawing.Point(72, 228)
         Me.ButtonMoveUp.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonMoveUp.Name = "ButtonMoveUp"
         Me.ButtonMoveUp.Size = New System.Drawing.Size(28, 30)
@@ -393,7 +456,7 @@ Partial Class MainForm
         'ButtonRemove
         '
         Me.ButtonRemove.Image = Global.OVG.My.Resources.Resources.action_Cancel_16xLG
-        Me.ButtonRemove.Location = New System.Drawing.Point(39, 271)
+        Me.ButtonRemove.Location = New System.Drawing.Point(39, 228)
         Me.ButtonRemove.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonRemove.Name = "ButtonRemove"
         Me.ButtonRemove.Size = New System.Drawing.Size(28, 30)
@@ -404,7 +467,7 @@ Partial Class MainForm
         'ButtonAdd
         '
         Me.ButtonAdd.Image = Global.OVG.My.Resources.Resources.action_add_16xLG
-        Me.ButtonAdd.Location = New System.Drawing.Point(5, 271)
+        Me.ButtonAdd.Location = New System.Drawing.Point(5, 228)
         Me.ButtonAdd.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonAdd.Name = "ButtonAdd"
         Me.ButtonAdd.Size = New System.Drawing.Size(28, 30)
@@ -527,9 +590,9 @@ Partial Class MainForm
         Me.GroupBoxFiles.Controls.Add(Me.ButtonMoveUp)
         Me.GroupBoxFiles.Controls.Add(Me.ButtonMoveDown)
         Me.GroupBoxFiles.Controls.Add(Me.ButtonOptions)
-        Me.GroupBoxFiles.Location = New System.Drawing.Point(825, 234)
+        Me.GroupBoxFiles.Location = New System.Drawing.Point(825, 272)
         Me.GroupBoxFiles.Name = "GroupBoxFiles"
-        Me.GroupBoxFiles.Size = New System.Drawing.Size(253, 305)
+        Me.GroupBoxFiles.Size = New System.Drawing.Size(253, 267)
         Me.GroupBoxFiles.TabIndex = 7
         Me.GroupBoxFiles.TabStop = False
         Me.GroupBoxFiles.Text = "Files"
@@ -558,6 +621,8 @@ Partial Class MainForm
         Me.Text = "Oscilloscope View Generator"
         Me.GroupBoxRenderingOptions.ResumeLayout(False)
         Me.GroupBoxRenderingOptions.PerformLayout()
+        CType(Me.NumericUpDownMiddleLine, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.NumericUpDownGrid, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NumericUpDownLineWidth, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NumericUpDownColumn, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NumericUpDownFrameRate, System.ComponentModel.ISupportInitialize).EndInit()
@@ -613,4 +678,9 @@ Partial Class MainForm
     Friend WithEvents ButtonFlowDirection As Button
     Friend WithEvents CheckBoxDrawMiddleLine As CheckBox
     Friend WithEvents GroupBoxFiles As GroupBox
+    Friend WithEvents NumericUpDownMiddleLine As NumericUpDown
+    Friend WithEvents NumericUpDownGrid As NumericUpDown
+    Friend WithEvents ButtonMiddleLineColor As Button
+    Friend WithEvents ButtonGridColor As Button
+    Friend WithEvents ButtonBackgroundColor As Button
 End Class

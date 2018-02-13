@@ -83,6 +83,10 @@
         End If
     End Sub
 
+    Private Sub ButtonColor_BackColorChanged(sender As Object, e As EventArgs) Handles ButtonColor.BackColorChanged
+        ButtonColor.ForeColor = MainForm.getTextColor(ButtonColor.BackColor)
+    End Sub
+
     Private Sub TextBoxTimeScale_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBoxHorizontalTime.TextChanged
         checkValueValid()
     End Sub
@@ -169,4 +173,5 @@
     Private Sub CheckBoxExternalTrigger_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxExternalTrigger.CheckedChanged
         ButtonExternalTrigger.Enabled = CheckBoxExternalTrigger.Checked
     End Sub
+
 End Class
