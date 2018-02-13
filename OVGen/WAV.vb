@@ -136,7 +136,7 @@ Public Class WAV
                 Stream.Read(buffer, 0, 2)
                 Dim value As Double = BitConverter.ToInt16(buffer, 0) / 258 * amplify
                 If mixChannel Then
-                    For i As Integer = 2 To (channels - 1) * 2 Step 2
+                    For i As Integer = 2 To channels * 2 Step 2
                         Stream.Position += i
                         Stream.Read(buffer, 0, 2)
                         value += BitConverter.ToInt16(buffer, 0) / 258 * amplify
