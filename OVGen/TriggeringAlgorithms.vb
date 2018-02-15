@@ -30,8 +30,8 @@
         peakSpeedScanning = 0
         Dim firstScan As Long = 0
         Dim captureLength As Long = 0
-        Dim low As Integer = 0
-        Dim max As Integer = 0
+        Dim low As Integer = 128
+        Dim max As Integer = -127
         Dim peaks As New List(Of Integer)
         While firstScan < maxScanLength
             If Math.Floor(wave.getSample(offset + firstScan, True)) < low Then
@@ -131,8 +131,8 @@
     Function autoTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         autoTrigger = 0
         Dim firstScan As Long = 0
-        Dim low As Integer = 0
-        Dim max As Integer = 0
+        Dim low As Integer = 128
+        Dim max As Integer = -127
         Dim peaks As New List(Of Integer)
         While firstScan < maxScanLength
             If Math.Floor(wave.getSample(offset + firstScan, True)) < low Then
