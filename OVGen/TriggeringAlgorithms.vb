@@ -1,25 +1,25 @@
 ﻿Module TriggeringAlgorithms
-    Public ReadOnly Algorithms As String() = {"Zero-Crossing",
+    Public ReadOnly Algorithms As String() = {"Rising Edge",
                                               "Peak Speed",
                                               "Positive Length",
                                               "Negative Length",
                                               "Crossing Length",
                                               "Max Rectified Area",
                                               "No Trigger"}
-    Public Const UseZeroCrossing As Byte = 0
+    Public Const UseRisingEdge As Byte = 0
     Public Const UsePeakSpeedScanning As Byte = 1
     Public Const UsePositiveLengthScanning As Byte = 2
     Public Const UseNegativeLengthScanning As Byte = 3
     Public Const UseCrossingLengthScanning As Byte = 4
     Public Const UseMaxRectifiedAreaScanning As Byte = 5
-    Function zeroCrossingTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
+    Function risingEdgeTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         Dim args As channelOptions = wave.extraArguments
-        zeroCrossingTrigger = 0
-        While Math.Floor(wave.getSample(offset + zeroCrossingTrigger, True)) > args.trigger And zeroCrossingTrigger < maxScanLength 'postive
-            zeroCrossingTrigger += 1
+        risingEdgeTrigger = 0
+        While Math.Floor(wave.getSample(offset + risingEdgeTrigger, True)) > args.trigger And risingEdgeTrigger < maxScanLength 'postive
+            risingEdgeTrigger += 1
         End While
-        While Math.Floor(wave.getSample(offset + zeroCrossingTrigger, True)) <= args.trigger And zeroCrossingTrigger < maxScanLength 'negative
-            zeroCrossingTrigger += 1
+        While Math.Floor(wave.getSample(offset + risingEdgeTrigger, True)) <= args.trigger And risingEdgeTrigger < maxScanLength 'negative
+            risingEdgeTrigger += 1
         End While
     End Function
 

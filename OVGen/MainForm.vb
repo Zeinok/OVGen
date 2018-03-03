@@ -509,8 +509,8 @@ Public Class MainForm
                         channelArg.trigger = (max + low) / 2
                     End If
                     Select Case channelArg.algorithm
-                        Case TriggeringAlgorithms.UseZeroCrossing
-                            triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(currentWAV, sampleLocation, maxScanLength)
+                        Case TriggeringAlgorithms.UseRisingEdge
+                            triggerOffset = TriggeringAlgorithms.risingEdgeTrigger(currentWAV, sampleLocation, maxScanLength)
                         Case TriggeringAlgorithms.UsePeakSpeedScanning
                             triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, sampleLocation, maxScanLength)
                         Case TriggeringAlgorithms.UsePositiveLengthScanning
