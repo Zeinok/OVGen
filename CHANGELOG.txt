@@ -1,3 +1,8 @@
+2018/3/3 0.0.15.0
++ Pulse width modulated color
+* Auto Trigger Level now becomes an option
+* Zero-Crossing renamed to Rising Edge
+
 2018/2/13 0.0.14.0
 + Step sample based on frame.
 + Custom colors for: Background, Grid, Middle line.
