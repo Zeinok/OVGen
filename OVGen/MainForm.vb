@@ -675,7 +675,10 @@ Public Class MainForm
         'taskbarProgress.ProgressState = Windows.Shell.TaskbarItemProgressState.Normal
         TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
         Dim prog As Progress = e.UserState
-        If prog.message <> "" Then TextBoxLog.AppendText(prog.message & vbCrLf)
+        If prog.message <> "" Then
+            TextBoxLog.AppendText(prog.message & vbCrLf)
+            TextBoxLog.Update()
+        End If
         If prog.Image IsNot Nothing Then
 
             Dim ok As Boolean = False
