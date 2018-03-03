@@ -126,9 +126,9 @@
         currentOptions.selectedChannel = NumericUpDownAudioChannel.Value
         currentOptions.mixChannel = CheckBoxMixAudioChannel.Checked
         If MainForm.currentChannelToBeSet = "" Then
-            For Each key In MainForm.optionsMap.Keys
-                Dim currentChannel As channelOptions = MainForm.optionsMap.Item(key)
-                currentChannel = currentOptions.Clone()
+            Dim channelList As List(Of String) = MainForm.optionsMap.Keys.ToList()
+            For Each key In channelList
+                MainForm.optionsMap.Item(key) = currentOptions.Clone()
             Next
             globalOptions = currentOptions.Clone()
         End If
