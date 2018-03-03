@@ -5,7 +5,6 @@
                                               "Negative Length",
                                               "Crossing Length",
                                               "Max Rectified Area",
-                                              "Auto Trigger",
                                               "No Trigger"}
     Public Const UseZeroCrossing As Byte = 0
     Public Const UsePeakSpeedScanning As Byte = 1
@@ -13,7 +12,6 @@
     Public Const UseNegativeLengthScanning As Byte = 3
     Public Const UseCrossingLengthScanning As Byte = 4
     Public Const UseMaxRectifiedAreaScanning As Byte = 5
-    Public Const UseAutoTrigger As Byte = 6
     Function zeroCrossingTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         Dim args As channelOptions = wave.extraArguments
         zeroCrossingTrigger = 0
@@ -27,6 +25,7 @@
 
     Function peakSpeedScanning(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         'OPNA2608: scans how fast a peak is reached centers there
+        Dim args As channelOptions = wave.extraArguments
         peakSpeedScanning = 0
         Dim firstScan As Long = 0
         Dim captureLength As Long = 0
@@ -49,10 +48,9 @@
         End While
         Dim middleDistance As Long = maxScanLength
         Dim middlePoint As Long = 0
-        Dim middle As Integer = Math.Floor((max + low) / 2)
         For Each peakPoint In peaks
             Dim currentPoint As Integer = peakPoint
-            While Math.Floor(wave.getSample(offset + currentPoint, True)) > middle And currentPoint >= 0 'find middle point
+            While Math.Floor(wave.getSample(offset + currentPoint, True)) > args.trigger And currentPoint >= 0 'find middle point
                 currentPoint -= 1
             End While
             Dim distanceToPeak As Long = peakPoint - currentPoint 'distance between middlePoint to peakPoint
@@ -67,7 +65,7 @@
 
         If middlePoint = -1 Then
             Dim currentPoint = middlePoint
-            While offset + currentPoint >= 0 And Math.Floor(wave.getSample(offset + currentPoint, True)) > middle And currentPoint >= -maxScanLength
+            While offset + currentPoint >= 0 And Math.Floor(wave.getSample(offset + currentPoint, True)) > args.trigger And currentPoint >= -maxScanLength
                 currentPoint -= 1
             End While
             If currentPoint > -maxScanLength Then
@@ -125,30 +123,6 @@
                 totalVoltage = currentVoltage
                 maxRectifiedArea = triggerPoint
             End If
-        End While
-    End Function
-
-    Function autoTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
-        autoTrigger = 0
-        Dim firstScan As Long = 0
-        Dim low As Integer = 128
-        Dim max As Integer = -127
-        Dim peaks As New List(Of Integer)
-        While firstScan < maxScanLength
-            If Math.Floor(wave.getSample(offset + firstScan, True)) < low Then
-                low = Math.Floor(wave.getSample(offset + firstScan, True))
-            End If
-            If Math.Floor(wave.getSample(offset + firstScan, True)) > max Then
-                max = Math.Floor(wave.getSample(offset + firstScan, True))
-            End If
-            firstScan += 1
-        End While
-        Dim middle As Integer = Math.Floor((max + low) / 2)
-        While Math.Floor(wave.getSample(offset + autoTrigger, True)) > middle And autoTrigger < maxScanLength 'postive
-            autoTrigger += 1
-        End While
-        While Math.Floor(wave.getSample(offset + autoTrigger, True)) <= middle And autoTrigger < maxScanLength 'negative
-            autoTrigger += 1
         End While
     End Function
 End Module

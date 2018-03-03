@@ -48,6 +48,8 @@ Partial Class ChannelConfigForm
         Me.NumericUpDownTriggerLevel = New System.Windows.Forms.NumericUpDown()
         Me.CheckBoxExternalTrigger = New System.Windows.Forms.CheckBox()
         Me.ButtonExternalTrigger = New System.Windows.Forms.Button()
+        Me.CheckBoxPulseWidthModulatedColor = New System.Windows.Forms.CheckBox()
+        Me.CheckBoxAutoTriggerLevel = New System.Windows.Forms.CheckBox()
         CType(Me.NumericUpDownAudioChannel, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownTriggerLevel, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -66,88 +68,88 @@ Partial Class ChannelConfigForm
         '
         Me.ComboBoxAlgorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxAlgorithm.FormattingEnabled = True
-        Me.ComboBoxAlgorithm.Location = New System.Drawing.Point(84, 87)
+        Me.ComboBoxAlgorithm.Location = New System.Drawing.Point(81, 112)
         Me.ComboBoxAlgorithm.Margin = New System.Windows.Forms.Padding(2)
         Me.ComboBoxAlgorithm.Name = "ComboBoxAlgorithm"
         Me.ComboBoxAlgorithm.Size = New System.Drawing.Size(180, 23)
-        Me.ComboBoxAlgorithm.TabIndex = 6
+        Me.ComboBoxAlgorithm.TabIndex = 7
         '
         'TextBoxHorizontalTime
         '
         Me.TextBoxHorizontalTime.ImeMode = System.Windows.Forms.ImeMode.Off
-        Me.TextBoxHorizontalTime.Location = New System.Drawing.Point(112, 113)
+        Me.TextBoxHorizontalTime.Location = New System.Drawing.Point(109, 138)
         Me.TextBoxHorizontalTime.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxHorizontalTime.Name = "TextBoxHorizontalTime"
         Me.TextBoxHorizontalTime.Size = New System.Drawing.Size(33, 25)
-        Me.TextBoxHorizontalTime.TabIndex = 8
+        Me.TextBoxHorizontalTime.TabIndex = 9
         '
         'LabelMS
         '
         Me.LabelMS.AutoSize = True
-        Me.LabelMS.Location = New System.Drawing.Point(149, 116)
+        Me.LabelMS.Location = New System.Drawing.Point(146, 141)
         Me.LabelMS.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelMS.Name = "LabelMS"
         Me.LabelMS.Size = New System.Drawing.Size(23, 15)
-        Me.LabelMS.TabIndex = 9
+        Me.LabelMS.TabIndex = 10
         Me.LabelMS.Text = "ms"
         '
         'LabelAmplify
         '
         Me.LabelAmplify.AutoSize = True
-        Me.LabelAmplify.Location = New System.Drawing.Point(9, 209)
+        Me.LabelAmplify.Location = New System.Drawing.Point(6, 234)
         Me.LabelAmplify.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelAmplify.Name = "LabelAmplify"
         Me.LabelAmplify.Size = New System.Drawing.Size(59, 15)
-        Me.LabelAmplify.TabIndex = 10
+        Me.LabelAmplify.TabIndex = 16
         Me.LabelAmplify.Text = "Amplify:"
         '
         'TextBoxAmplify
         '
         Me.TextBoxAmplify.ImeMode = System.Windows.Forms.ImeMode.Off
-        Me.TextBoxAmplify.Location = New System.Drawing.Point(71, 205)
+        Me.TextBoxAmplify.Location = New System.Drawing.Point(68, 230)
         Me.TextBoxAmplify.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBoxAmplify.Name = "TextBoxAmplify"
         Me.TextBoxAmplify.Size = New System.Drawing.Size(50, 25)
-        Me.TextBoxAmplify.TabIndex = 11
+        Me.TextBoxAmplify.TabIndex = 17
         '
         'LabelX
         '
         Me.LabelX.AutoSize = True
-        Me.LabelX.Location = New System.Drawing.Point(125, 209)
+        Me.LabelX.Location = New System.Drawing.Point(122, 234)
         Me.LabelX.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelX.Name = "LabelX"
         Me.LabelX.Size = New System.Drawing.Size(14, 15)
-        Me.LabelX.TabIndex = 12
+        Me.LabelX.TabIndex = 18
         Me.LabelX.Text = "x"
         '
         'LabelTimeScale
         '
         Me.LabelTimeScale.AutoSize = True
-        Me.LabelTimeScale.Location = New System.Drawing.Point(8, 116)
+        Me.LabelTimeScale.Location = New System.Drawing.Point(5, 141)
         Me.LabelTimeScale.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelTimeScale.Name = "LabelTimeScale"
         Me.LabelTimeScale.Size = New System.Drawing.Size(100, 15)
-        Me.LabelTimeScale.TabIndex = 7
+        Me.LabelTimeScale.TabIndex = 8
         Me.LabelTimeScale.Text = "Horizontal time:"
         '
         'ButtonOK
         '
-        Me.ButtonOK.Location = New System.Drawing.Point(106, 290)
+        Me.ButtonOK.Location = New System.Drawing.Point(103, 315)
         Me.ButtonOK.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonOK.TabIndex = 19
+        Me.ButtonOK.TabIndex = 26
         Me.ButtonOK.Text = "OK"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
         'ButtonCancel
         '
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonCancel.Location = New System.Drawing.Point(185, 290)
+        Me.ButtonCancel.Location = New System.Drawing.Point(182, 315)
         Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonCancel.TabIndex = 20
+        Me.ButtonCancel.TabIndex = 27
         Me.ButtonCancel.Text = "Cancel"
         Me.ButtonCancel.UseVisualStyleBackColor = True
         '
@@ -188,29 +190,29 @@ Partial Class ChannelConfigForm
         'LabelAlgorithm
         '
         Me.LabelAlgorithm.AutoSize = True
-        Me.LabelAlgorithm.Location = New System.Drawing.Point(8, 90)
+        Me.LabelAlgorithm.Location = New System.Drawing.Point(5, 115)
         Me.LabelAlgorithm.Name = "LabelAlgorithm"
         Me.LabelAlgorithm.Size = New System.Drawing.Size(70, 15)
-        Me.LabelAlgorithm.TabIndex = 5
+        Me.LabelAlgorithm.TabIndex = 6
         Me.LabelAlgorithm.Text = "Algorithm:"
         '
         'LabelScanTime
         '
         Me.LabelScanTime.AutoSize = True
-        Me.LabelScanTime.Location = New System.Drawing.Point(8, 237)
+        Me.LabelScanTime.Location = New System.Drawing.Point(5, 262)
         Me.LabelScanTime.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelScanTime.Name = "LabelScanTime"
         Me.LabelScanTime.Size = New System.Drawing.Size(102, 15)
-        Me.LabelScanTime.TabIndex = 13
+        Me.LabelScanTime.TabIndex = 19
         Me.LabelScanTime.Text = "Max Scan Time:"
         '
         'RadioButton1x
         '
         Me.RadioButton1x.AutoSize = True
-        Me.RadioButton1x.Location = New System.Drawing.Point(115, 235)
+        Me.RadioButton1x.Location = New System.Drawing.Point(112, 260)
         Me.RadioButton1x.Name = "RadioButton1x"
         Me.RadioButton1x.Size = New System.Drawing.Size(42, 19)
-        Me.RadioButton1x.TabIndex = 14
+        Me.RadioButton1x.TabIndex = 20
         Me.RadioButton1x.TabStop = True
         Me.RadioButton1x.Text = "1x"
         Me.RadioButton1x.UseVisualStyleBackColor = True
@@ -218,10 +220,10 @@ Partial Class ChannelConfigForm
         'RadioButton2x
         '
         Me.RadioButton2x.AutoSize = True
-        Me.RadioButton2x.Location = New System.Drawing.Point(222, 235)
+        Me.RadioButton2x.Location = New System.Drawing.Point(219, 260)
         Me.RadioButton2x.Name = "RadioButton2x"
         Me.RadioButton2x.Size = New System.Drawing.Size(42, 19)
-        Me.RadioButton2x.TabIndex = 15
+        Me.RadioButton2x.TabIndex = 22
         Me.RadioButton2x.TabStop = True
         Me.RadioButton2x.Text = "2x"
         Me.RadioButton2x.UseVisualStyleBackColor = True
@@ -229,37 +231,37 @@ Partial Class ChannelConfigForm
         'CheckBoxMixAudioChannel
         '
         Me.CheckBoxMixAudioChannel.AutoSize = True
-        Me.CheckBoxMixAudioChannel.Location = New System.Drawing.Point(174, 262)
+        Me.CheckBoxMixAudioChannel.Location = New System.Drawing.Point(171, 287)
         Me.CheckBoxMixAudioChannel.Name = "CheckBoxMixAudioChannel"
         Me.CheckBoxMixAudioChannel.Size = New System.Drawing.Size(90, 19)
-        Me.CheckBoxMixAudioChannel.TabIndex = 18
+        Me.CheckBoxMixAudioChannel.TabIndex = 25
         Me.CheckBoxMixAudioChannel.Text = "Mix stereo"
         Me.CheckBoxMixAudioChannel.UseVisualStyleBackColor = True
         '
         'LabelAudioChannel
         '
         Me.LabelAudioChannel.AutoSize = True
-        Me.LabelAudioChannel.Location = New System.Drawing.Point(8, 263)
+        Me.LabelAudioChannel.Location = New System.Drawing.Point(5, 288)
         Me.LabelAudioChannel.Name = "LabelAudioChannel"
         Me.LabelAudioChannel.Size = New System.Drawing.Size(93, 15)
-        Me.LabelAudioChannel.TabIndex = 16
+        Me.LabelAudioChannel.TabIndex = 23
         Me.LabelAudioChannel.Text = "Audio channel:"
         '
         'NumericUpDownAudioChannel
         '
-        Me.NumericUpDownAudioChannel.Location = New System.Drawing.Point(107, 261)
+        Me.NumericUpDownAudioChannel.Location = New System.Drawing.Point(104, 286)
         Me.NumericUpDownAudioChannel.Maximum = New Decimal(New Integer() {255, 0, 0, 0})
         Me.NumericUpDownAudioChannel.Name = "NumericUpDownAudioChannel"
         Me.NumericUpDownAudioChannel.Size = New System.Drawing.Size(61, 25)
-        Me.NumericUpDownAudioChannel.TabIndex = 21
+        Me.NumericUpDownAudioChannel.TabIndex = 24
         '
         'RadioButton1dot5x
         '
         Me.RadioButton1dot5x.AutoSize = True
-        Me.RadioButton1dot5x.Location = New System.Drawing.Point(163, 235)
+        Me.RadioButton1dot5x.Location = New System.Drawing.Point(160, 260)
         Me.RadioButton1dot5x.Name = "RadioButton1dot5x"
         Me.RadioButton1dot5x.Size = New System.Drawing.Size(53, 19)
-        Me.RadioButton1dot5x.TabIndex = 22
+        Me.RadioButton1dot5x.TabIndex = 21
         Me.RadioButton1dot5x.TabStop = True
         Me.RadioButton1dot5x.Text = "1.5x"
         Me.RadioButton1dot5x.UseVisualStyleBackColor = True
@@ -267,45 +269,67 @@ Partial Class ChannelConfigForm
         'LabelTriggerLevel
         '
         Me.LabelTriggerLevel.AutoSize = True
-        Me.LabelTriggerLevel.Location = New System.Drawing.Point(8, 146)
+        Me.LabelTriggerLevel.Location = New System.Drawing.Point(5, 171)
         Me.LabelTriggerLevel.Name = "LabelTriggerLevel"
         Me.LabelTriggerLevel.Size = New System.Drawing.Size(85, 15)
-        Me.LabelTriggerLevel.TabIndex = 23
+        Me.LabelTriggerLevel.TabIndex = 11
         Me.LabelTriggerLevel.Text = "Trigger level:"
         '
         'NumericUpDownTriggerLevel
         '
-        Me.NumericUpDownTriggerLevel.Location = New System.Drawing.Point(99, 143)
+        Me.NumericUpDownTriggerLevel.Location = New System.Drawing.Point(96, 168)
         Me.NumericUpDownTriggerLevel.Maximum = New Decimal(New Integer() {127, 0, 0, 0})
         Me.NumericUpDownTriggerLevel.Minimum = New Decimal(New Integer() {128, 0, 0, -2147483648})
         Me.NumericUpDownTriggerLevel.Name = "NumericUpDownTriggerLevel"
         Me.NumericUpDownTriggerLevel.Size = New System.Drawing.Size(60, 25)
-        Me.NumericUpDownTriggerLevel.TabIndex = 24
+        Me.NumericUpDownTriggerLevel.TabIndex = 12
         '
         'CheckBoxExternalTrigger
         '
         Me.CheckBoxExternalTrigger.AutoSize = True
-        Me.CheckBoxExternalTrigger.Location = New System.Drawing.Point(12, 177)
+        Me.CheckBoxExternalTrigger.Location = New System.Drawing.Point(9, 202)
         Me.CheckBoxExternalTrigger.Name = "CheckBoxExternalTrigger"
         Me.CheckBoxExternalTrigger.Size = New System.Drawing.Size(90, 19)
-        Me.CheckBoxExternalTrigger.TabIndex = 26
+        Me.CheckBoxExternalTrigger.TabIndex = 14
         Me.CheckBoxExternalTrigger.Text = "Ext. Trig.:"
         Me.CheckBoxExternalTrigger.UseVisualStyleBackColor = True
         '
         'ButtonExternalTrigger
         '
-        Me.ButtonExternalTrigger.Location = New System.Drawing.Point(104, 175)
+        Me.ButtonExternalTrigger.Location = New System.Drawing.Point(101, 200)
         Me.ButtonExternalTrigger.Name = "ButtonExternalTrigger"
         Me.ButtonExternalTrigger.Size = New System.Drawing.Size(156, 23)
-        Me.ButtonExternalTrigger.TabIndex = 27
+        Me.ButtonExternalTrigger.TabIndex = 15
         Me.ButtonExternalTrigger.Text = "(None)"
         Me.ButtonExternalTrigger.UseVisualStyleBackColor = True
+        '
+        'CheckBoxPulseWidthModulatedColor
+        '
+        Me.CheckBoxPulseWidthModulatedColor.AutoSize = True
+        Me.CheckBoxPulseWidthModulatedColor.Location = New System.Drawing.Point(11, 88)
+        Me.CheckBoxPulseWidthModulatedColor.Name = "CheckBoxPulseWidthModulatedColor"
+        Me.CheckBoxPulseWidthModulatedColor.Size = New System.Drawing.Size(191, 19)
+        Me.CheckBoxPulseWidthModulatedColor.TabIndex = 5
+        Me.CheckBoxPulseWidthModulatedColor.Text = "Pulse width modulated color"
+        Me.CheckBoxPulseWidthModulatedColor.UseVisualStyleBackColor = True
+        '
+        'CheckBoxAutoTriggerLevel
+        '
+        Me.CheckBoxAutoTriggerLevel.AutoSize = True
+        Me.CheckBoxAutoTriggerLevel.Location = New System.Drawing.Point(162, 171)
+        Me.CheckBoxAutoTriggerLevel.Name = "CheckBoxAutoTriggerLevel"
+        Me.CheckBoxAutoTriggerLevel.Size = New System.Drawing.Size(57, 19)
+        Me.CheckBoxAutoTriggerLevel.TabIndex = 13
+        Me.CheckBoxAutoTriggerLevel.Text = "Auto"
+        Me.CheckBoxAutoTriggerLevel.UseVisualStyleBackColor = True
         '
         'ChannelConfigForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(272, 322)
+        Me.ClientSize = New System.Drawing.Size(272, 350)
+        Me.Controls.Add(Me.CheckBoxAutoTriggerLevel)
+        Me.Controls.Add(Me.CheckBoxPulseWidthModulatedColor)
         Me.Controls.Add(Me.ButtonExternalTrigger)
         Me.Controls.Add(Me.CheckBoxExternalTrigger)
         Me.Controls.Add(Me.NumericUpDownTriggerLevel)
@@ -373,4 +397,6 @@ Partial Class ChannelConfigForm
     Friend WithEvents NumericUpDownTriggerLevel As NumericUpDown
     Friend WithEvents CheckBoxExternalTrigger As CheckBox
     Friend WithEvents ButtonExternalTrigger As Button
+    Friend WithEvents CheckBoxPulseWidthModulatedColor As CheckBox
+    Friend WithEvents CheckBoxAutoTriggerLevel As CheckBox
 End Class

@@ -39,11 +39,14 @@ Public Class WorkerArguments
 End Class
 
 Public Class channelOptions
+    Implements ICloneable
     Public pen As Pen = MainForm.wavePen
     Public waveColor As Color = MainForm.wavePen.Color
+    Public pulseWidthModulatedColor As Boolean = False
     Public horizontalTime As Double = 0.025
     Public amplify As Single = 1
     Public trigger As Integer = 0
+    Public autoTriggerLevel As Boolean = True
     Public externalTriggerEnabled As Boolean = False
     Public externalTriggerFile As String = ""
     Public algorithm As Byte = TriggeringAlgorithms.UsePeakSpeedScanning
@@ -53,4 +56,8 @@ Public Class channelOptions
     Public maxScan As Single = 1.5F
     Public mixChannel As Boolean = True
     Public selectedChannel As Byte = 0
+
+    Public Function Clone() As Object Implements ICloneable.Clone
+        Return Me.MemberwiseClone()
+    End Function
 End Class

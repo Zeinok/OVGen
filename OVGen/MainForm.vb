@@ -479,6 +479,7 @@ Public Class MainForm
             End If
             For c As Byte = 0 To channels - 1 'for each channel
                 Dim channelArg As channelOptions = wave(c).extraArguments
+                Dim waveColor As Color = channelArg.waveColor
                 Dim triggerOffset As Long = 0
                 Dim currentWAV As WAV
                 If channelArg.externalTriggerEnabled Then
@@ -488,27 +489,67 @@ Public Class MainForm
                 End If
                 Dim sampleLocation As ULong = frames * currentWAV.sampleRate / args.FPS
                 'trigger
-
-                Select Case channelArg.algorithm
-                    Case TriggeringAlgorithms.UseZeroCrossing
-                        triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan)
-                    Case TriggeringAlgorithms.UsePeakSpeedScanning
-                        triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan)
-                    Case TriggeringAlgorithms.UsePositiveLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, False)
-                    Case TriggeringAlgorithms.UseNegativeLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan, False, True)
-                    Case TriggeringAlgorithms.UseCrossingLengthScanning
-                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan, True, True)
-                    Case TriggeringAlgorithms.UseMaxRectifiedAreaScanning
-                        triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan)
-                    Case TriggeringAlgorithms.UseAutoTrigger
-                        triggerOffset = TriggeringAlgorithms.autoTrigger(currentWAV, sampleLocation, currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan)
-                End Select
-
+                Dim maxScanLength As ULong = currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan
+                Dim firstScan As ULong = 1
+                Dim firstSample As Double = currentWAV.getSample(sampleLocation, True)
+                Dim scanRequired As Boolean = False
+                Dim max As Double = -127
+                Dim low As Double = 128
+                While firstScan < maxScanLength
+                    Dim sample As Double = currentWAV.getSample(sampleLength + firstScan, True)
+                    If sample > max Then max = sample
+                    If sample < low Then low = sample
+                    If Not currentWAV.getSample(sampleLocation + firstScan, True) = firstSample Then
+                        scanRequired = True
+                    End If
+                    firstScan += 1
+                End While
+                If scanRequired Then
+                    If channelArg.autoTriggerLevel Then
+                        channelArg.trigger = (max + low) / 2
+                    End If
+                    Select Case channelArg.algorithm
+                        Case TriggeringAlgorithms.UseZeroCrossing
+                            triggerOffset = TriggeringAlgorithms.zeroCrossingTrigger(currentWAV, sampleLocation, maxScanLength)
+                        Case TriggeringAlgorithms.UsePeakSpeedScanning
+                            triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, sampleLocation, maxScanLength)
+                        Case TriggeringAlgorithms.UsePositiveLengthScanning
+                            triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, True, False)
+                        Case TriggeringAlgorithms.UseNegativeLengthScanning
+                            triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, False, True)
+                        Case TriggeringAlgorithms.UseCrossingLengthScanning
+                            triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, True, True)
+                        Case TriggeringAlgorithms.UseMaxRectifiedAreaScanning
+                            triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, maxScanLength)
+                    End Select
+                End If
+                If channelArg.pulseWidthModulatedColor Then
+                    Dim middle As Double = (max + low) / 2
+                    Dim positiveLength As ULong = 0
+                    Dim totalLength As ULong = 0
+                    Dim thirdScan As ULong = 1
+                    While currentWAV.getSample(sampleLocation + triggerOffset + thirdScan, True) < middle And thirdScan < maxScanLength
+                        thirdScan += 1
+                    End While
+                    While currentWAV.getSample(sampleLocation + triggerOffset + thirdScan, True) >= middle And thirdScan < maxScanLength
+                        positiveLength += 1
+                        thirdScan += 1
+                        totalLength += 1
+                    End While
+                    While currentWAV.getSample(sampleLocation + triggerOffset + thirdScan, True) <= middle And thirdScan < maxScanLength
+                        thirdScan += 1
+                        totalLength += 1
+                    End While
+                    totalLength = thirdScan
+                    Dim pulseWidth As Double = positiveLength / totalLength
+                    If pulseWidth > 0.5 Then pulseWidth = 1.0 - pulseWidth
+                    pulseWidth *= 2
+                    channelArg.waveColor = HSVtoRGB(pulseWidth * 280, 1, 1)
+                End If
                 'draw
-                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize), wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation, triggerOffset)
-                'g.DrawLine(Pens.Red, cavnasSize.Width \ 2, 0, cavnasSize.Width \ 2, cavnasSize.Height)
+                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize),
+                         wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation + triggerOffset)
+                channelArg.waveColor = waveColor
             Next
 
             g.Clip = New Region() 'reset region
@@ -573,13 +614,12 @@ Public Class MainForm
             stderr.Close()
         End If
     End Sub
-    Private Sub drawWave(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal sampleRate As Long, ByVal timeScale As Double, ByVal offset As Long, ByVal triggerOffset As Long)
+    Private Sub drawWave(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal sampleRate As Long, ByVal timeScale As Double, ByVal offset As Long)
         Dim args As channelOptions = wave.extraArguments
         Dim points As New List(Of Point)
-        Dim triggerPoint As Long = offset + triggerOffset
         Dim prevX As Integer = -1
-        For i As Integer = triggerPoint - sampleRate * args.horizontalTime / 2 To triggerPoint + sampleRate * args.horizontalTime / 2 '+ sampleRate * timeScale
-            Dim x As Integer = (i - (offset + triggerOffset - sampleRate * args.horizontalTime / 2)) / sampleRate / args.horizontalTime * rect.Width + rect.X
+        For i As Integer = offset - sampleRate * args.horizontalTime / 2 To offset + sampleRate * args.horizontalTime / 2 '+ sampleRate * timeScale
+            Dim x As Integer = (i - (offset - sampleRate * args.horizontalTime / 2)) / sampleRate / args.horizontalTime * rect.Width + rect.X
             If prevX = x Then
                 Continue For
             Else
@@ -590,7 +630,7 @@ Public Class MainForm
             If workerArg.useAnalogOscilloscopeStyle Then
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth - 1))
                 points.Add(New Point(x, y - workerArg.analogOscilloscopeLineWidth \ 2 - 1))
-                Dim nextX As Integer = (i + 1 - (offset + triggerOffset - sampleRate * args.horizontalTime / 2)) / sampleRate / args.horizontalTime * rect.Width + rect.X
+                Dim nextX As Integer = (i + 1 - (offset - sampleRate * args.horizontalTime / 2)) / sampleRate / args.horizontalTime * rect.Width + rect.X
                 If nextX - x > 1 And x >= 0 Then
                     For dx As ULong = x To nextX
                         points.Add(New Point(dx, y - workerArg.analogOscilloscopeLineWidth \ 2 + workerArg.analogOscilloscopeLineWidth - 1))
@@ -605,6 +645,30 @@ Public Class MainForm
         g.Clip = New Region(rect)
         g.DrawLines(wavePen, points.ToArray())
     End Sub
+    Function HSVtoRGB(ByVal hue As Double, ByVal saturation As Double, ByVal value As Double) As Color
+        Dim h As Integer = Convert.ToInt32(Math.Floor(hue / 60)) Mod 6
+        Dim f As Double = hue / 60 - Math.Floor(hue / 60)
+
+        value = value * 255
+        Dim v As Integer = Convert.ToInt32(value)
+        Dim p As Integer = Convert.ToInt32(value * (1 - saturation))
+        Dim q As Integer = Convert.ToInt32(value * (1 - f * saturation))
+        Dim t As Integer = Convert.ToInt32(value * (1 - (1 - f) * saturation))
+
+        If h = 0 Then
+            Return Color.FromArgb(255, v, t, p)
+        ElseIf h = 1 Then
+            Return Color.FromArgb(255, q, v, p)
+        ElseIf h = 2 Then
+            Return Color.FromArgb(255, p, v, t)
+        ElseIf h = 3 Then
+            Return Color.FromArgb(255, p, q, v)
+        ElseIf h = 4 Then
+            Return Color.FromArgb(255, t, p, v)
+        Else
+            Return Color.FromArgb(255, v, p, q)
+        End If
+    End Function
 
     Private Sub OscilloscopeBackgroundWorker_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles OscilloscopeBackgroundWorker.ProgressChanged
         'taskbarProgress.ProgressState = Windows.Shell.TaskbarItemProgressState.Normal
