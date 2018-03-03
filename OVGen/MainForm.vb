@@ -544,7 +544,8 @@ Public Class MainForm
                     Dim pulseWidth As Double = positiveLength / totalLength
                     If pulseWidth > 0.5 Then pulseWidth = 1.0 - pulseWidth
                     pulseWidth *= 2
-                    channelArg.waveColor = HSVtoRGB(pulseWidth * 280, 1, 1)
+                    Dim hue As Integer = pulseWidth * 300
+                    channelArg.waveColor = HSVtoRGB(hue, 1, 1)
                 End If
                 'draw
                 drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize),
