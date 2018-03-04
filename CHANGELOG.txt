@@ -1,3 +1,6 @@
+2018/3/4 0.0.15.1
+* Fix Peak Speed algorithm
+
 2018/3/3 0.0.15.0
 + Pulse width modulated color
 * Auto Trigger Level now becomes an option
