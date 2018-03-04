@@ -48,6 +48,9 @@
         End While
         Dim middleDistance As Long = maxScanLength
         Dim middlePoint As Long = 0
+        If args.autoTriggerLevel Then
+            args.trigger = (max + low) / 2
+        End If
         For Each peakPoint In peaks
             Dim currentPoint As Integer = peakPoint
             While Math.Floor(wave.getSample(offset + currentPoint, True)) > args.trigger And currentPoint >= 0 'find middle point

@@ -540,7 +540,6 @@ Public Class MainForm
                         thirdScan += 1
                         totalLength += 1
                     End While
-                    totalLength = thirdScan
                     Dim pulseWidth As Double = positiveLength / totalLength
                     If pulseWidth > 0.5 Then pulseWidth = 1.0 - pulseWidth
                     pulseWidth *= 2
