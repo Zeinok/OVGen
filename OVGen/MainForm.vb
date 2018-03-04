@@ -540,10 +540,13 @@ Public Class MainForm
                         thirdScan += 1
                         totalLength += 1
                     End While
-                    Dim pulseWidth As Double = positiveLength / totalLength
-                    If pulseWidth > 0.5 Then pulseWidth = 1.0 - pulseWidth
-                    pulseWidth *= 2
-                    Dim hue As Integer = pulseWidth * 300
+                    Dim hue As Integer = 0
+                    If totalLength <> 0 Then
+                        Dim pulseWidth As Double = positiveLength / totalLength
+                        If pulseWidth > 0.5 Then pulseWidth = 1.0 - pulseWidth
+                        pulseWidth *= 2
+                        hue = pulseWidth * 300
+                    End If
                     channelArg.waveColor = HSVtoRGB(hue, 1, 1)
                 End If
                 'draw
