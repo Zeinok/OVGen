@@ -8,7 +8,7 @@ Decompress the zip file to any directory and run `OVGen.exe`
 
 ### Requirements:
 
-+ Windows XP or up
++ Windows 7 or up
 + .NET Framework 4.0 Runtime
 + [FFmpeg](https://ffmpeg.zeranoe.com/builds/) (for video encoding)
 
