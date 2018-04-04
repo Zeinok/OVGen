@@ -132,6 +132,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Arguments.vb" />
+    <Compile Include="AutoAmplifyWorkerForm.Designer.vb">
+      <DependentUpon>AutoAmplifyWorkerForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AutoAmplifyWorkerForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ChannelConfigForm.Designer.vb">
       <DependentUpon>ChannelConfigForm.vb</DependentUpon>
     </Compile>
@@ -173,6 +179,9 @@
   <ItemGroup>
     <EmbeddedResource Include="AboutForm.resx">
       <DependentUpon>AboutForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoAmplifyWorkerForm.resx">
+      <DependentUpon>AutoAmplifyWorkerForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ChannelConfigForm.resx">
       <DependentUpon>ChannelConfigForm.vb</DependentUpon>

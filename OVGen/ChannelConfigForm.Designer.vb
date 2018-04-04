@@ -50,6 +50,7 @@ Partial Class ChannelConfigForm
         Me.ButtonExternalTrigger = New System.Windows.Forms.Button()
         Me.CheckBoxPulseWidthModulatedColor = New System.Windows.Forms.CheckBox()
         Me.CheckBoxAutoTriggerLevel = New System.Windows.Forms.CheckBox()
+        Me.ButtonAutoAmplify = New System.Windows.Forms.Button()
         CType(Me.NumericUpDownAudioChannel, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownTriggerLevel, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -323,11 +324,21 @@ Partial Class ChannelConfigForm
         Me.CheckBoxAutoTriggerLevel.Text = "Auto"
         Me.CheckBoxAutoTriggerLevel.UseVisualStyleBackColor = True
         '
+        'ButtonAutoAmplify
+        '
+        Me.ButtonAutoAmplify.Location = New System.Drawing.Point(141, 230)
+        Me.ButtonAutoAmplify.Name = "ButtonAutoAmplify"
+        Me.ButtonAutoAmplify.Size = New System.Drawing.Size(60, 25)
+        Me.ButtonAutoAmplify.TabIndex = 28
+        Me.ButtonAutoAmplify.Text = "Auto"
+        Me.ButtonAutoAmplify.UseVisualStyleBackColor = True
+        '
         'ChannelConfigForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.CancelButton = Me.ButtonCancel
         Me.ClientSize = New System.Drawing.Size(272, 350)
+        Me.Controls.Add(Me.ButtonAutoAmplify)
         Me.Controls.Add(Me.CheckBoxAutoTriggerLevel)
         Me.Controls.Add(Me.CheckBoxPulseWidthModulatedColor)
         Me.Controls.Add(Me.ButtonExternalTrigger)
@@ -399,4 +410,5 @@ Partial Class ChannelConfigForm
     Friend WithEvents ButtonExternalTrigger As Button
     Friend WithEvents CheckBoxPulseWidthModulatedColor As CheckBox
     Friend WithEvents CheckBoxAutoTriggerLevel As CheckBox
+    Friend WithEvents ButtonAutoAmplify As Button
 End Class

@@ -161,4 +161,31 @@
     Private Sub CheckBoxAutoTriggerLevel_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxAutoTriggerLevel.CheckedChanged
         NumericUpDownTriggerLevel.Enabled = Not CheckBoxAutoTriggerLevel.Checked
     End Sub
+
+    Private Sub ButtonAutoAmplify_Click(sender As Object, e As EventArgs) Handles ButtonAutoAmplify.Click
+        If Not MainForm.currentChannelToBeSet = "" Then
+            Dim aawf As New AutoAmplifyWorkerForm
+            aawf.Filename = MainForm.currentChannelToBeSet
+            aawf.ShowDialog()
+            TextBoxAmplify.Text = String.Format("{0:G1}", aawf.Result)
+            If aawf.Result < 1 Then
+                TextBoxAmplify.Text = 1
+            End If
+        Else
+            Dim smallestAmplifyValue As Double = Double.MaxValue
+            For Each file In MainForm.ListBoxFiles.Items
+                Dim aawf As New AutoAmplifyWorkerForm
+                aawf.Filename = file
+                Dim val As Double = aawf.Result
+                If val < 1 Then val = 1
+                If val < smallestAmplifyValue Then
+                    smallestAmplifyValue = val
+                End If
+                If aawf.ShowDialog() = DialogResult.Cancel Then
+                    Exit For
+                End If
+            Next
+            TextBoxAmplify.Text = String.Format("{0:G1}", smallestAmplifyValue)
+        End If
+    End Sub
 End Class
