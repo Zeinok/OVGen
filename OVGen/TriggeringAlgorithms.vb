@@ -85,11 +85,9 @@
         Dim args As channelOptions = wave.extraArguments
         lengthScanning = 0
         Dim scanLocation As Long = 0
-        Dim triggerPoint As Long = 0
         Dim maxLength As Long = 0
         While scanLocation < maxScanLength
             Dim currentLength As Long = 0
-            triggerPoint = scanLocation
             While Math.Floor(wave.getSample(offset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
                 scanLocation += 1
                 If scanPositive Then currentLength += 1
@@ -100,7 +98,7 @@
             End While
             If currentLength > maxLength Then
                 maxLength = currentLength
-                lengthScanning = triggerPoint
+                lengthScanning = scanLocation
             End If
         End While
     End Function
@@ -109,22 +107,20 @@
         Dim args As channelOptions = wave.extraArguments
         maxRectifiedArea = 0
         Dim scanLocation As Long = 0
-        Dim triggerPoint As Long = 0
-        Dim totalVoltage As Long = 0
+        Dim totalSample As Long = 0
         While scanLocation < maxScanLength
-            Dim currentVoltage As Long = 0
-            triggerPoint = scanLocation
+            Dim currentTotalSample As Long = 0
             While Math.Floor(wave.getSample(offset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
                 scanLocation += 1
-                currentVoltage += wave.getSample(offset + scanLocation, True)
+                currentTotalSample += wave.getSample(offset + scanLocation, True)
             End While
             While Math.Floor(wave.getSample(offset + scanLocation, True)) <= args.trigger And scanLocation < maxScanLength
                 scanLocation += 1
-                currentVoltage -= wave.getSample(offset + scanLocation, True)
+                currentTotalSample -= wave.getSample(offset + scanLocation, True)
             End While
-            If currentVoltage > totalVoltage Then
-                totalVoltage = currentVoltage
-                maxRectifiedArea = triggerPoint
+            If currentTotalSample > totalSample Then
+                totalSample = currentTotalSample
+                maxRectifiedArea = scanLocation
             End If
         End While
     End Function
