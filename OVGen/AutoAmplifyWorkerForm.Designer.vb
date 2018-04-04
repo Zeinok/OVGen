@@ -22,24 +22,15 @@ Partial Class AutoAmplifyWorkerForm
     '請勿使用程式碼編輯器進行修改。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.LabelPleaseWait = New System.Windows.Forms.Label()
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.BackgroundWorkerAutoAmplify = New System.ComponentModel.BackgroundWorker()
+        Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
         Me.SuspendLayout()
-        '
-        'LabelPleaseWait
-        '
-        Me.LabelPleaseWait.AutoSize = True
-        Me.LabelPleaseWait.Location = New System.Drawing.Point(74, 9)
-        Me.LabelPleaseWait.Name = "LabelPleaseWait"
-        Me.LabelPleaseWait.Size = New System.Drawing.Size(85, 15)
-        Me.LabelPleaseWait.TabIndex = 0
-        Me.LabelPleaseWait.Text = "Please Wait..."
         '
         'ButtonCancel
         '
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonCancel.Location = New System.Drawing.Point(79, 27)
+        Me.ButtonCancel.Location = New System.Drawing.Point(84, 43)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 26)
         Me.ButtonCancel.TabIndex = 2
@@ -51,15 +42,22 @@ Partial Class AutoAmplifyWorkerForm
         Me.BackgroundWorkerAutoAmplify.WorkerReportsProgress = True
         Me.BackgroundWorkerAutoAmplify.WorkerSupportsCancellation = True
         '
+        'ProgressBar1
+        '
+        Me.ProgressBar1.Location = New System.Drawing.Point(12, 12)
+        Me.ProgressBar1.Name = "ProgressBar1"
+        Me.ProgressBar1.Size = New System.Drawing.Size(208, 25)
+        Me.ProgressBar1.TabIndex = 3
+        '
         'AutoAmplifyWorkerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(232, 62)
+        Me.ClientSize = New System.Drawing.Size(232, 77)
         Me.ControlBox = False
+        Me.Controls.Add(Me.ProgressBar1)
         Me.Controls.Add(Me.ButtonCancel)
-        Me.Controls.Add(Me.LabelPleaseWait)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
         Me.MinimizeBox = False
@@ -67,11 +65,9 @@ Partial Class AutoAmplifyWorkerForm
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Auto Amplify"
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents LabelPleaseWait As Label
     Friend WithEvents ButtonCancel As Button
     Friend WithEvents BackgroundWorkerAutoAmplify As System.ComponentModel.BackgroundWorker
+    Friend WithEvents ProgressBar1 As ProgressBar
 End Class

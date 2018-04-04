@@ -1,5 +1,6 @@
 ﻿Public Class ChannelConfigForm
-    Dim currentOptions As channelOptions
+    Public Property Options As New channelOptions
+    Public Property SetAll As Boolean = False
     Dim globalOptions As New channelOptions
     Dim labelFont As Font
     Dim externalTrigger As String
@@ -7,31 +8,26 @@
     Private Sub ChannelConfigForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         ComboBoxAlgorithm.Items.Clear()
         ComboBoxAlgorithm.Items.AddRange(TriggeringAlgorithms.Algorithms)
-        If Not MainForm.currentChannelToBeSet = "" Then
-            currentOptions = MainForm.optionsMap.Item(MainForm.currentChannelToBeSet)
-        Else
-            currentOptions = globalOptions
-        End If
-        ButtonColor.BackColor = currentOptions.waveColor
-        CheckBoxPulseWidthModulatedColor.Checked = currentOptions.pulseWidthModulatedColor
-        ComboBoxAlgorithm.SelectedIndex = currentOptions.algorithm
-        TextBoxHorizontalTime.Text = currentOptions.horizontalTime * 1000
-        NumericUpDownTriggerLevel.Value = currentOptions.trigger
-        CheckBoxAutoTriggerLevel.Checked = currentOptions.autoTriggerLevel
-        CheckBoxExternalTrigger.Checked = currentOptions.externalTriggerEnabled
-        ButtonExternalTrigger.Enabled = currentOptions.externalTriggerEnabled
-        If IO.File.Exists(currentOptions.externalTriggerFile) Then
-            ButtonExternalTrigger.Text = New IO.FileInfo(currentOptions.externalTriggerFile).Name
-            externalTrigger = currentOptions.externalTriggerFile
+        ButtonColor.BackColor = Options.waveColor
+        CheckBoxPulseWidthModulatedColor.Checked = Options.pulseWidthModulatedColor
+        ComboBoxAlgorithm.SelectedIndex = Options.algorithm
+        TextBoxHorizontalTime.Text = Options.horizontalTime * 1000
+        NumericUpDownTriggerLevel.Value = Options.trigger
+        CheckBoxAutoTriggerLevel.Checked = Options.autoTriggerLevel
+        CheckBoxExternalTrigger.Checked = Options.externalTriggerEnabled
+        ButtonExternalTrigger.Enabled = Options.externalTriggerEnabled
+        If IO.File.Exists(Options.externalTriggerFile) Then
+            ButtonExternalTrigger.Text = New IO.FileInfo(Options.externalTriggerFile).Name
+            externalTrigger = Options.externalTriggerFile
         Else
             ButtonExternalTrigger.Text = "(None)"
             externalTrigger = ""
         End If
-        TextBoxAmplify.Text = currentOptions.amplify
-        TextBoxLabel.Text = currentOptions.label
-        labelFont = currentOptions.labelFont
-        ButtonFontColor.BackColor = currentOptions.labelColor
-        Select Case currentOptions.maxScan
+        TextBoxAmplify.Text = Options.amplify
+        TextBoxLabel.Text = Options.label
+        labelFont = Options.labelFont
+        ButtonFontColor.BackColor = Options.labelColor
+        Select Case Options.maxScan
             Case 1.0F
                 RadioButton1x.Checked = True
             Case 1.5F
@@ -39,8 +35,8 @@
             Case 2.0F
                 RadioButton2x.Checked = True
         End Select
-        NumericUpDownAudioChannel.Value = currentOptions.selectedChannel
-        CheckBoxMixAudioChannel.Checked = currentOptions.mixChannel
+        NumericUpDownAudioChannel.Value = Options.selectedChannel
+        CheckBoxMixAudioChannel.Checked = Options.mixChannel
     End Sub
 
     Private Sub ChannelConfigForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
@@ -102,36 +98,28 @@
             CheckBoxExternalTrigger.Checked = IO.File.Exists(externalTrigger)
         End If
         If TextBoxLabel.Text.Replace(" ", "").Length = 0 Then TextBoxLabel.Text = ""
-
-        currentOptions.waveColor = ButtonColor.BackColor
-        currentOptions.pulseWidthModulatedColor = CheckBoxPulseWidthModulatedColor.Checked
-        currentOptions.algorithm = ComboBoxAlgorithm.SelectedIndex
-        currentOptions.horizontalTime = TextBoxHorizontalTime.Text / 1000
-        currentOptions.trigger = NumericUpDownTriggerLevel.Value
-        currentOptions.autoTriggerLevel = CheckBoxAutoTriggerLevel.Checked
-        currentOptions.externalTriggerEnabled = CheckBoxExternalTrigger.Checked
-        currentOptions.externalTriggerFile = externalTrigger
-        currentOptions.amplify = TextBoxAmplify.Text
-        currentOptions.label = TextBoxLabel.Text
-        currentOptions.labelFont = labelFont
-        currentOptions.labelColor = ButtonFontColor.BackColor
+        Options.waveColor = ButtonColor.BackColor
+        Options.pulseWidthModulatedColor = CheckBoxPulseWidthModulatedColor.Checked
+        Options.algorithm = ComboBoxAlgorithm.SelectedIndex
+        Options.horizontalTime = TextBoxHorizontalTime.Text / 1000
+        Options.trigger = NumericUpDownTriggerLevel.Value
+        Options.autoTriggerLevel = CheckBoxAutoTriggerLevel.Checked
+        Options.externalTriggerEnabled = CheckBoxExternalTrigger.Checked
+        Options.externalTriggerFile = externalTrigger
+        Options.amplify = TextBoxAmplify.Text
+        Options.label = TextBoxLabel.Text
+        Options.labelFont = labelFont
+        Options.labelColor = ButtonFontColor.BackColor
         Select Case True
             Case RadioButton1x.Checked
-                currentOptions.maxScan = 1.0
+                Options.maxScan = 1.0
             Case RadioButton1dot5x.Checked
-                currentOptions.maxScan = 1.5
+                Options.maxScan = 1.5
             Case RadioButton2x.Checked
-                currentOptions.maxScan = 2.0
+                Options.maxScan = 2.0
         End Select
-        currentOptions.selectedChannel = NumericUpDownAudioChannel.Value
-        currentOptions.mixChannel = CheckBoxMixAudioChannel.Checked
-        If MainForm.currentChannelToBeSet = "" Then
-            Dim channelList As List(Of String) = MainForm.optionsMap.Keys.ToList()
-            For Each key In channelList
-                MainForm.optionsMap.Item(key) = currentOptions.Clone()
-            Next
-            globalOptions = currentOptions.Clone()
-        End If
+        Options.selectedChannel = NumericUpDownAudioChannel.Value
+        Options.mixChannel = CheckBoxMixAudioChannel.Checked
         Me.DialogResult = Windows.Forms.DialogResult.OK
         Me.Close()
     End Sub
@@ -163,9 +151,9 @@
     End Sub
 
     Private Sub ButtonAutoAmplify_Click(sender As Object, e As EventArgs) Handles ButtonAutoAmplify.Click
-        If Not MainForm.currentChannelToBeSet = "" Then
+        If Not SetAll Then
             Dim aawf As New AutoAmplifyWorkerForm
-            aawf.Filename = MainForm.currentChannelToBeSet
+            aawf.Filename = MainForm.ListBoxFiles.Items(MainForm.ListBoxFiles.SelectedIndex)
             aawf.ShowDialog()
             TextBoxAmplify.Text = String.Format("{0:G1}", aawf.Result)
             If aawf.Result < 1 Then
@@ -176,13 +164,13 @@
             For Each file In MainForm.ListBoxFiles.Items
                 Dim aawf As New AutoAmplifyWorkerForm
                 aawf.Filename = file
+                If aawf.ShowDialog() = DialogResult.Cancel Then
+                    Exit For
+                End If
                 Dim val As Double = aawf.Result
                 If val < 1 Then val = 1
                 If val < smallestAmplifyValue Then
                     smallestAmplifyValue = val
-                End If
-                If aawf.ShowDialog() = DialogResult.Cancel Then
-                    Exit For
                 End If
             Next
             TextBoxAmplify.Text = String.Format("{0:G1}", smallestAmplifyValue)

@@ -31,9 +31,14 @@ Public Class AutoAmplifyWorkerForm
         Catch ex As Exception
             Exit Sub
         End Try
-        BackgroundWorkerAutoAmplify.ReportProgress(0)
         Dim biggestSample As Double = 0
+        Dim progress As Integer = 0
         For i As Integer = 0 To wav.sampleLength - 1
+            Dim tempProgress As Integer = (i + 1) / wav.sampleLength * 100
+            If tempProgress <> progress Then
+                progress = tempProgress
+                BackgroundWorkerAutoAmplify.ReportProgress(progress)
+            End If
             If BackgroundWorkerAutoAmplify.CancellationPending Then
                 Exit For
             End If
@@ -50,4 +55,7 @@ Public Class AutoAmplifyWorkerForm
         Close()
     End Sub
 
+    Private Sub BackgroundWorkerAutoAmplify_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BackgroundWorkerAutoAmplify.ProgressChanged
+        ProgressBar1.Value = e.ProgressPercentage
+    End Sub
 End Class

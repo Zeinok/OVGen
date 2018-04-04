@@ -10,7 +10,7 @@ Public Class MainForm
     Dim startTime As DateTime
     Dim channelFlowDirection As FlowDirection = FlowDirection.LeftToRight
     '===For Worker
-    Public optionsMap As New Dictionary(Of String, channelOptions)
+    Public optionsList As New List(Of channelOptions)
     Dim canvasSize As New Size(1280, 720)
     Public wavePen As New Pen(Color.White, 2)
     Dim masterAudioFile As String = ""
@@ -339,7 +339,7 @@ Public Class MainForm
                 failedFiles.Add(args.files(z), ex.Message)
                 Continue For
             End Try
-            Dim extraArg As channelOptions = optionsMap(args.files(z))
+            Dim extraArg As channelOptions = optionsList(z)
             wave(z).extraArguments = extraArg
             wave(z).amplify = extraArg.amplify
             wave(z).mixChannel = extraArg.mixChannel
@@ -746,12 +746,8 @@ Public Class MainForm
         ofd.Multiselect = True
         If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
             For Each file In ofd.FileNames
-                If ListBoxFiles.Items.Contains(file) Then
-                    MsgBox(file & " already exists in the list!", MsgBoxStyle.Exclamation)
-                    Continue For
-                End If
                 ListBoxFiles.Items.Add(file)
-                optionsMap.Add(file, New channelOptions)
+                optionsList.Add(New channelOptions)
             Next
         End If
         previewLayout()
@@ -760,7 +756,7 @@ Public Class MainForm
     Private Sub ButtonRemove_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonRemove.Click
         Dim index As Integer = ListBoxFiles.SelectedIndex
         If Not ListBoxFiles.SelectedIndex < 0 Then
-            optionsMap.Remove(ListBoxFiles.SelectedItem)
+            optionsList.RemoveAt(index)
             ListBoxFiles.Items.RemoveAt(ListBoxFiles.SelectedIndex)
             If index > ListBoxFiles.Items.Count - 1 Then index -= 1
             ListBoxFiles.SelectedIndex = index
@@ -771,6 +767,9 @@ Public Class MainForm
     Private Sub ButtonMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonMoveUp.Click
 
         If ListBoxFiles.SelectedIndex > 0 Then
+            Dim currentOption As channelOptions = optionsList(ListBoxFiles.SelectedIndex).Clone()
+            optionsList.RemoveAt(ListBoxFiles.SelectedIndex)
+            optionsList.Insert(ListBoxFiles.SelectedIndex - 1, currentOption)
             ListBoxFiles.Items.Insert(ListBoxFiles.SelectedIndex - 1, ListBoxFiles.SelectedItem)
             ListBoxFiles.SelectedIndex = ListBoxFiles.SelectedIndex - 2
             ListBoxFiles.Items.RemoveAt(ListBoxFiles.SelectedIndex + 2)
@@ -780,6 +779,9 @@ Public Class MainForm
 
     Private Sub ButtonMoveDown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonMoveDown.Click
         If ListBoxFiles.SelectedIndex < ListBoxFiles.Items.Count - 1 Then
+            Dim currentOption As channelOptions = optionsList(ListBoxFiles.SelectedIndex).Clone()
+            optionsList.RemoveAt(ListBoxFiles.SelectedIndex)
+            optionsList.Insert(ListBoxFiles.SelectedIndex + 1, currentOption)
             ListBoxFiles.Items.Insert(ListBoxFiles.SelectedIndex + 2, ListBoxFiles.SelectedItem)
             ListBoxFiles.SelectedIndex = ListBoxFiles.SelectedIndex + 2
             ListBoxFiles.Items.RemoveAt(ListBoxFiles.SelectedIndex - 2)
@@ -789,16 +791,29 @@ Public Class MainForm
 
     Private Sub ButtonOptions_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonOptions.Click
         If Not ListBoxFiles.SelectedIndex < 0 Then
-            currentChannelToBeSet = ListBoxFiles.SelectedItem
-            ChannelConfigForm.ShowDialog()
+            Dim ccf As New ChannelConfigForm
+            ccf.Options = optionsList(ListBoxFiles.SelectedIndex).Clone()
+            If ccf.ShowDialog() = DialogResult.OK Then
+                optionsList(ListBoxFiles.SelectedIndex) = ccf.Options
+            End If
             previewLayout()
         End If
     End Sub
-
+    Dim PreviousSetAllOptions As channelOptions
     Private Sub ButtonSetAll_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonSetAll.Click
+        If PreviousSetAllOptions Is Nothing Then
+            PreviousSetAllOptions = New channelOptions
+        End If
         If ListBoxFiles.Items.Count <> 0 Then
             currentChannelToBeSet = ""
-            ChannelConfigForm.ShowDialog()
+            Dim ccf As New ChannelConfigForm
+            ccf.Options = PreviousSetAllOptions
+            ccf.SetAll = True
+            If ccf.ShowDialog() = DialogResult.OK Then
+                For i As Integer = 0 To optionsList.Count - 1
+                    optionsList(i) = ccf.Options
+                Next
+            End If
             previewLayout()
         End If
     End Sub
@@ -824,7 +839,7 @@ Public Class MainForm
                 Next
             End If
             For c As Integer = 0 To channels - 1
-                Dim currentChannel As channelOptions = optionsMap(ListBoxFiles.Items(c))
+                Dim currentChannel As channelOptions = optionsList(c)
                 Dim x, y, currentColumn, currentRow As Integer
                 If channelFlowDirection = FlowDirection.LeftToRight Then
                     currentRow = (c - (c Mod col)) / col
@@ -836,7 +851,7 @@ Public Class MainForm
                     x = channelWidth * currentColumn
                 End If
                 Dim filename As String = IO.Path.GetFileName(ListBoxFiles.Items(c))
-                Dim channelColor As Color = optionsMap(ListBoxFiles.Items(c)).waveColor
+                Dim channelColor As Color = currentChannel.waveColor
                 If currentChannel.label <> "" Then
                     g.DrawString(currentChannel.label, currentChannel.labelFont, New SolidBrush(currentChannel.labelColor), New Rectangle(x, y, channelWidth, channelHeight))
                 Else
@@ -869,8 +884,11 @@ Public Class MainForm
 
     Private Sub ListBoxFiles_MouseDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ListBoxFiles.MouseDoubleClick
         If Not ListBoxFiles.SelectedIndex < 0 Then
-            currentChannelToBeSet = ListBoxFiles.SelectedItem
-            ChannelConfigForm.ShowDialog()
+            Dim ccf As New ChannelConfigForm
+            ccf.Options = optionsList(ListBoxFiles.SelectedIndex).Clone()
+            If ccf.ShowDialog() = DialogResult.OK Then
+                optionsList(ListBoxFiles.SelectedIndex) = ccf.Options
+            End If
             previewLayout()
         End If
     End Sub
