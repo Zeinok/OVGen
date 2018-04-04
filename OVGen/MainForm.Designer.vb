@@ -63,7 +63,6 @@ Partial Class MainForm
         Me.CheckBoxVideo = New System.Windows.Forms.CheckBox()
         Me.ToolTips = New System.Windows.Forms.ToolTip(Me.components)
         Me.PictureBoxOutput = New System.Windows.Forms.PictureBox()
-        Me.TextBoxLog = New System.Windows.Forms.TextBox()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.LabelStatus = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabelPadding = New System.Windows.Forms.ToolStripStatusLabel()
@@ -72,6 +71,7 @@ Partial Class MainForm
         Me.TimerLabelFlashing = New System.Windows.Forms.Timer(Me.components)
         Me.BackgroundWorkerStdErrReader = New System.ComponentModel.BackgroundWorker()
         Me.GroupBoxFiles = New System.Windows.Forms.GroupBox()
+        Me.LogBox = New System.Windows.Forms.RichTextBox()
         Me.GroupBoxRenderingOptions.SuspendLayout()
         CType(Me.NumericUpDownMiddleLine, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownGrid, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -495,7 +495,7 @@ Partial Class MainForm
         Me.CheckBoxVideo.Size = New System.Drawing.Size(103, 19)
         Me.CheckBoxVideo.TabIndex = 0
         Me.CheckBoxVideo.Text = "Output video"
-        Me.ToolTips.SetToolTip(Me.CheckBoxVideo, "Auto convert frames to video after finished." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Requires FFmpeg.")
+        Me.ToolTips.SetToolTip(Me.CheckBoxVideo, "Output as video instead of png frame sequences." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Requires FFmpeg.")
         Me.CheckBoxVideo.UseVisualStyleBackColor = True
         '
         'PictureBoxOutput
@@ -507,17 +507,6 @@ Partial Class MainForm
         Me.PictureBoxOutput.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PictureBoxOutput.TabIndex = 4
         Me.PictureBoxOutput.TabStop = False
-        '
-        'TextBoxLog
-        '
-        Me.TextBoxLog.Location = New System.Drawing.Point(18, 541)
-        Me.TextBoxLog.Margin = New System.Windows.Forms.Padding(4)
-        Me.TextBoxLog.Multiline = True
-        Me.TextBoxLog.Name = "TextBoxLog"
-        Me.TextBoxLog.ReadOnly = True
-        Me.TextBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxLog.Size = New System.Drawing.Size(1060, 92)
-        Me.TextBoxLog.TabIndex = 8
         '
         'StatusStrip1
         '
@@ -597,14 +586,24 @@ Partial Class MainForm
         Me.GroupBoxFiles.TabStop = False
         Me.GroupBoxFiles.Text = "Files"
         '
+        'LogBox
+        '
+        Me.LogBox.Location = New System.Drawing.Point(18, 545)
+        Me.LogBox.Name = "LogBox"
+        Me.LogBox.ReadOnly = True
+        Me.LogBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
+        Me.LogBox.Size = New System.Drawing.Size(1060, 92)
+        Me.LogBox.TabIndex = 10
+        Me.LogBox.Text = ""
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(120.0!, 120.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1098, 665)
+        Me.Controls.Add(Me.LogBox)
         Me.Controls.Add(Me.GroupBoxFiles)
         Me.Controls.Add(Me.CheckBoxShowOutput)
-        Me.Controls.Add(Me.TextBoxLog)
         Me.Controls.Add(Me.LabelPreviewMode)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.GroupBoxRenderingOptions)
@@ -662,7 +661,6 @@ Partial Class MainForm
     Friend WithEvents NumericUpDownLineWidth As System.Windows.Forms.NumericUpDown
     Friend WithEvents CheckBoxCRT As System.Windows.Forms.CheckBox
     Friend WithEvents ButtonSetAll As System.Windows.Forms.Button
-    Friend WithEvents TextBoxLog As System.Windows.Forms.TextBox
     Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
     Friend WithEvents LabelStatus As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents LabelPreviewMode As System.Windows.Forms.Label
@@ -683,4 +681,5 @@ Partial Class MainForm
     Friend WithEvents ButtonMiddleLineColor As Button
     Friend WithEvents ButtonGridColor As Button
     Friend WithEvents ButtonBackgroundColor As Button
+    Friend WithEvents LogBox As RichTextBox
 End Class

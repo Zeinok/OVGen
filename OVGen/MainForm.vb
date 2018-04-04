@@ -74,7 +74,7 @@ Public Class MainForm
         End If
         LabelStatus.Text = ""
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
-        originalTextBoxLogHeight = TextBoxLog.Height
+        originalTextBoxLogHeight = LogBox.Height
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -150,7 +150,7 @@ Public Class MainForm
                 channelFlowDirection = conf.General.FlowDirection
                 ButtonFlowDirection.Invalidate()
             Catch ex As Exception
-                TextBoxLog.AppendText("Error occured while loading config:" & ex.Message & vbCrLf)
+                LogBox.AppendText("Error occured while loading config:" & ex.Message & vbCrLf)
                 Exit Sub
             End Try
         End If
@@ -159,7 +159,7 @@ Public Class MainForm
     Private Sub ButtonControl_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonControl.Click
 
         If Not OscilloscopeBackgroundWorker.IsBusy Then
-            TextBoxLog.Clear()
+            LogBox.Clear()
             Dim arg As New WorkerArguments
             'check cavnas size
             Try
@@ -678,8 +678,8 @@ Public Class MainForm
         TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
         Dim prog As Progress = e.UserState
         If prog.message <> "" Then
-            TextBoxLog.AppendText(prog.message & vbCrLf)
-            TextBoxLog.Update()
+            LogBox.AppendText(prog.message & vbCrLf)
+            LogBox.Update()
         End If
         If prog.Image IsNot Nothing Then
 
@@ -712,7 +712,7 @@ Public Class MainForm
         ElseIf prog.canceled Then 'canceled
             LabelStatus.Text = "Canceled."
             If prog.message <> "" Then
-                TextBoxLog.AppendText(prog.message & vbCrLf)
+                LogBox.AppendText(prog.message & vbCrLf)
             End If
         End If
 
@@ -720,7 +720,7 @@ Public Class MainForm
 
     Private Sub OscilloscopeBackgroundWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles OscilloscopeBackgroundWorker.RunWorkerCompleted
         Dim elapsedTime As TimeSpan = Now - startTime
-        TextBoxLog.AppendText("Total time spent: " & elapsedTime.ToString() & vbCrLf)
+        LogBox.AppendText("Total time spent: " & elapsedTime.ToString() & vbCrLf)
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         GroupBoxRenderingOptions.Enabled = True
         GroupBoxFiles.Enabled = True
@@ -730,7 +730,7 @@ Public Class MainForm
         TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
         If Not allFilesLoaded Then
             For Each msg In failedFiles
-                TextBoxLog.AppendText("Failed to load " & msg.Key & ":" & msg.Value & vbCrLf)
+                LogBox.AppendText("Failed to load " & msg.Key & ":" & msg.Value & vbCrLf)
             Next
             Exit Sub
         End If
@@ -949,15 +949,15 @@ Public Class MainForm
 
     Private Sub BackgroundWorkerStdErrReader_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles BackgroundWorkerStdErrReader.ProgressChanged
         Dim stderr As String = e.UserState
-        If stderr <> "" And Not TextBoxLog.IsDisposed Then
-            TextBoxLog.AppendText(stderr & vbCrLf)
+        If stderr <> "" And Not LogBox.IsDisposed Then
+            LogBox.AppendText(stderr & vbCrLf)
         End If
     End Sub
 
     Private Sub MainForm_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
         If formStarted Then
             Me.Size = New Size(originalFormSize.Width, Me.Height)
-            TextBoxLog.Size = New Size(TextBoxLog.Width, Me.Height - originalFormSize.Height + originalTextBoxLogHeight)
+            LogBox.Size = New Size(LogBox.Width, Me.Height - originalFormSize.Height + originalTextBoxLogHeight)
         End If
 
     End Sub
