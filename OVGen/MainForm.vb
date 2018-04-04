@@ -513,14 +513,24 @@ Public Class MainForm
                             triggerOffset = TriggeringAlgorithms.risingEdgeTrigger(currentWAV, sampleLocation, maxScanLength)
                         Case TriggeringAlgorithms.UsePeakSpeedScanning
                             triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, sampleLocation, maxScanLength)
-                        Case TriggeringAlgorithms.UsePositiveLengthScanning
-                            triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, True, False)
-                        Case TriggeringAlgorithms.UseNegativeLengthScanning
-                            triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, False, True)
-                        Case TriggeringAlgorithms.UseCrossingLengthScanning
-                            triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, True, True)
+                        Case TriggeringAlgorithms.UseMaxLengthScanning
+                            Select Case channelArg.scanPhase
+                                Case 0
+                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, True, False)
+                                Case 1
+                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, False, True)
+                                Case 2
+                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, True, True)
+                            End Select
                         Case TriggeringAlgorithms.UseMaxRectifiedAreaScanning
-                            triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, maxScanLength)
+                            Select Case channelArg.scanPhase
+                                Case 0
+                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, maxScanLength, True, False)
+                                Case 1
+                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, maxScanLength, False, True)
+                                Case 2
+                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, maxScanLength, True, True)
+                            End Select
                     End Select
                 End If
                 If channelArg.pulseWidthModulatedColor Then

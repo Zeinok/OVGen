@@ -11,6 +11,7 @@
         ButtonColor.BackColor = Options.waveColor
         CheckBoxPulseWidthModulatedColor.Checked = Options.pulseWidthModulatedColor
         ComboBoxAlgorithm.SelectedIndex = Options.algorithm
+        ComboBoxScanPhase.SelectedIndex = Options.scanPhase
         TextBoxHorizontalTime.Text = Options.horizontalTime * 1000
         NumericUpDownTriggerLevel.Value = Options.trigger
         CheckBoxAutoTriggerLevel.Checked = Options.autoTriggerLevel
@@ -103,6 +104,7 @@
         Options.algorithm = ComboBoxAlgorithm.SelectedIndex
         Options.horizontalTime = TextBoxHorizontalTime.Text / 1000
         Options.trigger = NumericUpDownTriggerLevel.Value
+        Options.scanPhase = ComboBoxScanPhase.SelectedIndex
         Options.autoTriggerLevel = CheckBoxAutoTriggerLevel.Checked
         Options.externalTriggerEnabled = CheckBoxExternalTrigger.Checked
         Options.externalTriggerFile = externalTrigger
@@ -176,4 +178,5 @@
             TextBoxAmplify.Text = String.Format("{0:G1}", smallestAmplifyValue)
         End If
     End Sub
+
 End Class

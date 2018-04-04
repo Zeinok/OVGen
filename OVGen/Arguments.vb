@@ -50,6 +50,7 @@ Public Class channelOptions
     Public externalTriggerEnabled As Boolean = False
     Public externalTriggerFile As String = ""
     Public algorithm As Byte = TriggeringAlgorithms.UsePeakSpeedScanning
+    Public scanPhase As Byte = 0
     Public label As String
     Public labelFont As Font = New Font(SystemFonts.MenuFont.FontFamily, 24)
     Public labelColor As Color = Color.White

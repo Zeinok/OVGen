@@ -1,17 +1,14 @@
 ﻿Module TriggeringAlgorithms
     Public ReadOnly Algorithms As String() = {"Rising Edge",
                                               "Peak Speed",
-                                              "Positive Length",
-                                              "Negative Length",
-                                              "Crossing Length",
+                                              "Max Length",
                                               "Max Rectified Area",
                                               "No Trigger"}
+
     Public Const UseRisingEdge As Byte = 0
     Public Const UsePeakSpeedScanning As Byte = 1
-    Public Const UsePositiveLengthScanning As Byte = 2
-    Public Const UseNegativeLengthScanning As Byte = 3
-    Public Const UseCrossingLengthScanning As Byte = 4
-    Public Const UseMaxRectifiedAreaScanning As Byte = 5
+    Public Const UseMaxLengthScanning As Byte = 2
+    Public Const UseMaxRectifiedAreaScanning As Byte = 3
     Function risingEdgeTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         Dim args As channelOptions = wave.extraArguments
         risingEdgeTrigger = 0
@@ -103,7 +100,7 @@
         End While
     End Function
 
-    Function maxRectifiedArea(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
+    Function maxRectifiedArea(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long, ByVal scanPositive As Boolean, ByVal scanNegative As Boolean) As Long
         Dim args As channelOptions = wave.extraArguments
         maxRectifiedArea = 0
         Dim scanLocation As Long = 0
@@ -112,11 +109,11 @@
             Dim currentTotalSample As Long = 0
             While Math.Floor(wave.getSample(offset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
                 scanLocation += 1
-                currentTotalSample += wave.getSample(offset + scanLocation, True)
+                If scanPositive Then currentTotalSample += wave.getSample(offset + scanLocation, True)
             End While
             While Math.Floor(wave.getSample(offset + scanLocation, True)) <= args.trigger And scanLocation < maxScanLength
                 scanLocation += 1
-                currentTotalSample -= wave.getSample(offset + scanLocation, True)
+                If scanNegative Then currentTotalSample -= wave.getSample(offset + scanLocation, True)
             End While
             If currentTotalSample > totalSample Then
                 totalSample = currentTotalSample
