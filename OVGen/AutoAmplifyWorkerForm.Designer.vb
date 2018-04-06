@@ -33,7 +33,7 @@ Partial Class AutoAmplifyWorkerForm
         Me.ButtonCancel.Location = New System.Drawing.Point(84, 43)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 26)
-        Me.ButtonCancel.TabIndex = 2
+        Me.ButtonCancel.TabIndex = 1
         Me.ButtonCancel.Text = "Cancel"
         Me.ButtonCancel.UseVisualStyleBackColor = True
         '
@@ -47,7 +47,7 @@ Partial Class AutoAmplifyWorkerForm
         Me.ProgressBar1.Location = New System.Drawing.Point(12, 12)
         Me.ProgressBar1.Name = "ProgressBar1"
         Me.ProgressBar1.Size = New System.Drawing.Size(208, 25)
-        Me.ProgressBar1.TabIndex = 3
+        Me.ProgressBar1.TabIndex = 0
         '
         'AutoAmplifyWorkerForm
         '

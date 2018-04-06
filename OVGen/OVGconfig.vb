@@ -7,10 +7,6 @@
     End Sub
     Public Class GeneralSection
         Public SmoothLine As Boolean
-        Public BackgroundColor As New ColorSerializable(Color.Black)
-        Public DrawMiddleLine As Boolean
-        Public MiddleLineColor As New ColorSerializable(Color.Gray)
-        Public MiddleLineWidth As Integer = 1
         Public Framerate As Integer = 60
         Public LineWidth As Integer = 2
         Public ConvertVideo As Boolean
@@ -18,6 +14,13 @@
         Public DrawGrid As Boolean
         Public GridColor As New ColorSerializable(Color.LightGray)
         Public GridWidth As Integer = 1
+        Public DrawBorder As Boolean
+        Public BorderColor As New ColorSerializable(Color.LightGray)
+        Public BorderWidth As Integer = 1
+        Public BackgroundColor As New ColorSerializable(Color.Black)
+        Public DrawMiddleLine As Boolean
+        Public MiddleLineColor As New ColorSerializable(Color.Gray)
+        Public MiddleLineWidth As Integer = 1
         Public CanvasSize As String = "1280x720"
         Public FlowDirection As Integer
     End Class

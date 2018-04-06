@@ -175,7 +175,9 @@
                     smallestAmplifyValue = val
                 End If
             Next
-            TextBoxAmplify.Text = String.Format("{0:G1}", smallestAmplifyValue)
+            If smallestAmplifyValue <> Double.MaxValue Then
+                TextBoxAmplify.Text = String.Format("{0:G1}", smallestAmplifyValue)
+            End If
         End If
     End Sub
 

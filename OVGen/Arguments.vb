@@ -36,6 +36,8 @@ Public Class WorkerArguments
     Public analogOscilloscopeLineWidth As Byte = 4
     Public drawGrid As Boolean
     Public gridPen As Pen
+    Public drawBorder As Boolean
+    Public borderPen As Pen
 End Class
 
 Public Class channelOptions

@@ -105,6 +105,9 @@ Public Class MainForm
         conf.General.DrawGrid = CheckBoxGrid.Checked
         conf.General.GridColor = New ColorSerializable(ButtonGridColor.BackColor)
         conf.General.GridWidth = NumericUpDownGrid.Value
+        conf.General.DrawBorder = CheckBoxBorder.Checked
+        conf.General.BorderColor = New ColorSerializable(ButtonBorderColor.BackColor)
+        conf.General.BorderWidth = NumericUpDownBorder.Value
         conf.General.CanvasSize = ComboBoxCanvasSize.Text
         conf.General.FlowDirection = channelFlowDirection
         conf.FFmpeg.BinaryLocation = ffmpegPath.Trim()
@@ -145,6 +148,9 @@ Public Class MainForm
                 CheckBoxCRT.Checked = conf.General.CRTStyledRender
                 CheckBoxGrid.Checked = conf.General.DrawGrid
                 ButtonGridColor.BackColor = conf.General.GridColor.GetColor()
+                CheckBoxBorder.Checked = conf.General.DrawBorder
+                ButtonBorderColor.BackColor = conf.General.BorderColor.GetColor()
+                NumericUpDownBorder.Value = conf.General.BorderWidth
                 NumericUpDownGrid.Value = conf.General.GridWidth
                 ComboBoxCanvasSize.Text = conf.General.CanvasSize
                 channelFlowDirection = conf.General.FlowDirection
@@ -185,6 +191,8 @@ Public Class MainForm
             outputDirectory = ""
             arg.drawGrid = CheckBoxGrid.Checked
             arg.gridPen = New Pen(ButtonGridColor.BackColor, NumericUpDownGrid.Value)
+            arg.drawBorder = CheckBoxBorder.Checked
+            arg.borderPen = New Pen(ButtonBorderColor.BackColor, NumericUpDownBorder.Value * 2)
             arg.useAnalogOscilloscopeStyle = CheckBoxCRT.Checked
             If arg.useAnalogOscilloscopeStyle Then
                 arg.analogOscilloscopeLineWidth = NumericUpDownLineWidth.Value
@@ -251,8 +259,7 @@ Public Class MainForm
             arg.ffmpegBinary = ffmpegPath
             LabelStatus.Text = "Start."
             OscilloscopeBackgroundWorker.RunWorkerAsync(arg)
-            GroupBoxRenderingOptions.Enabled = False
-            GroupBoxFiles.Enabled = False
+            TabControlRenderingFiles.Enabled = False
             ButtonControl.Text = "Cancel"
             ButtonControl.Update()
         Else
@@ -574,6 +581,9 @@ Public Class MainForm
                     g.DrawLine(args.gridPen, 0, channelHeight * y, canvasSize.Width, channelHeight * y)
                 Next
             End If
+            If args.drawBorder Then
+                g.DrawRectangle(args.borderPen, 0, 0, canvasSize.Width, canvasSize.Height)
+            End If
             If overlayNeeded Then
                 g.DrawImage(overlayBmp, 0, 0)
             End If
@@ -690,6 +700,8 @@ Public Class MainForm
         If prog.message <> "" Then
             LogBox.AppendText(prog.message & vbCrLf)
             LogBox.Update()
+            LogBox.Focus()
+            LogBox.Select(LogBox.TextLength, 0)
         End If
         If prog.Image IsNot Nothing Then
 
@@ -723,6 +735,9 @@ Public Class MainForm
             LabelStatus.Text = "Canceled."
             If prog.message <> "" Then
                 LogBox.AppendText(prog.message & vbCrLf)
+                LogBox.Update()
+                LogBox.Focus()
+                LogBox.Select(LogBox.TextLength, 0)
             End If
         End If
 
@@ -732,8 +747,7 @@ Public Class MainForm
         Dim elapsedTime As TimeSpan = Now - startTime
         LogBox.AppendText("Total time spent: " & elapsedTime.ToString() & vbCrLf)
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
-        GroupBoxRenderingOptions.Enabled = True
-        GroupBoxFiles.Enabled = True
+        TabControlRenderingFiles.Enabled = True
         LabelStatus.Text = "Finished."
         ButtonControl.Text = "Start"
         ButtonControl.Enabled = True
@@ -840,14 +854,6 @@ Public Class MainForm
             Dim channelWidth As Integer = canvasSize.Width / col
             Dim channelHeight As Integer = canvasSize.Height / maxChannelPerColumn
             Dim channelOffset(channels - 1) As Point
-            If CheckBoxGrid.Checked Then 'draw grid
-                For x As Integer = 1 To col - 1
-                    g.DrawLine(New Pen(ButtonGridColor.BackColor, NumericUpDownGrid.Value), channelWidth * x, 0, channelWidth * x, canvasSize.Height)
-                Next
-                For y As Integer = 1 To maxChannelPerColumn - 1
-                    g.DrawLine(New Pen(ButtonGridColor.BackColor, NumericUpDownGrid.Value), 0, channelHeight * y, canvasSize.Width, channelHeight * y)
-                Next
-            End If
             For c As Integer = 0 To channels - 1
                 Dim currentChannel As channelOptions = optionsList(c)
                 Dim x, y, currentColumn, currentRow As Integer
@@ -871,6 +877,17 @@ Public Class MainForm
                     g.DrawLine(New Pen(ButtonMiddleLineColor.BackColor, NumericUpDownMiddleLine.Value), x, y + channelHeight \ 2, x + channelWidth, y + channelHeight \ 2)
                 End If
             Next
+            If CheckBoxGrid.Checked Then
+                For x As Integer = 1 To col - 1
+                    g.DrawLine(New Pen(ButtonGridColor.BackColor, NumericUpDownGrid.Value), channelWidth * x, 0, channelWidth * x, canvasSize.Height)
+                Next
+                For y As Integer = 1 To maxChannelPerColumn - 1
+                    g.DrawLine(New Pen(ButtonGridColor.BackColor, NumericUpDownGrid.Value), 0, channelHeight * y, canvasSize.Width, channelHeight * y)
+                Next
+            End If
+            If CheckBoxBorder.Checked Then
+                g.DrawRectangle(New Pen(ButtonBorderColor.BackColor, NumericUpDownBorder.Value * 2), 0, 0, canvasSize.Width, canvasSize.Height)
+            End If
         End If
 
         PictureBoxOutput.Image = bmpLayout
@@ -1021,6 +1038,15 @@ Public Class MainForm
         previewLayout()
     End Sub
 
+    Private Sub ButtonBorderColor_Click(sender As Object, e As EventArgs) Handles ButtonBorderColor.Click
+        Dim cd As New ColorDialog
+        cd.Color = ButtonBorderColor.BackColor
+        If cd.ShowDialog() = DialogResult.OK Then
+            ButtonBorderColor.BackColor = cd.Color
+        End If
+        previewLayout()
+    End Sub
+
     Private Sub ButtonBackgroundColor_BackColorChanged(sender As Object, e As EventArgs) Handles ButtonBackgroundColor.BackColorChanged
         ButtonBackgroundColor.ForeColor = getTextColor(ButtonBackgroundColor.BackColor)
     End Sub
@@ -1030,6 +1056,26 @@ Public Class MainForm
     End Sub
 
     Private Sub ButtonGridColor_BackColorChanged(sender As Object, e As EventArgs) Handles ButtonGridColor.BackColorChanged
-        ButtonGridColor.ForeColor = getTextColor(ButtonGridColor.ForeColor)
+        ButtonGridColor.ForeColor = getTextColor(ButtonGridColor.BackColor)
+    End Sub
+
+    Private Sub ButtonBorderColor_BackColorChanged(sender As Object, e As EventArgs) Handles ButtonBorderColor.BackColorChanged
+        ButtonBorderColor.ForeColor = getTextColor(ButtonBorderColor.BackColor)
+    End Sub
+
+    Private Sub CheckBoxBorder_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxBorder.CheckedChanged
+        previewLayout()
+    End Sub
+
+    Private Sub NumericUpDownBorder_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDownBorder.ValueChanged
+        previewLayout()
+    End Sub
+
+    Private Sub NumericUpDownGrid_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDownGrid.ValueChanged
+        previewLayout()
+    End Sub
+
+    Private Sub NumericUpDownMiddleLine_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDownMiddleLine.ValueChanged
+        previewLayout()
     End Sub
 End Class
