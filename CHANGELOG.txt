@@ -1,3 +1,9 @@
+2018/4/6 0.0.16.1
++ Draw Border
+* Rearrange tab index
+* Jump to last line on log box when appending a new line
+* Fix auto amplify on set all: Value set to Double.MaxValue if clicked Cancel fast enough.
+
 2018/4/6 0.0.16.0
 + Auto Amplify
 + Configurable scanning phase for Max Length/Max Rectified Area
