@@ -1,3 +1,9 @@
+2018/4/6 0.0.16.0
++ Auto Amplify
++ Configurable scanning phase for Max Length/Max Rectified Area
++ You can now use same wave file in multiple channels
+* Change Max Length/Max Rectified Area behavior
+
 2018/3/4 0.0.15.2
 * Fix pulse width modulated color divided by 0
 

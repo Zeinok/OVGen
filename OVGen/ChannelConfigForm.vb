@@ -179,4 +179,9 @@
         End If
     End Sub
 
+    Private Sub ComboBoxAlgorithm_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBoxAlgorithm.SelectedIndexChanged
+        LabelScanPhase.Enabled = ComboBoxAlgorithm.SelectedIndex = TriggeringAlgorithms.UseMaxLengthScanning _
+                                 Or ComboBoxAlgorithm.SelectedIndex = TriggeringAlgorithms.UseMaxRectifiedAreaScanning
+        ComboBoxScanPhase.Enabled = LabelScanPhase.Enabled
+    End Sub
 End Class
