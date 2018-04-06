@@ -35,3 +35,4 @@ OVGen is licensed under the MIT License, see LICENSE.md for more information.
 + Preview mode
 + Toggleable output displaying
 + CRT oscilloscope rendering mode
++ Auto Amplify
