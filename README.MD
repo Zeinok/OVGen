@@ -1,6 +1,6 @@
 ﻿# Oscilloscope View Generator
 
-A program that does same thing as well as SIDWiz2 but more advanced.
+A software you can put WAV files and make oscilloscope view thing.
 
 ## Installing
 
