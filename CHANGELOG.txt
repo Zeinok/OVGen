@@ -1,3 +1,7 @@
+2018/4/19 0.0.16.2
+* Fix auto amplify result
+* Fix auto trigger
+
 2018/4/6 0.0.16.1
 + Draw Border
 * Rearrange tab index
