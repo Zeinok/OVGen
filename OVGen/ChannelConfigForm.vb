@@ -157,7 +157,7 @@
             Dim aawf As New AutoAmplifyWorkerForm
             aawf.Filename = MainForm.ListBoxFiles.Items(MainForm.ListBoxFiles.SelectedIndex)
             aawf.ShowDialog()
-            TextBoxAmplify.Text = String.Format("{0:G1}", aawf.Result)
+            TextBoxAmplify.Text = Math.Round(aawf.Result, 1)
             If aawf.Result < 1 Then
                 TextBoxAmplify.Text = 1
             End If
@@ -176,7 +176,7 @@
                 End If
             Next
             If smallestAmplifyValue <> Double.MaxValue Then
-                TextBoxAmplify.Text = String.Format("{0:G1}", smallestAmplifyValue)
+                TextBoxAmplify.Text = Math.Round(smallestAmplifyValue, 1)
             End If
         End If
     End Sub

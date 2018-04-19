@@ -500,10 +500,10 @@ Public Class MainForm
                 Dim firstScan As ULong = 1
                 Dim firstSample As Double = currentWAV.getSample(sampleLocation, True)
                 Dim scanRequired As Boolean = False
-                Dim max As Double = -127
-                Dim low As Double = 128
+                Dim max As Integer = -127
+                Dim low As Integer = 128
                 While firstScan < maxScanLength
-                    Dim sample As Double = currentWAV.getSample(sampleLength + firstScan, True)
+                    Dim sample As Integer = Math.Floor(currentWAV.getSample(sampleLength + firstScan, True))
                     If sample > max Then max = sample
                     If sample < low Then low = sample
                     If Not currentWAV.getSample(sampleLocation + firstScan, True) = firstSample Then
