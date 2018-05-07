@@ -9,18 +9,18 @@
     Public Const UsePeakSpeedScanning As Byte = 1
     Public Const UseMaxLengthScanning As Byte = 2
     Public Const UseMaxRectifiedAreaScanning As Byte = 3
-    Function risingEdgeTrigger(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
+    Function risingEdgeTrigger(ByRef wave As WAV, ByVal triggerValue As Integer, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         Dim args As channelOptions = wave.extraArguments
         risingEdgeTrigger = 0
-        While Math.Floor(wave.getSample(offset + risingEdgeTrigger, True)) > args.trigger And risingEdgeTrigger < maxScanLength 'postive
+        While Math.Floor(wave.getSample(offset + risingEdgeTrigger, True)) > triggerValue And risingEdgeTrigger < maxScanLength 'postive
             risingEdgeTrigger += 1
         End While
-        While Math.Floor(wave.getSample(offset + risingEdgeTrigger, True)) <= args.trigger And risingEdgeTrigger < maxScanLength 'negative
+        While Math.Floor(wave.getSample(offset + risingEdgeTrigger, True)) <= triggerValue And risingEdgeTrigger < maxScanLength 'negative
             risingEdgeTrigger += 1
         End While
     End Function
 
-    Function peakSpeedScanning(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long) As Long
+    Function peakSpeedScanning(ByRef wave As WAV, ByVal triggerValue As Integer, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         'OPNA2608: scans how fast a peak is reached centers there
         Dim args As channelOptions = wave.extraArguments
         peakSpeedScanning = 0
@@ -45,12 +45,9 @@
         End While
         Dim middleDistance As Long = maxScanLength
         Dim middlePoint As Long = 0
-        If args.autoTriggerLevel Then
-            args.trigger = (max + low) / 2
-        End If
         For Each peakPoint In peaks
             Dim currentPoint As Integer = peakPoint
-            While Math.Floor(wave.getSample(offset + currentPoint, True)) > args.trigger And currentPoint >= 0 'find middle point
+            While Math.Floor(wave.getSample(offset + currentPoint, True)) > triggerValue And currentPoint >= 0 'find middle point
                 currentPoint -= 1
             End While
             Dim distanceToPeak As Long = peakPoint - currentPoint 'distance between middlePoint to peakPoint
@@ -65,7 +62,7 @@
 
         If middlePoint = -1 Then
             Dim currentPoint = middlePoint
-            While offset + currentPoint >= 0 And Math.Floor(wave.getSample(offset + currentPoint, True)) > args.trigger And currentPoint >= -maxScanLength
+            While offset + currentPoint >= 0 And Math.Floor(wave.getSample(offset + currentPoint, True)) > triggerValue And currentPoint >= -maxScanLength
                 currentPoint -= 1
             End While
             If currentPoint > -maxScanLength Then
@@ -74,50 +71,53 @@
                 middlePoint += 1
             End If
         End If
-        'Debug.WriteLine(middlePoint)
         peakSpeedScanning = middlePoint
     End Function
 
-    Function lengthScanning(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long, ByVal scanPositive As Boolean, ByVal scanNegative As Boolean) As Long
+    Function lengthScanning(ByRef wave As WAV, ByVal triggerValue As Integer, ByVal offset As Long, ByVal maxScanLength As Long, ByVal scanPositive As Boolean, ByVal scanNegative As Boolean) As Long
         Dim args As channelOptions = wave.extraArguments
         lengthScanning = 0
         Dim scanLocation As Long = 0
         Dim maxLength As Long = 0
+        Dim tempTrigger As Long = 0
         While scanLocation < maxScanLength
             Dim currentLength As Long = 0
-            While Math.Floor(wave.getSample(offset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
+            tempTrigger = scanLocation
+            While Math.Floor(wave.getSample(offset + scanLocation, True)) > triggerValue And scanLocation < maxScanLength
                 scanLocation += 1
                 If scanPositive Then currentLength += 1
             End While
-            While Math.Floor(wave.getSample(offset + scanLocation, True)) <= args.trigger And scanLocation < maxScanLength
+            While Math.Floor(wave.getSample(offset + scanLocation, True)) <= triggerValue And scanLocation < maxScanLength
                 scanLocation += 1
                 If scanNegative Then currentLength += 1
             End While
             If currentLength > maxLength Then
                 maxLength = currentLength
-                lengthScanning = scanLocation
+                lengthScanning = tempTrigger
             End If
         End While
     End Function
 
-    Function maxRectifiedArea(ByRef wave As WAV, ByVal offset As Long, ByVal maxScanLength As Long, ByVal scanPositive As Boolean, ByVal scanNegative As Boolean) As Long
+    Function maxRectifiedArea(ByRef wave As WAV, ByVal triggerValue As Integer, ByVal offset As Long, ByVal maxScanLength As Long, ByVal scanPositive As Boolean, ByVal scanNegative As Boolean) As Long
         Dim args As channelOptions = wave.extraArguments
         maxRectifiedArea = 0
         Dim scanLocation As Long = 0
         Dim totalSample As Long = 0
+        Dim tempTrigger As Long = 0
         While scanLocation < maxScanLength
             Dim currentTotalSample As Long = 0
-            While Math.Floor(wave.getSample(offset + scanLocation, True)) > args.trigger And scanLocation < maxScanLength
+            tempTrigger = scanLocation
+            While Math.Floor(wave.getSample(offset + scanLocation, True)) > triggerValue And scanLocation < maxScanLength
                 scanLocation += 1
                 If scanPositive Then currentTotalSample += wave.getSample(offset + scanLocation, True)
             End While
-            While Math.Floor(wave.getSample(offset + scanLocation, True)) <= args.trigger And scanLocation < maxScanLength
+            While Math.Floor(wave.getSample(offset + scanLocation, True)) <= triggerValue And scanLocation < maxScanLength
                 scanLocation += 1
                 If scanNegative Then currentTotalSample -= wave.getSample(offset + scanLocation, True)
             End While
             If currentTotalSample > totalSample Then
                 totalSample = currentTotalSample
-                maxRectifiedArea = scanLocation
+                maxRectifiedArea = tempTrigger
             End If
         End While
     End Function

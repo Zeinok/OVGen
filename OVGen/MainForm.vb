@@ -75,6 +75,7 @@ Public Class MainForm
         LabelStatus.Text = ""
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         originalTextBoxLogHeight = LogBox.Height
+
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -448,9 +449,6 @@ Public Class MainForm
             FFmpegstderr = ffmpegProc.StandardError
         End If
 
-
-
-
         'start work
         OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Begin rendering."))
         Dim overlayBmp As New Bitmap(canvasSize.Width, canvasSize.Height)
@@ -497,13 +495,14 @@ Public Class MainForm
                 Dim sampleLocation As ULong = frames * currentWAV.sampleRate / args.FPS
                 'trigger
                 Dim maxScanLength As ULong = currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan
-                Dim firstScan As ULong = 1
+                Dim firstScan As ULong = 0
                 Dim firstSample As Double = currentWAV.getSample(sampleLocation, True)
                 Dim scanRequired As Boolean = False
                 Dim max As Integer = -127
                 Dim low As Integer = 128
+                Dim triggerValue As Integer = channelArg.trigger
                 While firstScan < maxScanLength
-                    Dim sample As Integer = Math.Floor(currentWAV.getSample(sampleLength + firstScan, True))
+                    Dim sample As Integer = Math.Floor(currentWAV.getSample(sampleLocation + firstScan, True))
                     If sample > max Then max = sample
                     If sample < low Then low = sample
                     If Not currentWAV.getSample(sampleLocation + firstScan, True) = firstSample Then
@@ -513,30 +512,30 @@ Public Class MainForm
                 End While
                 If scanRequired Then
                     If channelArg.autoTriggerLevel Then
-                        channelArg.trigger = (max + low) / 2
+                        triggerValue = (max + low) / 2
                     End If
                     Select Case channelArg.algorithm
                         Case TriggeringAlgorithms.UseRisingEdge
-                            triggerOffset = TriggeringAlgorithms.risingEdgeTrigger(currentWAV, sampleLocation, maxScanLength)
+                            triggerOffset = TriggeringAlgorithms.risingEdgeTrigger(currentWAV, triggerValue, sampleLocation, maxScanLength)
                         Case TriggeringAlgorithms.UsePeakSpeedScanning
-                            triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, sampleLocation, maxScanLength)
+                            triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, triggerValue, sampleLocation, maxScanLength)
                         Case TriggeringAlgorithms.UseMaxLengthScanning
                             Select Case channelArg.scanPhase
                                 Case 0
-                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, True, False)
+                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, triggerValue, sampleLocation, maxScanLength, True, False)
                                 Case 1
-                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, False, True)
+                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, triggerValue, sampleLocation, maxScanLength, False, True)
                                 Case 2
-                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, sampleLocation, maxScanLength, True, True)
+                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, triggerValue, sampleLocation, maxScanLength, True, True)
                             End Select
                         Case TriggeringAlgorithms.UseMaxRectifiedAreaScanning
                             Select Case channelArg.scanPhase
                                 Case 0
-                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, maxScanLength, True, False)
+                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, triggerValue, sampleLocation, maxScanLength, True, False)
                                 Case 1
-                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, maxScanLength, False, True)
+                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, triggerValue, sampleLocation, maxScanLength, False, True)
                                 Case 2
-                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, sampleLocation, maxScanLength, True, True)
+                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, triggerValue, sampleLocation, maxScanLength, True, True)
                             End Select
                     End Select
                 End If
@@ -668,6 +667,7 @@ Public Class MainForm
         g.Clip = New Region(rect)
         g.DrawLines(wavePen, points.ToArray())
     End Sub
+
     Function HSVtoRGB(ByVal hue As Double, ByVal saturation As Double, ByVal value As Double) As Color
         Dim h As Integer = Convert.ToInt32(Math.Floor(hue / 60)) Mod 6
         Dim f As Double = hue / 60 - Math.Floor(hue / 60)
