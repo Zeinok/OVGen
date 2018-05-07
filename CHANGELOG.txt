@@ -1,3 +1,7 @@
+2018/5/7 0.0.16.3
+* Fix auto trigger
+* Fix some algorithm issues
+
 2018/4/19 0.0.16.2
 * Fix auto amplify result
 * Fix auto trigger
