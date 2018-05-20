@@ -76,6 +76,8 @@ Partial Class MainForm
         Me.ButtonBorderColor = New System.Windows.Forms.Button()
         Me.CheckBoxBorder = New System.Windows.Forms.CheckBox()
         Me.TabPageFiles = New System.Windows.Forms.TabPage()
+        Me.LabelChannelLabelPos = New System.Windows.Forms.Label()
+        Me.ComboBoxLabelPos = New System.Windows.Forms.ComboBox()
         CType(Me.NumericUpDownMiddleLine, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownLineWidth, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -565,6 +567,8 @@ Partial Class MainForm
         'TabPageRendering
         '
         Me.TabPageRendering.BackColor = System.Drawing.SystemColors.Control
+        Me.TabPageRendering.Controls.Add(Me.ComboBoxLabelPos)
+        Me.TabPageRendering.Controls.Add(Me.LabelChannelLabelPos)
         Me.TabPageRendering.Controls.Add(Me.NumericUpDownBorder)
         Me.TabPageRendering.Controls.Add(Me.ButtonBorderColor)
         Me.TabPageRendering.Controls.Add(Me.CheckBoxBorder)
@@ -644,6 +648,25 @@ Partial Class MainForm
         Me.TabPageFiles.Size = New System.Drawing.Size(246, 498)
         Me.TabPageFiles.TabIndex = 1
         Me.TabPageFiles.Text = "Files"
+        '
+        'LabelChannelLabelPos
+        '
+        Me.LabelChannelLabelPos.AutoSize = True
+        Me.LabelChannelLabelPos.Location = New System.Drawing.Point(6, 329)
+        Me.LabelChannelLabelPos.Name = "LabelChannelLabelPos"
+        Me.LabelChannelLabelPos.Size = New System.Drawing.Size(93, 15)
+        Me.LabelChannelLabelPos.TabIndex = 23
+        Me.LabelChannelLabelPos.Text = "Label Position:"
+        '
+        'ComboBoxLabelPos
+        '
+        Me.ComboBoxLabelPos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBoxLabelPos.FormattingEnabled = True
+        Me.ComboBoxLabelPos.Items.AddRange(New Object() {"Top Left", "Top Right", "Bottom Left", "Bottom Right"})
+        Me.ComboBoxLabelPos.Location = New System.Drawing.Point(105, 326)
+        Me.ComboBoxLabelPos.Name = "ComboBoxLabelPos"
+        Me.ComboBoxLabelPos.Size = New System.Drawing.Size(133, 23)
+        Me.ComboBoxLabelPos.TabIndex = 24
         '
         'MainForm
         '
@@ -736,4 +759,6 @@ Partial Class MainForm
     Friend WithEvents CheckBoxBorder As CheckBox
     Friend WithEvents NumericUpDownBorder As NumericUpDown
     Friend WithEvents ButtonBorderColor As Button
+    Friend WithEvents ComboBoxLabelPos As ComboBox
+    Friend WithEvents LabelChannelLabelPos As Label
 End Class

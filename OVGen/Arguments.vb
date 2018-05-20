@@ -38,6 +38,8 @@ Public Class WorkerArguments
     Public gridPen As Pen
     Public drawBorder As Boolean
     Public borderPen As Pen
+    Public flowDirection As FlowDirection
+    Public labelPostition As Integer
 End Class
 
 Public Class channelOptions

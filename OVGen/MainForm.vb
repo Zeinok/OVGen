@@ -111,6 +111,7 @@ Public Class MainForm
         conf.General.BorderWidth = NumericUpDownBorder.Value
         conf.General.CanvasSize = ComboBoxCanvasSize.Text
         conf.General.FlowDirection = channelFlowDirection
+        conf.General.LabelPosition = ComboBoxLabelPos.SelectedIndex
         conf.FFmpeg.BinaryLocation = ffmpegPath.Trim()
         conf.FFmpeg.JoinAudioCommandLine = FFmpegCommandLineJoinAudio.Trim()
         If FFmpegCommandLineJoinAudio = DefaultFFmpegCommandLineJoinAudio Then conf.FFmpeg.JoinAudioCommandLine = ""
@@ -155,6 +156,7 @@ Public Class MainForm
                 NumericUpDownGrid.Value = conf.General.GridWidth
                 ComboBoxCanvasSize.Text = conf.General.CanvasSize
                 channelFlowDirection = conf.General.FlowDirection
+                ComboBoxLabelPos.SelectedIndex = conf.General.LabelPosition
                 ButtonFlowDirection.Invalidate()
             Catch ex As Exception
                 LogBox.AppendText("Error occured while loading config:" & ex.Message & vbCrLf)
@@ -246,6 +248,8 @@ Public Class MainForm
             arg.drawMiddleLine = CheckBoxDrawMiddleLine.Checked
             arg.middleLinePen = New Pen(ButtonMiddleLineColor.BackColor, NumericUpDownMiddleLine.Value)
             arg.columns = NumericUpDownColumn.Value
+            arg.flowDirection = channelFlowDirection
+            arg.labelPostition = ComboBoxLabelPos.SelectedIndex
             Dim fileArray(ListBoxFiles.Items.Count - 1) As String
             For i As Integer = 0 To fileArray.Length - 1
                 fileArray(i) = ListBoxFiles.Items(i)
@@ -400,11 +404,11 @@ Public Class MainForm
         Dim channelOffset(channels - 1) As Point
         For c As Integer = 0 To channels - 1
             Dim x, y, currentColumn, currentRow As Integer
-            If channelFlowDirection = FlowDirection.LeftToRight Then
+            If args.flowDirection = FlowDirection.LeftToRight Then
                 currentRow = (c - (c Mod col)) / col
                 y = channelHeight * currentRow
                 x = channelWidth * (c Mod col)
-            ElseIf channelFlowDirection = FlowDirection.TopDown Then
+            ElseIf args.flowDirection = FlowDirection.TopDown Then
                 currentColumn = (c - (c Mod maxChannelPerColumn)) / maxChannelPerColumn
                 y = channelHeight * (c Mod maxChannelPerColumn)
                 x = channelWidth * currentColumn
@@ -456,8 +460,26 @@ Public Class MainForm
         For c As Byte = 0 To channels - 1
             Dim g As Graphics = Graphics.FromImage(overlayBmp)
             Dim channelArg As channelOptions = wave(c).extraArguments
+            Dim labelDX, labelDY As Integer
+            Dim textSize As SizeF = New SizeF(0, 0)
+            If channelArg.label <> "" Then
+                textSize = g.MeasureString(channelArg.label, channelArg.labelFont)
+            End If
+            labelDX = 0
+            labelDY = 0
+            Select Case args.labelPostition
+                Case 0 'Top Left
+
+                Case 1 'Top Right
+                    labelDX = channelWidth - textSize.Width
+                Case 2 'Bottom Left
+                    labelDY = channelHeight - textSize.Height
+                Case 3 'Bottom Right
+                    labelDX = channelWidth - textSize.Width
+                    labelDY = channelHeight - textSize.Height
+            End Select
             If channelArg.label <> "" Then overlayNeeded = True
-            g.DrawString(channelArg.label, channelArg.labelFont, New SolidBrush(channelArg.labelColor), New Rectangle(channelOffset(c), channelSize))
+            g.DrawString(channelArg.label, channelArg.labelFont, New SolidBrush(channelArg.labelColor), New Rectangle(channelOffset(c).X + labelDX, channelOffset(c).Y + labelDY, channelSize.Width, channelSize.Height))
         Next
         While frames < totalFrame
             Dim bmp As Bitmap = Nothing
@@ -868,10 +890,30 @@ Public Class MainForm
                 End If
                 Dim filename As String = IO.Path.GetFileName(ListBoxFiles.Items(c))
                 Dim channelColor As Color = currentChannel.waveColor
+                Dim labelDX, labelDY As Integer
+                Dim textSize As SizeF = New SizeF(0, 0)
                 If currentChannel.label <> "" Then
-                    g.DrawString(currentChannel.label, currentChannel.labelFont, New SolidBrush(currentChannel.labelColor), New Rectangle(x, y, channelWidth, channelHeight))
+                    textSize = g.MeasureString(currentChannel.label, currentChannel.labelFont)
                 Else
-                    g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(currentChannel.waveColor), New Rectangle(x, y, channelWidth, channelHeight))
+                    textSize = g.MeasureString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24))
+                End If
+                labelDX = 0
+                labelDY = 0
+                Select Case ComboBoxLabelPos.SelectedIndex
+                    Case 0 'Top Left
+
+                    Case 1 'Top Right
+                        labelDX = channelWidth - textSize.Width
+                    Case 2 'Bottom Left
+                        labelDY = channelHeight - textSize.Height
+                    Case 3 'Bottom Right
+                        labelDX = channelWidth - textSize.Width
+                        labelDY = channelHeight - textSize.Height
+                End Select
+                If currentChannel.label <> "" Then
+                    g.DrawString(currentChannel.label, currentChannel.labelFont, New SolidBrush(currentChannel.labelColor), New Rectangle(x + labelDX, y + labelDY, channelWidth, channelHeight))
+                Else
+                    g.DrawString(filename, New Font(SystemFonts.MenuFont.FontFamily, 24), New SolidBrush(currentChannel.waveColor), New Rectangle(x + labelDX, y + labelDY, channelWidth, channelHeight))
                 End If
                 If CheckBoxDrawMiddleLine.Checked Then
                     g.DrawLine(New Pen(ButtonMiddleLineColor.BackColor, NumericUpDownMiddleLine.Value), x, y + channelHeight \ 2, x + channelWidth, y + channelHeight \ 2)
@@ -1076,6 +1118,10 @@ Public Class MainForm
     End Sub
 
     Private Sub NumericUpDownMiddleLine_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDownMiddleLine.ValueChanged
+        previewLayout()
+    End Sub
+
+    Private Sub ComboBoxLabelPos_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBoxLabelPos.SelectedIndexChanged
         previewLayout()
     End Sub
 End Class

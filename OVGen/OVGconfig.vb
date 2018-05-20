@@ -23,6 +23,7 @@
         Public MiddleLineWidth As Integer = 1
         Public CanvasSize As String = "1280x720"
         Public FlowDirection As Integer
+        Public LabelPosition As Integer
     End Class
     Public Class FFmpegSection
         Public BinaryLocation As String
