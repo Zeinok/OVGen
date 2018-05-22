@@ -75,7 +75,7 @@ Public Class MainForm
         LabelStatus.Text = ""
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         originalTextBoxLogHeight = LogBox.Height
-
+        Me.Text &= " " & Application.ProductVersion
     End Sub
 
     Function randStr(ByVal len As ULong) As String
