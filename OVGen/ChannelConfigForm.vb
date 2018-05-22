@@ -153,32 +153,32 @@
     End Sub
 
     Private Sub ButtonAutoAmplify_Click(sender As Object, e As EventArgs) Handles ButtonAutoAmplify.Click
-        If Not SetAll Then
+        Dim smallestAmplifyValue As Double = Double.MaxValue
+        Dim alreadyScannedFilesList As New List(Of String)
+        For Each file In MainForm.CheckedListBoxFiles.CheckedItems
+            If alreadyScannedFilesList.Contains(file) Then
+                Continue For
+            Else
+                alreadyScannedFilesList.Add(file)
+            End If
             Dim aawf As New AutoAmplifyWorkerForm
-            aawf.Filename = MainForm.ListBoxFiles.Items(MainForm.ListBoxFiles.SelectedIndex)
-            aawf.ShowDialog()
-            TextBoxAmplify.Text = Math.Round(aawf.Result, 1)
-            If aawf.Result < 1 Then
-                TextBoxAmplify.Text = 1
+            aawf.Filename = file
+            If aawf.ShowDialog() = DialogResult.Cancel Then
+                Exit For
             End If
-        Else
-            Dim smallestAmplifyValue As Double = Double.MaxValue
-            For Each file In MainForm.ListBoxFiles.Items
-                Dim aawf As New AutoAmplifyWorkerForm
-                aawf.Filename = file
-                If aawf.ShowDialog() = DialogResult.Cancel Then
-                    Exit For
-                End If
-                Dim val As Double = aawf.Result
-                If val < 1 Then val = 1
-                If val < smallestAmplifyValue Then
-                    smallestAmplifyValue = val
-                End If
-            Next
-            If smallestAmplifyValue <> Double.MaxValue Then
-                TextBoxAmplify.Text = Math.Round(smallestAmplifyValue, 1)
+            Dim val As Double = aawf.Result
+            If val < 1 Then val = 1
+            If val < smallestAmplifyValue Then
+                smallestAmplifyValue = val
             End If
+        Next
+        If Not CheckBoxMixAudioChannel.Checked Then
+            smallestAmplifyValue *= 2
         End If
+        If smallestAmplifyValue <> Double.MaxValue Then
+            TextBoxAmplify.Text = Math.Round(smallestAmplifyValue, 1)
+        End If
+
     End Sub
 
     Private Sub ComboBoxAlgorithm_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBoxAlgorithm.SelectedIndexChanged

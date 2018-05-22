@@ -51,8 +51,7 @@ Partial Class MainForm
         Me.NumericUpDownFrameRate = New System.Windows.Forms.NumericUpDown()
         Me.LabelFrameRate = New System.Windows.Forms.Label()
         Me.LinkLabelCustomCommandLine = New System.Windows.Forms.LinkLabel()
-        Me.ButtonSetAll = New System.Windows.Forms.Button()
-        Me.ListBoxFiles = New System.Windows.Forms.ListBox()
+        Me.ButtonSelectAll = New System.Windows.Forms.Button()
         Me.ButtonOptions = New System.Windows.Forms.Button()
         Me.ButtonMoveDown = New System.Windows.Forms.Button()
         Me.ButtonMoveUp = New System.Windows.Forms.Button()
@@ -72,12 +71,13 @@ Partial Class MainForm
         Me.LogBox = New System.Windows.Forms.RichTextBox()
         Me.TabControlRenderingFiles = New System.Windows.Forms.TabControl()
         Me.TabPageRendering = New System.Windows.Forms.TabPage()
+        Me.ComboBoxLabelPos = New System.Windows.Forms.ComboBox()
+        Me.LabelChannelLabelPos = New System.Windows.Forms.Label()
         Me.NumericUpDownBorder = New System.Windows.Forms.NumericUpDown()
         Me.ButtonBorderColor = New System.Windows.Forms.Button()
         Me.CheckBoxBorder = New System.Windows.Forms.CheckBox()
         Me.TabPageFiles = New System.Windows.Forms.TabPage()
-        Me.LabelChannelLabelPos = New System.Windows.Forms.Label()
-        Me.ComboBoxLabelPos = New System.Windows.Forms.ComboBox()
+        Me.CheckedListBoxFiles = New System.Windows.Forms.CheckedListBox()
         CType(Me.NumericUpDownMiddleLine, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownLineWidth, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -376,26 +376,15 @@ Partial Class MainForm
         Me.LinkLabelCustomCommandLine.TabStop = True
         Me.LinkLabelCustomCommandLine.Text = "Edit commandline"
         '
-        'ButtonSetAll
+        'ButtonSelectAll
         '
-        Me.ButtonSetAll.Location = New System.Drawing.Point(173, 463)
-        Me.ButtonSetAll.Margin = New System.Windows.Forms.Padding(2)
-        Me.ButtonSetAll.Name = "ButtonSetAll"
-        Me.ButtonSetAll.Size = New System.Drawing.Size(68, 30)
-        Me.ButtonSetAll.TabIndex = 9
-        Me.ButtonSetAll.Text = "Set All"
-        Me.ButtonSetAll.UseVisualStyleBackColor = True
-        '
-        'ListBoxFiles
-        '
-        Me.ListBoxFiles.FormattingEnabled = True
-        Me.ListBoxFiles.HorizontalScrollbar = True
-        Me.ListBoxFiles.ItemHeight = 15
-        Me.ListBoxFiles.Location = New System.Drawing.Point(5, 58)
-        Me.ListBoxFiles.Margin = New System.Windows.Forms.Padding(2)
-        Me.ListBoxFiles.Name = "ListBoxFiles"
-        Me.ListBoxFiles.Size = New System.Drawing.Size(236, 394)
-        Me.ListBoxFiles.TabIndex = 3
+        Me.ButtonSelectAll.Location = New System.Drawing.Point(173, 463)
+        Me.ButtonSelectAll.Margin = New System.Windows.Forms.Padding(2)
+        Me.ButtonSelectAll.Name = "ButtonSelectAll"
+        Me.ButtonSelectAll.Size = New System.Drawing.Size(68, 30)
+        Me.ButtonSelectAll.TabIndex = 9
+        Me.ButtonSelectAll.Text = "Sel. All"
+        Me.ButtonSelectAll.UseVisualStyleBackColor = True
         '
         'ButtonOptions
         '
@@ -599,6 +588,25 @@ Partial Class MainForm
         Me.TabPageRendering.TabIndex = 0
         Me.TabPageRendering.Text = "Rendering"
         '
+        'ComboBoxLabelPos
+        '
+        Me.ComboBoxLabelPos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBoxLabelPos.FormattingEnabled = True
+        Me.ComboBoxLabelPos.Items.AddRange(New Object() {"Top Left", "Top Right", "Bottom Left", "Bottom Right"})
+        Me.ComboBoxLabelPos.Location = New System.Drawing.Point(105, 326)
+        Me.ComboBoxLabelPos.Name = "ComboBoxLabelPos"
+        Me.ComboBoxLabelPos.Size = New System.Drawing.Size(133, 23)
+        Me.ComboBoxLabelPos.TabIndex = 24
+        '
+        'LabelChannelLabelPos
+        '
+        Me.LabelChannelLabelPos.AutoSize = True
+        Me.LabelChannelLabelPos.Location = New System.Drawing.Point(6, 329)
+        Me.LabelChannelLabelPos.Name = "LabelChannelLabelPos"
+        Me.LabelChannelLabelPos.Size = New System.Drawing.Size(93, 15)
+        Me.LabelChannelLabelPos.TabIndex = 23
+        Me.LabelChannelLabelPos.Text = "Label Position:"
+        '
         'NumericUpDownBorder
         '
         Me.NumericUpDownBorder.Location = New System.Drawing.Point(160, 175)
@@ -632,15 +640,15 @@ Partial Class MainForm
         'TabPageFiles
         '
         Me.TabPageFiles.BackColor = System.Drawing.SystemColors.Control
+        Me.TabPageFiles.Controls.Add(Me.CheckedListBoxFiles)
         Me.TabPageFiles.Controls.Add(Me.ButtonAudio)
         Me.TabPageFiles.Controls.Add(Me.CheckBoxVideo)
         Me.TabPageFiles.Controls.Add(Me.ButtonOptions)
         Me.TabPageFiles.Controls.Add(Me.LinkLabelCustomCommandLine)
         Me.TabPageFiles.Controls.Add(Me.ButtonMoveDown)
-        Me.TabPageFiles.Controls.Add(Me.ListBoxFiles)
         Me.TabPageFiles.Controls.Add(Me.ButtonMoveUp)
         Me.TabPageFiles.Controls.Add(Me.ButtonAdd)
-        Me.TabPageFiles.Controls.Add(Me.ButtonSetAll)
+        Me.TabPageFiles.Controls.Add(Me.ButtonSelectAll)
         Me.TabPageFiles.Controls.Add(Me.ButtonRemove)
         Me.TabPageFiles.Location = New System.Drawing.Point(4, 25)
         Me.TabPageFiles.Name = "TabPageFiles"
@@ -649,24 +657,15 @@ Partial Class MainForm
         Me.TabPageFiles.TabIndex = 1
         Me.TabPageFiles.Text = "Files"
         '
-        'LabelChannelLabelPos
+        'CheckedListBoxFiles
         '
-        Me.LabelChannelLabelPos.AutoSize = True
-        Me.LabelChannelLabelPos.Location = New System.Drawing.Point(6, 329)
-        Me.LabelChannelLabelPos.Name = "LabelChannelLabelPos"
-        Me.LabelChannelLabelPos.Size = New System.Drawing.Size(93, 15)
-        Me.LabelChannelLabelPos.TabIndex = 23
-        Me.LabelChannelLabelPos.Text = "Label Position:"
-        '
-        'ComboBoxLabelPos
-        '
-        Me.ComboBoxLabelPos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBoxLabelPos.FormattingEnabled = True
-        Me.ComboBoxLabelPos.Items.AddRange(New Object() {"Top Left", "Top Right", "Bottom Left", "Bottom Right"})
-        Me.ComboBoxLabelPos.Location = New System.Drawing.Point(105, 326)
-        Me.ComboBoxLabelPos.Name = "ComboBoxLabelPos"
-        Me.ComboBoxLabelPos.Size = New System.Drawing.Size(133, 23)
-        Me.ComboBoxLabelPos.TabIndex = 24
+        Me.CheckedListBoxFiles.CheckOnClick = True
+        Me.CheckedListBoxFiles.FormattingEnabled = True
+        Me.CheckedListBoxFiles.HorizontalScrollbar = True
+        Me.CheckedListBoxFiles.Location = New System.Drawing.Point(6, 54)
+        Me.CheckedListBoxFiles.Name = "CheckedListBoxFiles"
+        Me.CheckedListBoxFiles.Size = New System.Drawing.Size(235, 404)
+        Me.CheckedListBoxFiles.TabIndex = 10
         '
         'MainForm
         '
@@ -728,11 +727,10 @@ Partial Class MainForm
     Friend WithEvents ButtonMoveUp As System.Windows.Forms.Button
     Friend WithEvents ButtonOptions As System.Windows.Forms.Button
     Friend WithEvents ToolTips As System.Windows.Forms.ToolTip
-    Friend WithEvents ListBoxFiles As System.Windows.Forms.ListBox
     Friend WithEvents LabelLineWidth As System.Windows.Forms.Label
     Friend WithEvents NumericUpDownLineWidth As System.Windows.Forms.NumericUpDown
     Friend WithEvents CheckBoxCRT As System.Windows.Forms.CheckBox
-    Friend WithEvents ButtonSetAll As System.Windows.Forms.Button
+    Friend WithEvents ButtonSelectAll As System.Windows.Forms.Button
     Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
     Friend WithEvents LabelStatus As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents LabelPreviewMode As System.Windows.Forms.Label
@@ -761,4 +759,5 @@ Partial Class MainForm
     Friend WithEvents ButtonBorderColor As Button
     Friend WithEvents ComboBoxLabelPos As ComboBox
     Friend WithEvents LabelChannelLabelPos As Label
+    Friend WithEvents CheckedListBoxFiles As CheckedListBox
 End Class

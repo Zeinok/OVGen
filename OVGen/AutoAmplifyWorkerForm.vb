@@ -13,6 +13,11 @@ Public Class AutoAmplifyWorkerForm
     End Property
 
     Private Sub AutoAmplifyWorkerForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Try
+            Me.Text &= String.Format(" ({0})", New IO.FileInfo(Filename).Name)
+        Catch ex As Exception
+
+        End Try
         BackgroundWorkerAutoAmplify.RunWorkerAsync()
     End Sub
 

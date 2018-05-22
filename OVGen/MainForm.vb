@@ -203,7 +203,7 @@ Public Class MainForm
             Else
                 wavePen.Width = NumericUpDownLineWidth.Value
             End If
-            If ListBoxFiles.Items.Count = 0 Then
+            If CheckedListBoxFiles.Items.Count = 0 Then
                 MsgBox("Please add at least one file!", MsgBoxStyle.Exclamation)
                 Exit Sub
             End If
@@ -250,9 +250,9 @@ Public Class MainForm
             arg.columns = NumericUpDownColumn.Value
             arg.flowDirection = channelFlowDirection
             arg.labelPostition = ComboBoxLabelPos.SelectedIndex
-            Dim fileArray(ListBoxFiles.Items.Count - 1) As String
+            Dim fileArray(CheckedListBoxFiles.Items.Count - 1) As String
             For i As Integer = 0 To fileArray.Length - 1
-                fileArray(i) = ListBoxFiles.Items(i)
+                fileArray(i) = CheckedListBoxFiles.Items(i)
             Next
             arg.files = fileArray
             If IO.File.Exists(masterAudioFile) Then
@@ -792,7 +792,7 @@ Public Class MainForm
         ofd.Multiselect = True
         If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
             For Each file In ofd.FileNames
-                ListBoxFiles.Items.Add(file)
+                CheckedListBoxFiles.Items.Add(file)
                 optionsList.Add(New channelOptions)
             Next
         End If
@@ -800,67 +800,81 @@ Public Class MainForm
     End Sub
 
     Private Sub ButtonRemove_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonRemove.Click
-        Dim index As Integer = ListBoxFiles.SelectedIndex
-        If Not ListBoxFiles.SelectedIndex < 0 Then
-            optionsList.RemoveAt(index)
-            ListBoxFiles.Items.RemoveAt(ListBoxFiles.SelectedIndex)
-            If index > ListBoxFiles.Items.Count - 1 Then index -= 1
-            ListBoxFiles.SelectedIndex = index
-        End If
+        While CheckedListBoxFiles.CheckedIndices.Count > 0
+            Dim index As Integer = CheckedListBoxFiles.CheckedIndices(0)
+            optionsList.RemoveAt(Index)
+            CheckedListBoxFiles.Items.RemoveAt(Index)
+        End While
         previewLayout()
     End Sub
 
     Private Sub ButtonMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonMoveUp.Click
+        If CheckedListBoxFiles.CheckedItems.Count > 1 Then
+            MsgBox("Please select only one channel.", MsgBoxStyle.Exclamation)
+            Exit Sub
+        End If
 
-        If ListBoxFiles.SelectedIndex > 0 Then
-            Dim currentOption As channelOptions = optionsList(ListBoxFiles.SelectedIndex).Clone()
-            optionsList.RemoveAt(ListBoxFiles.SelectedIndex)
-            optionsList.Insert(ListBoxFiles.SelectedIndex - 1, currentOption)
-            ListBoxFiles.Items.Insert(ListBoxFiles.SelectedIndex - 1, ListBoxFiles.SelectedItem)
-            ListBoxFiles.SelectedIndex = ListBoxFiles.SelectedIndex - 2
-            ListBoxFiles.Items.RemoveAt(ListBoxFiles.SelectedIndex + 2)
+        If CheckedListBoxFiles.CheckedIndices.Count > 0 Then
+            Dim index As Integer = CheckedListBoxFiles.CheckedIndices(0)
+            If index > 0 Then
+                Dim currentOption As channelOptions = optionsList(index).Clone()
+                optionsList.RemoveAt(index)
+                optionsList.Insert(index - 1, currentOption)
+                CheckedListBoxFiles.Items.Insert(index - 1, CheckedListBoxFiles.CheckedItems(0))
+                CheckedListBoxFiles.SetItemChecked(index - 1, True)
+                CheckedListBoxFiles.Items.RemoveAt(index + 1)
+            End If
         End If
         previewLayout()
     End Sub
 
     Private Sub ButtonMoveDown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonMoveDown.Click
-        If ListBoxFiles.SelectedIndex < ListBoxFiles.Items.Count - 1 Then
-            Dim currentOption As channelOptions = optionsList(ListBoxFiles.SelectedIndex).Clone()
-            optionsList.RemoveAt(ListBoxFiles.SelectedIndex)
-            optionsList.Insert(ListBoxFiles.SelectedIndex + 1, currentOption)
-            ListBoxFiles.Items.Insert(ListBoxFiles.SelectedIndex + 2, ListBoxFiles.SelectedItem)
-            ListBoxFiles.SelectedIndex = ListBoxFiles.SelectedIndex + 2
-            ListBoxFiles.Items.RemoveAt(ListBoxFiles.SelectedIndex - 2)
+        If CheckedListBoxFiles.CheckedItems.Count > 1 Then
+            MsgBox("Please select only one channel.", MsgBoxStyle.Exclamation)
+            Exit Sub
         End If
+        If CheckedListBoxFiles.CheckedIndices.Count > 0 Then
+            Dim index As Integer = CheckedListBoxFiles.CheckedIndices(0)
+
+            If Not index = CheckedListBoxFiles.Items.Count - 1 Then
+                Dim currentOption As channelOptions = optionsList(index).Clone()
+                optionsList.RemoveAt(index)
+                optionsList.Insert(index + 1, currentOption)
+                CheckedListBoxFiles.Items.Insert(index + 2, CheckedListBoxFiles.CheckedItems(0))
+                CheckedListBoxFiles.SetItemChecked(index + 2, True)
+                CheckedListBoxFiles.Items.RemoveAt(index)
+            End If
+        End If
+
         previewLayout()
     End Sub
 
     Private Sub ButtonOptions_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonOptions.Click
-        If Not ListBoxFiles.SelectedIndex < 0 Then
+        If CheckedListBoxFiles.CheckedItems.Count > 0 Then
             Dim ccf As New ChannelConfigForm
-            ccf.Options = optionsList(ListBoxFiles.SelectedIndex).Clone()
+            If CheckedListBoxFiles.CheckedItems.Count = 1 Then
+                ccf.Options = optionsList(CheckedListBoxFiles.SelectedIndex).Clone()
+            Else
+                ccf.Options = New channelOptions()
+            End If
             If ccf.ShowDialog() = DialogResult.OK Then
-                optionsList(ListBoxFiles.SelectedIndex) = ccf.Options
+                For Each index In CheckedListBoxFiles.CheckedIndices
+                    optionsList(index) = ccf.Options
+                Next
             End If
             previewLayout()
         End If
     End Sub
-    Dim PreviousSetAllOptions As channelOptions
-    Private Sub ButtonSetAll_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonSetAll.Click
-        If PreviousSetAllOptions Is Nothing Then
-            PreviousSetAllOptions = New channelOptions
-        End If
-        If ListBoxFiles.Items.Count <> 0 Then
-            currentChannelToBeSet = ""
-            Dim ccf As New ChannelConfigForm
-            ccf.Options = PreviousSetAllOptions
-            ccf.SetAll = True
-            If ccf.ShowDialog() = DialogResult.OK Then
-                For i As Integer = 0 To optionsList.Count - 1
-                    optionsList(i) = ccf.Options
-                Next
+
+    Private Sub ButtonSelAll_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonSelectAll.Click
+        If CheckedListBoxFiles.Items.Count <> 0 Then
+            Dim valToBeSet As Boolean = False
+            If CheckedListBoxFiles.CheckedItems.Count = 0 Then
+                valToBeSet = True
             End If
-            previewLayout()
+            For i As Integer = 0 To CheckedListBoxFiles.Items.Count - 1
+                CheckedListBoxFiles.SetItemChecked(i, valToBeSet)
+            Next
         End If
     End Sub
 
@@ -869,9 +883,9 @@ Public Class MainForm
         Dim bmpLayout As New Bitmap(canvasSize.Width, canvasSize.Height)
         Dim g As Graphics = Graphics.FromImage(bmpLayout)
         g.Clear(ButtonBackgroundColor.BackColor)
-        If ListBoxFiles.Items.Count <> 0 Then
+        If CheckedListBoxFiles.Items.Count <> 0 Then
             Dim col As Byte = NumericUpDownColumn.Value
-            Dim channels As UInteger = ListBoxFiles.Items.Count
+            Dim channels As UInteger = CheckedListBoxFiles.Items.Count
             Dim maxChannelPerColumn As Integer = Math.Ceiling(channels / col)
             Dim channelWidth As Integer = canvasSize.Width / col
             Dim channelHeight As Integer = canvasSize.Height / maxChannelPerColumn
@@ -888,7 +902,7 @@ Public Class MainForm
                     y = channelHeight * (c Mod maxChannelPerColumn)
                     x = channelWidth * currentColumn
                 End If
-                Dim filename As String = IO.Path.GetFileName(ListBoxFiles.Items(c))
+                Dim filename As String = IO.Path.GetFileName(CheckedListBoxFiles.Items(c))
                 Dim channelColor As Color = currentChannel.waveColor
                 Dim labelDX, labelDY As Integer
                 Dim textSize As SizeF = New SizeF(0, 0)
@@ -951,15 +965,8 @@ Public Class MainForm
         'End If
     End Sub
 
-    Private Sub ListBoxFiles_MouseDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ListBoxFiles.MouseDoubleClick
-        If Not ListBoxFiles.SelectedIndex < 0 Then
-            Dim ccf As New ChannelConfigForm
-            ccf.Options = optionsList(ListBoxFiles.SelectedIndex).Clone()
-            If ccf.ShowDialog() = DialogResult.OK Then
-                optionsList(ListBoxFiles.SelectedIndex) = ccf.Options
-            End If
-            previewLayout()
-        End If
+    Private Sub ListBoxFiles_MouseDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
+        ButtonOptions.PerformClick()
     End Sub
 
     Private Sub CheckBoxNoFileWriting_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CheckBoxNoFileWriting.CheckedChanged
