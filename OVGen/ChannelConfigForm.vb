@@ -173,7 +173,7 @@
             End If
         Next
         If Not CheckBoxMixAudioChannel.Checked Then
-            smallestAmplifyValue *= 2
+            smallestAmplifyValue /= 2
         End If
         If smallestAmplifyValue <> Double.MaxValue Then
             TextBoxAmplify.Text = Math.Round(smallestAmplifyValue, 1)

@@ -853,9 +853,13 @@ Public Class MainForm
         If CheckedListBoxFiles.CheckedItems.Count > 0 Then
             Dim ccf As New ChannelConfigForm
             If CheckedListBoxFiles.CheckedItems.Count = 1 Then
-                ccf.Options = optionsList(CheckedListBoxFiles.SelectedIndex).Clone()
+                ccf.Options = optionsList(CheckedListBoxFiles.CheckedIndices(0)).Clone()
             Else
-                ccf.Options = New channelOptions()
+                If CheckedListBoxFiles.SelectedIndex >= 0 Then
+                    ccf.Options = optionsList(CheckedListBoxFiles.SelectedIndex).Clone()
+                Else
+                    ccf.Options = New channelOptions()
+                End If
             End If
             If ccf.ShowDialog() = DialogResult.OK Then
                 For Each index In CheckedListBoxFiles.CheckedIndices

@@ -4,7 +4,6 @@
 + Filename in Auto Amplify window title
 * Set All button changed to Select All button [Sel. All]
 
-
 2018/5/7 0.0.16.3
 * Fix auto trigger
 * Fix some algorithm issues
