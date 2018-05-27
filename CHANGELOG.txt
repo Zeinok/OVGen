@@ -1,3 +1,6 @@
+2018/5/27 0.0.17.2
+* Change back CheckedListBox to ListBox, hold Control [Ctrl] to multi-select
+
 2018/5/26 0.0.17.1
 * Fix channel config form
 * Fix auto amplify value when stereo separation enabled.
