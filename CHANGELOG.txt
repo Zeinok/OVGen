@@ -1,7 +1,12 @@
+2018/5/26 0.0.17.1
+* Fix channel config form
+* Fix auto amplify value when stereo separation enabled.
+
 2018/5/23 0.0.17.0
 + Multi-selection
 + Label position
 + Filename in Auto Amplify window title
+* Improve Peak Speed
 * Set All button changed to Select All button [Sel. All]
 
 2018/5/7 0.0.16.3

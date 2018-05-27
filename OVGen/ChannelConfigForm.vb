@@ -155,7 +155,7 @@
     Private Sub ButtonAutoAmplify_Click(sender As Object, e As EventArgs) Handles ButtonAutoAmplify.Click
         Dim smallestAmplifyValue As Double = Double.MaxValue
         Dim alreadyScannedFilesList As New List(Of String)
-        For Each file In MainForm.CheckedListBoxFiles.CheckedItems
+        For Each file In MainForm.ListBoxFiles.SelectedItems
             If alreadyScannedFilesList.Contains(file) Then
                 Continue For
             Else

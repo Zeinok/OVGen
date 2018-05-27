@@ -77,7 +77,7 @@ Partial Class MainForm
         Me.ButtonBorderColor = New System.Windows.Forms.Button()
         Me.CheckBoxBorder = New System.Windows.Forms.CheckBox()
         Me.TabPageFiles = New System.Windows.Forms.TabPage()
-        Me.CheckedListBoxFiles = New System.Windows.Forms.CheckedListBox()
+        Me.ListBoxFiles = New System.Windows.Forms.ListBox()
         CType(Me.NumericUpDownMiddleLine, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownLineWidth, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -640,7 +640,7 @@ Partial Class MainForm
         'TabPageFiles
         '
         Me.TabPageFiles.BackColor = System.Drawing.SystemColors.Control
-        Me.TabPageFiles.Controls.Add(Me.CheckedListBoxFiles)
+        Me.TabPageFiles.Controls.Add(Me.ListBoxFiles)
         Me.TabPageFiles.Controls.Add(Me.ButtonAudio)
         Me.TabPageFiles.Controls.Add(Me.CheckBoxVideo)
         Me.TabPageFiles.Controls.Add(Me.ButtonOptions)
@@ -657,15 +657,16 @@ Partial Class MainForm
         Me.TabPageFiles.TabIndex = 1
         Me.TabPageFiles.Text = "Files"
         '
-        'CheckedListBoxFiles
+        'ListBoxFiles
         '
-        Me.CheckedListBoxFiles.CheckOnClick = True
-        Me.CheckedListBoxFiles.FormattingEnabled = True
-        Me.CheckedListBoxFiles.HorizontalScrollbar = True
-        Me.CheckedListBoxFiles.Location = New System.Drawing.Point(6, 54)
-        Me.CheckedListBoxFiles.Name = "CheckedListBoxFiles"
-        Me.CheckedListBoxFiles.Size = New System.Drawing.Size(235, 404)
-        Me.CheckedListBoxFiles.TabIndex = 10
+        Me.ListBoxFiles.FormattingEnabled = True
+        Me.ListBoxFiles.HorizontalScrollbar = True
+        Me.ListBoxFiles.ItemHeight = 15
+        Me.ListBoxFiles.Location = New System.Drawing.Point(5, 59)
+        Me.ListBoxFiles.Name = "ListBoxFiles"
+        Me.ListBoxFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
+        Me.ListBoxFiles.Size = New System.Drawing.Size(235, 394)
+        Me.ListBoxFiles.TabIndex = 10
         '
         'MainForm
         '
@@ -759,5 +760,5 @@ Partial Class MainForm
     Friend WithEvents ButtonBorderColor As Button
     Friend WithEvents ComboBoxLabelPos As ComboBox
     Friend WithEvents LabelChannelLabelPos As Label
-    Friend WithEvents CheckedListBoxFiles As CheckedListBox
+    Friend WithEvents ListBoxFiles As ListBox
 End Class
