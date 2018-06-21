@@ -62,12 +62,7 @@ Public Class WAV
             Throw ex
         End If
         offset += Stream.Read(buffer4, 0, 4)
-        If BitConverter.ToUInt32(buffer4, 0) <> 16 Then
-            Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""16"".")
-            Stream.Close()
-            mmf.Dispose()
-            Throw ex
-        End If
+        Dim SubChunkSize1 As UInt32 = BitConverter.ToUInt32(buffer4, 0)
         offset += Stream.Read(buffer2, 0, 2)
         If BitConverter.ToUInt16(buffer2, 0) <> 1 Then
             Dim ex As New System.Exception("Not a PCM encoded audio.")
@@ -85,6 +80,11 @@ Public Class WAV
         blockAlign = BitConverter.ToUInt16(buffer2, 0)
         offset += Stream.Read(buffer2, 0, 2)
         bitDepth = BitConverter.ToUInt16(buffer2, 0)
+        If SubChunkSize1 > 16 Then
+            offset += Stream.Read(buffer2, 0, 2)
+            Dim extraParamsSize = BitConverter.ToUInt16(buffer2, 0)
+            offset += extraParamsSize
+        End If
         offset += Stream.Read(buffer4, 0, 4)
         If Encoding.ASCII.GetString(buffer4) <> "data" Then
             Dim ex As New System.Exception("Bad header at " & Stream.Position & ", expected ""data"".")
