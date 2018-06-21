@@ -165,7 +165,7 @@ Partial Class MainForm
         'NumericUpDownMiddleLine
         '
         Me.NumericUpDownMiddleLine.Location = New System.Drawing.Point(185, 233)
-        Me.NumericUpDownMiddleLine.Maximum = New Decimal(New Integer() {10, 0, 0, 0})
+        Me.NumericUpDownMiddleLine.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDownMiddleLine.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownMiddleLine.Name = "NumericUpDownMiddleLine"
         Me.NumericUpDownMiddleLine.Size = New System.Drawing.Size(48, 25)
@@ -175,7 +175,7 @@ Partial Class MainForm
         'NumericUpDownGrid
         '
         Me.NumericUpDownGrid.Location = New System.Drawing.Point(148, 204)
-        Me.NumericUpDownGrid.Maximum = New Decimal(New Integer() {10, 0, 0, 0})
+        Me.NumericUpDownGrid.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDownGrid.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownGrid.Name = "NumericUpDownGrid"
         Me.NumericUpDownGrid.Size = New System.Drawing.Size(48, 25)
@@ -279,7 +279,7 @@ Partial Class MainForm
         '
         Me.NumericUpDownLineWidth.Location = New System.Drawing.Point(85, 144)
         Me.NumericUpDownLineWidth.Margin = New System.Windows.Forms.Padding(2)
-        Me.NumericUpDownLineWidth.Maximum = New Decimal(New Integer() {10, 0, 0, 0})
+        Me.NumericUpDownLineWidth.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDownLineWidth.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownLineWidth.Name = "NumericUpDownLineWidth"
         Me.NumericUpDownLineWidth.Size = New System.Drawing.Size(49, 25)
@@ -348,7 +348,7 @@ Partial Class MainForm
         '
         Me.NumericUpDownFrameRate.Location = New System.Drawing.Point(77, 54)
         Me.NumericUpDownFrameRate.Margin = New System.Windows.Forms.Padding(2)
-        Me.NumericUpDownFrameRate.Maximum = New Decimal(New Integer() {500, 0, 0, 0})
+        Me.NumericUpDownFrameRate.Maximum = New Decimal(New Integer() {600, 0, 0, 0})
         Me.NumericUpDownFrameRate.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownFrameRate.Name = "NumericUpDownFrameRate"
         Me.NumericUpDownFrameRate.Size = New System.Drawing.Size(48, 25)
@@ -610,7 +610,7 @@ Partial Class MainForm
         'NumericUpDownBorder
         '
         Me.NumericUpDownBorder.Location = New System.Drawing.Point(160, 175)
-        Me.NumericUpDownBorder.Maximum = New Decimal(New Integer() {10, 0, 0, 0})
+        Me.NumericUpDownBorder.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDownBorder.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownBorder.Name = "NumericUpDownBorder"
         Me.NumericUpDownBorder.Size = New System.Drawing.Size(48, 25)
