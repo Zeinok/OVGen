@@ -800,6 +800,9 @@ Public Class MainForm
     End Sub
 
     Private Sub ButtonRemove_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonRemove.Click
+        If ListBoxFiles.SelectedItems.Count = 0 Then
+            MsgBox("Please select at least one file!", MsgBoxStyle.Exclamation)
+        End If
         While ListBoxFiles.SelectedIndices.Count > 0
             Dim index As Integer = ListBoxFiles.SelectedIndices(0)
             optionsList.RemoveAt(index)
@@ -810,7 +813,7 @@ Public Class MainForm
 
     Private Sub ButtonMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonMoveUp.Click
         If ListBoxFiles.SelectedIndices.Count > 1 Then
-            MsgBox("Please select only one channel.", MsgBoxStyle.Exclamation)
+            MsgBox("Please select only one file.", MsgBoxStyle.Exclamation)
             Exit Sub
         End If
 
@@ -824,13 +827,15 @@ Public Class MainForm
                 ListBoxFiles.SetSelected(index - 1, True)
                 ListBoxFiles.Items.RemoveAt(index + 1)
             End If
+        Else
+            MsgBox("Please select a file!", MsgBoxStyle.Exclamation)
         End If
         previewLayout()
     End Sub
 
     Private Sub ButtonMoveDown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonMoveDown.Click
         If ListBoxFiles.SelectedIndices.Count > 1 Then
-            MsgBox("Please select only one channel.", MsgBoxStyle.Exclamation)
+            MsgBox("Please select only one file.", MsgBoxStyle.Exclamation)
             Exit Sub
         End If
         If ListBoxFiles.SelectedIndices.Count > 0 Then
@@ -844,6 +849,8 @@ Public Class MainForm
                 ListBoxFiles.SetSelected(index + 2, True)
                 ListBoxFiles.Items.RemoveAt(index)
             End If
+        Else
+            MsgBox("Please select a file!", MsgBoxStyle.Exclamation)
         End If
 
         previewLayout()
@@ -855,7 +862,7 @@ Public Class MainForm
             If ListBoxFiles.SelectedIndices.Count = 1 Then
                 ccf.Options = optionsList(ListBoxFiles.SelectedIndex).Clone()
             Else
-                Dim firstConfig As channelOptions = optionsList(ListBoxFiles.SelectedIndices(0)).Clone()
+                Dim firstConfig As channelOptions = optionsList(ListBoxFiles.SelectedIndices(0))
                 Dim isAllSame As Boolean = True
                 For Each index In ListBoxFiles.SelectedIndices
                     If Not firstConfig.Equals(optionsList(index)) Then
@@ -874,6 +881,8 @@ Public Class MainForm
                 Next
             End If
             previewLayout()
+        Else
+            MsgBox("Please select at least one file!", MsgBoxStyle.Exclamation)
         End If
     End Sub
 
