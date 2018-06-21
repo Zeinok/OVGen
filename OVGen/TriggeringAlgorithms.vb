@@ -23,7 +23,7 @@
     Function peakSpeedScanning(ByRef wave As WAV, ByVal triggerValue As Integer, ByVal offset As Long, ByVal maxScanLength As Long) As Long
         'OPNA2608: scans how fast a peak is reached centers there
         Dim args As channelOptions = wave.extraArguments
-        Dim REoffset As Integer = risingEdgeTrigger(wave, triggerValue, offset, maxScanLength / 2)
+        Dim REoffset As Integer = risingEdgeTrigger(wave, triggerValue, offset, maxScanLength)
         offset += REoffset
         peakSpeedScanning = 0
         Dim peak As Integer = -127
