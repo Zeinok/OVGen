@@ -109,8 +109,8 @@ Public Class WAV
         'Stream.Close()
     End Sub
     ''' <summary>
-    ''' Returns value between -128 to 128
-    ''' If unsigned, 0 to 256
+    ''' Returns value between -128 to 127
+    ''' If unsigned, 0 to 255
     ''' </summary>
     ''' <param name="index">Sample index</param>
     ''' <param name="signed">Should return signed value.</param>
@@ -134,12 +134,12 @@ Public Class WAV
                 Stream.Position = sampleBegin + index
                 Dim buffer(1) As Byte
                 Stream.Read(buffer, 0, 2)
-                Dim value As Double = BitConverter.ToInt16(buffer, 0) / 258 * amplify
+                Dim value As Double = BitConverter.ToInt16(buffer, 0) / 32767 * 127 * amplify
                 If mixChannel Then
                     For i As Integer = 2 To channels * 2 Step 2
                         Stream.Position += i
                         Stream.Read(buffer, 0, 2)
-                        value += BitConverter.ToInt16(buffer, 0) / 258 * amplify
+                        value += BitConverter.ToInt16(buffer, 0) / 32768 * 128 * amplify
                         value /= 2
                     Next
                 End If
