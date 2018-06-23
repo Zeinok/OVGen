@@ -103,6 +103,7 @@ Public Class MainForm
         conf.General.LineWidth = NumericUpDownLineWidth.Value
         conf.General.ConvertVideo = CheckBoxVideo.Checked
         conf.General.CRTStyledRender = CheckBoxCRT.Checked
+        conf.General.DottedXYmode = CheckBoxDottedXYmode.Checked
         conf.General.DrawGrid = CheckBoxGrid.Checked
         conf.General.GridColor = New ColorSerializable(ButtonGridColor.BackColor)
         conf.General.GridWidth = NumericUpDownGrid.Value
@@ -148,6 +149,7 @@ Public Class MainForm
                 NumericUpDownLineWidth.Value = conf.General.LineWidth
                 CheckBoxVideo.Checked = conf.General.ConvertVideo
                 CheckBoxCRT.Checked = conf.General.CRTStyledRender
+                CheckBoxDottedXYmode.Checked = conf.General.DottedXYmode
                 CheckBoxGrid.Checked = conf.General.DrawGrid
                 ButtonGridColor.BackColor = conf.General.GridColor.GetColor()
                 CheckBoxBorder.Checked = conf.General.DrawBorder
@@ -197,6 +199,7 @@ Public Class MainForm
             arg.drawBorder = CheckBoxBorder.Checked
             arg.borderPen = New Pen(ButtonBorderColor.BackColor, NumericUpDownBorder.Value * 2)
             arg.useAnalogOscilloscopeStyle = CheckBoxCRT.Checked
+            arg.dottedXYmode = CheckBoxDottedXYmode.Checked
             If arg.useAnalogOscilloscopeStyle Then
                 arg.analogOscilloscopeLineWidth = NumericUpDownLineWidth.Value
                 wavePen.Width = 1
@@ -455,6 +458,7 @@ Public Class MainForm
 
         'start work
         OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Begin rendering."))
+#Region "draw overlay bmp"
         Dim overlayBmp As New Bitmap(canvasSize.Width, canvasSize.Height)
         Dim overlayNeeded As Boolean = False
         For c As Byte = 0 To channels - 1
@@ -481,7 +485,9 @@ Public Class MainForm
             If channelArg.label <> "" Then overlayNeeded = True
             g.DrawString(channelArg.label, channelArg.labelFont, New SolidBrush(channelArg.labelColor), New Rectangle(channelOffset(c).X + labelDX, channelOffset(c).Y + labelDY, channelSize.Width, channelSize.Height))
         Next
+#End Region
         While frames < totalFrame
+#Region "createBmp"
             Dim bmp As Bitmap = Nothing
             Dim createdBmp As Boolean = False
             Dim bmpCreateCount As Integer = 0
@@ -495,15 +501,20 @@ Public Class MainForm
                 End Try
             Loop Until createdBmp Or bmpCreateCount > 3
             If bmpCreateCount > 3 Then Continue While
+#End Region
+#Region "prepare graphics object"
             Dim g As Graphics = Graphics.FromImage(bmp)
             g.Clear(args.backgroundColor)
             If args.smoothLine Then g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+#End Region
+#Region "draw middle line"
             If args.drawMiddleLine Then
                 For c As Byte = 0 To channels - 1
                     g.DrawLine(args.middleLinePen, channelOffset(c).X, channelOffset(c).Y + channelHeight \ 2,
                                               channelOffset(c).X + channelWidth, channelOffset(c).Y + channelHeight \ 2)
                 Next
             End If
+#End Region
             For c As Byte = 0 To channels - 1 'for each channel
                 Dim channelArg As channelOptions = wave(c).extraArguments
                 Dim waveColor As Color = channelArg.waveColor
@@ -516,6 +527,7 @@ Public Class MainForm
                 End If
                 Dim sampleLocation As ULong = frames * currentWAV.sampleRate / args.FPS
                 'trigger
+#Region "trigger"
                 Dim maxScanLength As ULong = currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan
                 Dim firstScan As ULong = 0
                 Dim firstSample As Double = currentWAV.getSample(sampleLocation, True)
@@ -523,44 +535,49 @@ Public Class MainForm
                 Dim max As Integer = -127
                 Dim low As Integer = 128
                 Dim triggerValue As Integer = channelArg.trigger
-                While firstScan < maxScanLength
-                    Dim sample As Integer = Math.Floor(currentWAV.getSample(sampleLocation + firstScan, True))
-                    If sample > max Then max = sample
-                    If sample < low Then low = sample
-                    If Not currentWAV.getSample(sampleLocation + firstScan, True) = firstSample Then
-                        scanRequired = True
+                If Not channelArg.XYmode Then
+                    While firstScan < maxScanLength
+                        Dim sample As Integer = Math.Floor(currentWAV.getSample(sampleLocation + firstScan, True))
+                        If sample > max Then max = sample
+                        If sample < low Then low = sample
+                        If Not currentWAV.getSample(sampleLocation + firstScan, True) = firstSample Then
+                            scanRequired = True
+                        End If
+                        firstScan += 1
+                    End While
+                    If scanRequired Then
+                        If channelArg.autoTriggerLevel Then
+                            triggerValue = (max + low) / 2
+                        End If
+                        Select Case channelArg.algorithm
+                            Case TriggeringAlgorithms.UseRisingEdge
+                                triggerOffset = TriggeringAlgorithms.risingEdgeTrigger(currentWAV, triggerValue, sampleLocation, maxScanLength)
+                            Case TriggeringAlgorithms.UsePeakSpeedScanning
+                                triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, triggerValue, sampleLocation, maxScanLength)
+                            Case TriggeringAlgorithms.UseMaxLengthScanning
+                                Select Case channelArg.scanPhase
+                                    Case 0
+                                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, triggerValue, sampleLocation, maxScanLength, True, False)
+                                    Case 1
+                                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, triggerValue, sampleLocation, maxScanLength, False, True)
+                                    Case 2
+                                        triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, triggerValue, sampleLocation, maxScanLength, True, True)
+                                End Select
+                            Case TriggeringAlgorithms.UseMaxRectifiedAreaScanning
+                                Select Case channelArg.scanPhase
+                                    Case 0
+                                        triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, triggerValue, sampleLocation, maxScanLength, True, False)
+                                    Case 1
+                                        triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, triggerValue, sampleLocation, maxScanLength, False, True)
+                                    Case 2
+                                        triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, triggerValue, sampleLocation, maxScanLength, True, True)
+                                End Select
+                        End Select
                     End If
-                    firstScan += 1
-                End While
-                If scanRequired Then
-                    If channelArg.autoTriggerLevel Then
-                        triggerValue = (max + low) / 2
-                    End If
-                    Select Case channelArg.algorithm
-                        Case TriggeringAlgorithms.UseRisingEdge
-                            triggerOffset = TriggeringAlgorithms.risingEdgeTrigger(currentWAV, triggerValue, sampleLocation, maxScanLength)
-                        Case TriggeringAlgorithms.UsePeakSpeedScanning
-                            triggerOffset = TriggeringAlgorithms.peakSpeedScanning(currentWAV, triggerValue, sampleLocation, maxScanLength)
-                        Case TriggeringAlgorithms.UseMaxLengthScanning
-                            Select Case channelArg.scanPhase
-                                Case 0
-                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, triggerValue, sampleLocation, maxScanLength, True, False)
-                                Case 1
-                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, triggerValue, sampleLocation, maxScanLength, False, True)
-                                Case 2
-                                    triggerOffset = TriggeringAlgorithms.lengthScanning(currentWAV, triggerValue, sampleLocation, maxScanLength, True, True)
-                            End Select
-                        Case TriggeringAlgorithms.UseMaxRectifiedAreaScanning
-                            Select Case channelArg.scanPhase
-                                Case 0
-                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, triggerValue, sampleLocation, maxScanLength, True, False)
-                                Case 1
-                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, triggerValue, sampleLocation, maxScanLength, False, True)
-                                Case 2
-                                    triggerOffset = TriggeringAlgorithms.maxRectifiedArea(currentWAV, triggerValue, sampleLocation, maxScanLength, True, True)
-                            End Select
-                    End Select
                 End If
+#End Region
+                'pulseWidthModulatedColor
+#Region "PulseWidthModulatedColor"
                 If channelArg.pulseWidthModulatedColor Then
                     Dim middle As Double = (max + low) / 2
                     Dim positiveLength As ULong = 0
@@ -587,10 +604,18 @@ Public Class MainForm
                     End If
                     channelArg.waveColor = HSVtoRGB(hue, 1, 1)
                 End If
+#End Region
                 'draw
-                drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize),
-                         wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation + triggerOffset)
-                channelArg.waveColor = waveColor
+#Region "draw wave or XY"
+                If channelArg.XYmode Then
+                    drawWaveXY(g, wavePen, New Rectangle(channelOffset(c), channelSize),
+                         wave(c), args, currentWAV.sampleRate, currentWAV.sampleRate / args.FPS, sampleLocation)
+                Else
+                    drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize),
+         wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation + triggerOffset)
+                End If
+                channelArg.waveColor = waveColor 'reset color
+#End Region
             Next
 
             g.Clip = New Region() 'reset region
@@ -658,6 +683,7 @@ Public Class MainForm
             stderr.Close()
         End If
     End Sub
+
     Private Sub drawWave(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal sampleRate As Long, ByVal timeScale As Double, ByVal offset As Long)
         Dim args As channelOptions = wave.extraArguments
         Dim points As New List(Of Point)
@@ -688,6 +714,42 @@ Public Class MainForm
         wavePen.Color = args.waveColor
         g.Clip = New Region(rect)
         g.DrawLines(wavePen, points.ToArray())
+    End Sub
+
+    Private Sub drawWaveXY(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal sampleRate As Long, ByVal frameDuration As Double, ByVal offset As Long)
+        wave.mixChannel = False
+        g.Clip = New Region(rect)
+        Dim args As channelOptions = wave.extraArguments
+        Dim points As New List(Of Point)
+        Dim prevX As Integer = -1
+        Dim drawingSize As Size = rect.Size
+        If args.XYmodeAspectRatio Then
+            If rect.Height < rect.Width Then
+                drawingSize = New Size(rect.Height, rect.Height)
+            Else
+                drawingSize = New Size(rect.Width, rect.Width)
+            End If
+        End If
+        For i As Integer = offset To offset + frameDuration
+            wave.selectedChannel = 0
+            Dim x As Integer = wave.getSample(i, True) / 256 * drawingSize.Width + rect.Y + rect.Width / 2
+            wave.selectedChannel = 1
+            Dim y As Integer
+            y = -wave.getSample(i, True) / 256 * drawingSize.Height + rect.Y + rect.Height / 2
+            If workerArg.dottedXYmode Then
+                points.Add(New Point(x, y))
+                points.Add(New Point(x, y + 1))
+                g.DrawLines(wavePen, points.ToArray())
+                points.Clear()
+            Else
+                points.Add(New Point(x, y))
+            End If
+            'End If
+        Next
+        wavePen.Color = args.waveColor
+        If Not workerArg.dottedXYmode Then
+            g.DrawLines(wavePen, points.ToArray())
+        End If
     End Sub
 
     Function HSVtoRGB(ByVal hue As Double, ByVal saturation As Double, ByVal value As Double) As Color

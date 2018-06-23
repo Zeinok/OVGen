@@ -53,6 +53,8 @@ Partial Class ChannelConfigForm
         Me.ButtonAutoAmplify = New System.Windows.Forms.Button()
         Me.LabelScanPhase = New System.Windows.Forms.Label()
         Me.ComboBoxScanPhase = New System.Windows.Forms.ComboBox()
+        Me.CheckBoxXYmode = New System.Windows.Forms.CheckBox()
+        Me.CheckBoxXYaspectRatio = New System.Windows.Forms.CheckBox()
         CType(Me.NumericUpDownAudioChannel, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownTriggerLevel, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -137,7 +139,7 @@ Partial Class ChannelConfigForm
         '
         'ButtonOK
         '
-        Me.ButtonOK.Location = New System.Drawing.Point(103, 345)
+        Me.ButtonOK.Location = New System.Drawing.Point(110, 373)
         Me.ButtonOK.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
@@ -148,7 +150,7 @@ Partial Class ChannelConfigForm
         'ButtonCancel
         '
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonCancel.Location = New System.Drawing.Point(182, 345)
+        Me.ButtonCancel.Location = New System.Drawing.Point(189, 373)
         Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(2)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
@@ -354,11 +356,35 @@ Partial Class ChannelConfigForm
         Me.ComboBoxScanPhase.Size = New System.Drawing.Size(97, 23)
         Me.ComboBoxScanPhase.TabIndex = 9
         '
+        'CheckBoxXYmode
+        '
+        Me.CheckBoxXYmode.AutoSize = True
+        Me.CheckBoxXYmode.Location = New System.Drawing.Point(8, 347)
+        Me.CheckBoxXYmode.Name = "CheckBoxXYmode"
+        Me.CheckBoxXYmode.Size = New System.Drawing.Size(84, 19)
+        Me.CheckBoxXYmode.TabIndex = 31
+        Me.CheckBoxXYmode.Text = "XY mode"
+        Me.CheckBoxXYmode.UseVisualStyleBackColor = True
+        '
+        'CheckBoxXYaspectRatio
+        '
+        Me.CheckBoxXYaspectRatio.AutoSize = True
+        Me.CheckBoxXYaspectRatio.Checked = True
+        Me.CheckBoxXYaspectRatio.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CheckBoxXYaspectRatio.Location = New System.Drawing.Point(98, 347)
+        Me.CheckBoxXYaspectRatio.Name = "CheckBoxXYaspectRatio"
+        Me.CheckBoxXYaspectRatio.Size = New System.Drawing.Size(174, 19)
+        Me.CheckBoxXYaspectRatio.TabIndex = 32
+        Me.CheckBoxXYaspectRatio.Text = "XY mode 1:1 aspect ratio"
+        Me.CheckBoxXYaspectRatio.UseVisualStyleBackColor = True
+        '
         'ChannelConfigForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(272, 377)
+        Me.ClientSize = New System.Drawing.Size(272, 409)
+        Me.Controls.Add(Me.CheckBoxXYaspectRatio)
+        Me.Controls.Add(Me.CheckBoxXYmode)
         Me.Controls.Add(Me.ComboBoxScanPhase)
         Me.Controls.Add(Me.LabelScanPhase)
         Me.Controls.Add(Me.ButtonAutoAmplify)
@@ -436,4 +462,6 @@ Partial Class ChannelConfigForm
     Friend WithEvents ButtonAutoAmplify As Button
     Friend WithEvents LabelScanPhase As Label
     Friend WithEvents ComboBoxScanPhase As ComboBox
+    Friend WithEvents CheckBoxXYmode As CheckBox
+    Friend WithEvents CheckBoxXYaspectRatio As CheckBox
 End Class

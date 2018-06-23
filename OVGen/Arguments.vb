@@ -34,6 +34,7 @@ Public Class WorkerArguments
     Public middleLinePen As Pen
     Public useAnalogOscilloscopeStyle As Boolean = False
     Public analogOscilloscopeLineWidth As Byte = 4
+    Public dottedXYmode As Boolean = False
     Public drawGrid As Boolean
     Public gridPen As Pen
     Public drawBorder As Boolean
@@ -61,6 +62,8 @@ Public Class channelOptions
     Public maxScan As Single = 1.0F
     Public mixChannel As Boolean = True
     Public selectedChannel As Byte = 0
+    Public XYmode As Boolean = False
+    Public XYmodeAspectRatio As Boolean = True
 
     Public Function Clone() As Object Implements ICloneable.Clone
         Return Me.MemberwiseClone()

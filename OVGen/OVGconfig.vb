@@ -11,6 +11,7 @@
         Public LineWidth As Integer = 2
         Public ConvertVideo As Boolean
         Public CRTStyledRender As Boolean
+        Public DottedXYmode As Boolean
         Public DrawGrid As Boolean
         Public GridColor As New ColorSerializable(Color.LightGray)
         Public GridWidth As Integer = 1

@@ -38,6 +38,8 @@
         End Select
         NumericUpDownAudioChannel.Value = Options.selectedChannel
         CheckBoxMixAudioChannel.Checked = Options.mixChannel
+        CheckBoxXYmode.Checked = Options.XYmode
+        CheckBoxXYaspectRatio.Checked = Options.XYmodeAspectRatio
     End Sub
 
     Private Sub ChannelConfigForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
@@ -122,6 +124,8 @@
         End Select
         Options.selectedChannel = NumericUpDownAudioChannel.Value
         Options.mixChannel = CheckBoxMixAudioChannel.Checked
+        Options.XYmode = CheckBoxXYmode.Checked
+        Options.XYmodeAspectRatio = CheckBoxXYaspectRatio.Checked
         Me.DialogResult = Windows.Forms.DialogResult.OK
         Me.Close()
     End Sub
@@ -185,5 +189,21 @@
         LabelScanPhase.Enabled = ComboBoxAlgorithm.SelectedIndex = TriggeringAlgorithms.UseMaxLengthScanning _
                                  Or ComboBoxAlgorithm.SelectedIndex = TriggeringAlgorithms.UseMaxRectifiedAreaScanning
         ComboBoxScanPhase.Enabled = LabelScanPhase.Enabled
+    End Sub
+
+    Private Sub CheckBoxXYmode_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxXYmode.CheckedChanged
+        If CheckBoxXYmode.Checked Then
+            ComboBoxAlgorithm.SelectedIndex = Algorithms.Length - 1
+            CheckBoxMixAudioChannel.Checked = False
+        End If
+        Dim excludedControls As Control() = {LabelChannelLabel, TextBoxLabel, ButtonFont, ButtonFontColor, ButtonColor,
+                                            LabelAmplify, TextBoxAmplify, LabelX, ButtonAutoAmplify,
+                                            CheckBoxXYmode, CheckBoxXYaspectRatio,
+                                            ButtonOK, ButtonCancel}
+        For Each ctrl As Control In Me.Controls
+            If Not excludedControls.Contains(ctrl) Then
+                ctrl.Enabled = Not CheckBoxXYmode.Checked
+            End If
+        Next
     End Sub
 End Class
