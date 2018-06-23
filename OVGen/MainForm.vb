@@ -732,10 +732,10 @@ Public Class MainForm
         End If
         For i As Integer = offset To offset + frameDuration
             wave.selectedChannel = 0
-            Dim x As Integer = wave.getSample(i, True) / 256 * drawingSize.Width + rect.Y + rect.Width / 2
+            Dim x As Integer = wave.getSample(i, True) / 256 * drawingSize.Width + rect.Y + rect.Width / 2 + rect.X
             wave.selectedChannel = 1
             Dim y As Integer
-            y = -wave.getSample(i, True) / 256 * drawingSize.Height + rect.Y + rect.Height / 2
+            y = -wave.getSample(i, True) / 256 * drawingSize.Height + rect.Y + rect.Height / 2 + rect.Y
             If workerArg.dottedXYmode Then
                 points.Add(New Point(x, y))
                 points.Add(New Point(x, y + 1))
