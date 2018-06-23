@@ -40,6 +40,7 @@
         CheckBoxMixAudioChannel.Checked = Options.mixChannel
         CheckBoxXYmode.Checked = Options.XYmode
         CheckBoxXYaspectRatio.Checked = Options.XYmodeAspectRatio
+        CheckBoxXYmode_CheckedChanged(Nothing, Nothing)
     End Sub
 
     Private Sub ChannelConfigForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
@@ -205,5 +206,6 @@
                 ctrl.Enabled = Not CheckBoxXYmode.Checked
             End If
         Next
+        CheckBoxXYaspectRatio.Enabled = CheckBoxXYmode.Checked
     End Sub
 End Class
