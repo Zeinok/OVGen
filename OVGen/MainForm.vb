@@ -723,6 +723,11 @@ Public Class MainForm
         Dim points As New List(Of Point)
         Dim prevX As Integer = -1
         Dim drawingSize As Size = rect.Size
+        pen.Color = args.waveColor
+        Dim XYpen As Pen = pen.Clone()
+        If workerArg.useAnalogOscilloscopeStyle Then
+            XYpen.Width = workerArg.analogOscilloscopeLineWidth
+        End If
         If args.XYmodeAspectRatio Then
             If rect.Height < rect.Width Then
                 drawingSize = New Size(rect.Height, rect.Height)
@@ -738,17 +743,16 @@ Public Class MainForm
             y = -wave.getSample(i, True) / 256 * drawingSize.Height + rect.Height / 2 + rect.Y
             If workerArg.dottedXYmode Then
                 points.Add(New Point(x, y))
-                points.Add(New Point(x, y + 1))
-                g.DrawLines(wavePen, points.ToArray())
+                points.Add(New Point(x + 1, y))
+                g.DrawLines(XYpen, points.ToArray())
                 points.Clear()
             Else
                 points.Add(New Point(x, y))
             End If
             'End If
         Next
-        wavePen.Color = args.waveColor
         If Not workerArg.dottedXYmode Then
-            g.DrawLines(wavePen, points.ToArray())
+            g.DrawLines(pen, points.ToArray())
         End If
     End Sub
 
