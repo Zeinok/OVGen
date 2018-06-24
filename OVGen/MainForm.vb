@@ -726,6 +726,7 @@ Public Class MainForm
         g.Clip = New Region(rect)
         Dim args As channelOptions = wave.extraArguments
         Dim points As New List(Of Point)
+        Dim path As New Drawing.Drawing2D.GraphicsPath
         Dim prevX As Integer = -1
         Dim drawingSize As Size = rect.Size
         pen.Color = args.waveColor
@@ -747,16 +748,16 @@ Public Class MainForm
             Dim y As Integer
             y = -wave.getSample(i, True) / 256 * drawingSize.Height + rect.Height / 2 + rect.Y
             If workerArg.dottedXYmode Then
-                points.Add(New Point(x, y))
-                points.Add(New Point(x + 1, y))
-                g.DrawLines(XYpen, points.ToArray())
-                points.Clear()
+                path.AddLine(x, y, x + 1, y)
+                path.CloseFigure()
             Else
                 points.Add(New Point(x, y))
             End If
             'End If
         Next
-        If Not workerArg.dottedXYmode Then
+        If workerArg.dottedXYmode Then
+            g.DrawPath(XYpen, path)
+        Else
             g.DrawLines(XYpen, points.ToArray())
         End If
     End Sub
