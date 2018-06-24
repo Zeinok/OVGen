@@ -1,3 +1,7 @@
+2018/6/24 0.0.18.1
+* fix XY scope location
+* fix XY scope color, pen width
+
 2018/6/24 0.0.18.0
 + XY mode (requires stereo audio), with selectable 1:1 aspect ratio
 * Pull limit of line width to 20, max framerate to 600 (forgot to add this in previous changelog)
