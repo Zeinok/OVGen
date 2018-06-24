@@ -716,9 +716,9 @@ Public Class MainForm
                 points.Add(New Point(x, y))
             End If
         Next
-        wavePen.Color = args.waveColor
+        pen.Color = args.waveColor
         g.Clip = New Region(rect)
-        g.DrawLines(wavePen, points.ToArray())
+        g.DrawLines(pen, points.ToArray())
     End Sub
 
     Private Sub drawWaveXY(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal sampleRate As Long, ByVal frameDuration As Double, ByVal offset As Long)
@@ -757,7 +757,7 @@ Public Class MainForm
             'End If
         Next
         If Not workerArg.dottedXYmode Then
-            g.DrawLines(pen, points.ToArray())
+            g.DrawLines(XYpen, points.ToArray())
         End If
     End Sub
 
