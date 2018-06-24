@@ -512,6 +512,11 @@ Public Class MainForm
                 For c As Byte = 0 To channels - 1
                     g.DrawLine(args.middleLinePen, channelOffset(c).X, channelOffset(c).Y + channelHeight \ 2,
                                               channelOffset(c).X + channelWidth, channelOffset(c).Y + channelHeight \ 2)
+                    Dim channelArg As channelOptions = wave(c).extraArguments
+                    If channelArg.XYmode Then
+                        g.DrawLine(args.middleLinePen, channelOffset(c).X + channelWidth \ 2, channelOffset(c).Y,
+                                              channelOffset(c).X + channelWidth \ 2, channelOffset(c).Y + channelHeight)
+                    End If
                 Next
             End If
 #End Region
@@ -1021,6 +1026,10 @@ Public Class MainForm
                 End If
                 If CheckBoxDrawMiddleLine.Checked Then
                     g.DrawLine(New Pen(ButtonMiddleLineColor.BackColor, NumericUpDownMiddleLine.Value), x, y + channelHeight \ 2, x + channelWidth, y + channelHeight \ 2)
+                    If currentChannel.XYmode Then
+                        g.DrawLine(New Pen(ButtonMiddleLineColor.BackColor, NumericUpDownMiddleLine.Value), x + channelWidth \ 2, y,
+                                                                                                            x + channelWidth \ 2, y + channelHeight)
+                    End If
                 End If
             Next
             If CheckBoxGrid.Checked Then
