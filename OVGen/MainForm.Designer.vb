@@ -79,6 +79,7 @@ Partial Class MainForm
         Me.CheckBoxBorder = New System.Windows.Forms.CheckBox()
         Me.TabPageFiles = New System.Windows.Forms.TabPage()
         Me.ListBoxFiles = New System.Windows.Forms.ListBox()
+        Me.TimerMonoStatusUpdater = New System.Windows.Forms.Timer(Me.components)
         CType(Me.NumericUpDownMiddleLine, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownLineWidth, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -680,6 +681,10 @@ Partial Class MainForm
         Me.ListBoxFiles.Size = New System.Drawing.Size(235, 394)
         Me.ListBoxFiles.TabIndex = 10
         '
+        'TimerMonoStatusUpdater
+        '
+        Me.TimerMonoStatusUpdater.Interval = 50
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(120.0!, 120.0!)
@@ -774,4 +779,5 @@ Partial Class MainForm
     Friend WithEvents LabelChannelLabelPos As Label
     Friend WithEvents ListBoxFiles As ListBox
     Friend WithEvents CheckBoxDottedXYmode As CheckBox
+    Friend WithEvents TimerMonoStatusUpdater As Timer
 End Class

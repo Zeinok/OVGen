@@ -1,6 +1,6 @@
 ﻿Imports Microsoft.WindowsAPICodePack.Taskbar
 Public Class MainForm
-
+    Property isRunningMono As Boolean
     Dim configFileLocation As String = Environment.CurrentDirectory & "\OVG.ini"
     '== FPS counter
     Dim fpsTimer As Date
@@ -19,6 +19,7 @@ Public Class MainForm
     Dim NoFileWriting As Boolean = False
     Dim allFilesLoaded As Boolean = False
     Dim failedFiles As New Dictionary(Of String, String)
+    Dim mono_messages As New List(Of Progress)
     '===FFmpeg
     Dim convertVideo As Boolean = False
     Dim canceledByUser As Boolean = False
@@ -76,6 +77,10 @@ Public Class MainForm
         CheckBoxNoFileWriting_CheckedChanged(Nothing, Nothing)
         originalTextBoxLogHeight = LogBox.Height
         Me.Text &= " " & Application.ProductVersion
+        isRunningMono = Type.GetType("Mono.Runtime") IsNot Nothing
+        If isRunningMono Then
+            LogBox.AppendText("Detected running OVGen under Mono." & vbNewLine)
+        End If
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -267,6 +272,7 @@ Public Class MainForm
             arg.ffmpegBinary = ffmpegPath
             LabelStatus.Text = "Start."
             OscilloscopeBackgroundWorker.RunWorkerAsync(arg)
+            If isRunningMono Then TimerMonoStatusUpdater.Start()
             TabControlRenderingFiles.Enabled = False
             ButtonControl.Text = "Cancel"
             ButtonControl.Update()
@@ -327,7 +333,7 @@ Public Class MainForm
     End Sub
 
     Private Sub OscilloscopeBackgroundWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles OscilloscopeBackgroundWorker.DoWork
-        OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Start."))
+        workerReportProg(0, New Progress("Start."))
         startTime = Now
         Dim args As WorkerArguments = e.Argument
         canceledByUser = False
@@ -346,7 +352,7 @@ Public Class MainForm
         allFilesLoaded = True
         failedFiles.Clear()
         For z As Byte = 0 To args.files.Length - 1
-            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Loading wav file: " & args.files(z)))
+            workerReportProg(0, New Progress("Loading wav file: " & args.files(z)))
             Try
                 wave(z) = New WAV(args.files(z))
             Catch ex As Exception
@@ -364,7 +370,7 @@ Public Class MainForm
                 totalFrame = sampleLength \ (wave(z).sampleRate \ args.FPS) + 1
             End If
             If extraArg.externalTriggerEnabled Then
-                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("  Loading external trigger: " & extraArg.externalTriggerFile))
+                workerReportProg(0, New Progress("  Loading external trigger: " & extraArg.externalTriggerFile))
                 Try
                     extTrig.Add(z, New WAV(extraArg.externalTriggerFile))
                     extTrig(z).extraArguments = extraArg
@@ -382,18 +388,18 @@ Public Class MainForm
             Try
                 Dim master As New WAV(masterAudioFile, True)
                 sampleLength = master.sampleLength
-                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Using length of master audio."))
+                workerReportProg(0, New Progress("Using length of master audio."))
                 totalFrame = sampleLength \ (master.sampleRate \ args.FPS) + 1
             Catch ex As Exception
-                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to parse master audio: " & ex.Message))
+                workerReportProg(0, New Progress("Failed to parse master audio: " & ex.Message))
             End Try
         End If
         If Not allFilesLoaded Then
             wave = Nothing
-            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Failed to load file(s)."))
+            workerReportProg(0, New Progress("Failed to load file(s)."))
             Exit Sub
         End If
-        OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("All file loaded."))
+        workerReportProg(0, New Progress("All file loaded."))
         Debug.WriteLine("Done loading waves.")
         fpsTimer = Now
         Debug.WriteLine(sampleLength)
@@ -447,17 +453,17 @@ Public Class MainForm
         Dim stderr As IO.StreamReader = Nothing
         Dim stdin As IO.Stream = Nothing
         If args.convertVideo And Not args.noFileWriting Then
-            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Starting FFmpeg."))
-            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Run: " & ffmpeg.FileName & " " & ffmpeg.Arguments))
+            workerReportProg(0, New Progress("Starting FFmpeg."))
+            workerReportProg(0, New Progress("Run: " & ffmpeg.FileName & " " & ffmpeg.Arguments))
             ffmpegProc = Process.Start(ffmpeg)
-            OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Started FFmpeg."))
+            workerReportProg(0, New Progress("Started FFmpeg."))
             stdin = ffmpegProc.StandardInput.BaseStream
             stderr = ffmpegProc.StandardError
             FFmpegstderr = ffmpegProc.StandardError
         End If
 
         'start work
-        OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Begin rendering."))
+        workerReportProg(0, New Progress("Begin rendering."))
 #Region "draw overlay bmp"
         Dim overlayBmp As New Bitmap(canvasSize.Width, canvasSize.Height)
         Dim overlayNeeded As Boolean = False
@@ -641,8 +647,8 @@ Public Class MainForm
             frames += 1
             If Not args.noFileWriting And args.convertVideo Then
                 If ffmpegProc.HasExited Then
-                    OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("FFmpeg has exited, terminating render..."))
-                    OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("FFmpeg exit code:" & ffmpegProc.ExitCode))
+                    workerReportProg(0, New Progress("FFmpeg has exited, terminating render..."))
+                    workerReportProg(0, New Progress("FFmpeg exit code:" & ffmpegProc.ExitCode))
                     Exit Sub
                 End If
             End If
@@ -663,9 +669,9 @@ Public Class MainForm
                 End Try
             Loop Until ok = True Or saveRetries > 10
             Dim prog As New Progress(bmp, frames, totalFrame)
-            OscilloscopeBackgroundWorker.ReportProgress(frames, prog)
+            workerReportProg(frames, prog)
             If OscilloscopeBackgroundWorker.CancellationPending Then
-                OscilloscopeBackgroundWorker.ReportProgress(0, New Progress("Stopping!"))
+                workerReportProg(frames, New Progress("Stopping!"))
                 If args.convertVideo And Not args.noFileWriting Then
                     ffmpegProc.Kill()
                 End If
@@ -674,7 +680,7 @@ Public Class MainForm
                 End If
                 prog = New Progress(Nothing, 0, 0)
                 prog.canceled = True
-                OscilloscopeBackgroundWorker.ReportProgress(0, prog)
+                workerReportProg(0, prog)
                 canceledByUser = True
                 Exit While
             End If
@@ -686,6 +692,13 @@ Public Class MainForm
             Do Until ffmpegProc.HasExited
             Loop
             stderr.Close()
+        End If
+    End Sub
+    Public Sub workerReportProg(ByVal percentProgress As Integer, Optional ByVal userState As Object = Nothing)
+        If Not isRunningMono Then
+            OscilloscopeBackgroundWorker.ReportProgress(percentProgress, userState)
+        Else
+            mono_messages.Add(userState)
         End If
     End Sub
 
@@ -791,6 +804,10 @@ Public Class MainForm
         'taskbarProgress.ProgressState = Windows.Shell.TaskbarItemProgressState.Normal
         TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
         Dim prog As Progress = e.UserState
+        progressUpdater(prog)
+    End Sub
+
+    Private Sub progressUpdater(ByVal prog As Progress)
         If prog.message <> "" Then
             LogBox.AppendText(prog.message & vbCrLf)
             LogBox.Update()
@@ -824,9 +841,9 @@ Public Class MainForm
                 averageFPS = (averageFPS + realFPS) / 2
                 fpsFrames = 0
             End If
-            TaskbarManager.Instance.SetProgressValue(prog.CurrentFrame, prog.TotalFrame)
+            If Not isRunningMono Then TaskbarManager.Instance.SetProgressValue(prog.CurrentFrame, prog.TotalFrame)
         ElseIf prog.canceled Then 'canceled
-            LabelStatus.Text = "Canceled."
+                LabelStatus.Text = "Canceled."
             If prog.message <> "" Then
                 LogBox.AppendText(prog.message & vbCrLf)
                 LogBox.Update()
@@ -834,7 +851,6 @@ Public Class MainForm
                 LogBox.Select(LogBox.TextLength, 0)
             End If
         End If
-
     End Sub
 
     Private Sub OscilloscopeBackgroundWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles OscilloscopeBackgroundWorker.RunWorkerCompleted
@@ -845,7 +861,7 @@ Public Class MainForm
         LabelStatus.Text = "Finished."
         ButtonControl.Text = "Start"
         ButtonControl.Enabled = True
-        TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
+        If Not isRunningMono Then TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
         If Not allFilesLoaded Then
             For Each msg In failedFiles
                 LogBox.AppendText("Failed to load " & msg.Key & ":" & msg.Value & vbCrLf)
@@ -1230,5 +1246,19 @@ Public Class MainForm
 
     Private Sub ComboBoxLabelPos_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBoxLabelPos.SelectedIndexChanged
         previewLayout()
+    End Sub
+
+    Private Sub TimerMonoStatusUpdater_Tick(sender As Object, e As EventArgs) Handles TimerMonoStatusUpdater.Tick
+        If isRunningMono And OscilloscopeBackgroundWorker.IsBusy Then
+            If OscilloscopeBackgroundWorker.IsBusy Then
+                While mono_messages.Count > 0
+                    progressUpdater(mono_messages.Last)
+                    mono_messages.Clear()
+                End While
+                GC.Collect()
+            End If
+        Else
+            TimerMonoStatusUpdater.Stop()
+        End If
     End Sub
 End Class
