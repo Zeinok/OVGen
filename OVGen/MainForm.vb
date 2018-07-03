@@ -838,14 +838,14 @@ Public Class MainForm
         progressUpdater(prog)
     End Sub
 
-    Private Sub progressUpdater(ByVal prog As Progress)
+    Private Sub progressUpdater(ByVal prog As Progress, Optional ByVal updateImage As Boolean = False)
         If prog.message <> "" Then
             LogBox.AppendText(prog.message & vbCrLf)
             LogBox.Update()
             LogBox.Focus()
             LogBox.Select(LogBox.TextLength, 0)
         End If
-        If prog.Image IsNot Nothing Then
+        If prog.Image IsNot Nothing And updateImage Then
 
             Dim ok As Boolean = False
             If CheckBoxShowOutput.Checked Then
@@ -874,7 +874,7 @@ Public Class MainForm
             End If
             If Not isRunningMono Then TaskbarManager.Instance.SetProgressValue(prog.CurrentFrame, prog.TotalFrame)
         ElseIf prog.canceled Then 'canceled
-                LabelStatus.Text = "Canceled."
+            LabelStatus.Text = "Canceled."
             If prog.message <> "" Then
                 LogBox.AppendText(prog.message & vbCrLf)
                 LogBox.Update()
@@ -1282,13 +1282,18 @@ Public Class MainForm
     Private Sub TimerMonoStatusUpdater_Tick(sender As Object, e As EventArgs) Handles TimerMonoStatusUpdater.Tick
         If isRunningMono And OscilloscopeBackgroundWorker.IsBusy Then
             If OscilloscopeBackgroundWorker.IsBusy Then
-                While mono_messages.Count > 0
-                    progressUpdater(mono_messages.Last)
+                If mono_messages.Count > 0 Then
+                    fpsFrames += mono_messages.Count - 1
+                    progressUpdater(mono_messages.Last, True)
+                    While mono_messages.Count > 0
+                        progressUpdater(mono_messages.Last)
+                        mono_messages.RemoveAt(mono_messages.Count - 1)
+                    End While
                     mono_messages.Clear()
-                End While
+                End If
                 GC.Collect()
-            End If
-        Else
+                End If
+            Else
             TimerMonoStatusUpdater.Stop()
         End If
     End Sub
