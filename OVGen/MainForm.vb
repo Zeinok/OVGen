@@ -286,16 +286,47 @@ Public Class MainForm
 
     Private Sub CheckBoxVideo_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CheckBoxVideo.CheckedChanged
         If CheckBoxVideo.Checked Then
-            If Not My.Computer.FileSystem.FileExists(ffmpegPath) Then
-                MsgBox("FFmpeg binary is not exist or location not set!, select one.", MsgBoxStyle.Exclamation)
-                Dim ofd As New OpenFileDialog
-                ofd.Filter = "FFmpeg binary|ffmpeg.exe|All Files|*.*"
-                If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
-                    ffmpegPath = ofd.FileName
-                    writeConfig()
+            If Not My.Computer.FileSystem.FileExists(ffmpegPath) And ffmpegPath <> "ffmpeg" Then
+                Dim procInfo As New ProcessStartInfo("ffmpeg", "-version")
+                procInfo.UseShellExecute = False
+                procInfo.CreateNoWindow = True
+                Dim FFmpegExist As Boolean = True
+                Dim proc As Process = Nothing
+                Try
+                    proc = Process.Start(procInfo)
+                Catch ex As Exception
+                    FFmpegExist = False
+                End Try
+                If proc IsNot Nothing Then
+                    While Not proc.HasExited
+                        Application.DoEvents()
+                    End While
+                    If proc.ExitCode <> 0 Then FFmpegExist = False
+                End If
+                Dim NeedToOpenDialog As Boolean = True
+                If FFmpegExist Then
+                    Dim useSystem As MsgBoxResult = MsgBox("We detected a copy of FFmpeg is installed in this system, Do you want to use it?", MsgBoxStyle.YesNo + MsgBoxStyle.Question)
+                    If useSystem = MsgBoxResult.Yes Then NeedToOpenDialog = False
                 Else
-                    CheckBoxVideo.Checked = False
-                    Exit Sub
+                    MsgBox("FFmpeg binary is not exist or location not set!, select one.", MsgBoxStyle.Exclamation)
+                End If
+                If NeedToOpenDialog Then
+                    Dim ofd As New OpenFileDialog
+                    If isRunningMono Then
+                        ofd.Filter = "FFmpeg binary|ffmpeg|All Files|*.*"
+                    Else
+                        ofd.Filter = "FFmpeg binary|ffmpeg.exe|All Files|*.*"
+                    End If
+                    If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
+                        ffmpegPath = ofd.FileName
+                        writeConfig()
+                    Else
+                        CheckBoxVideo.Checked = False
+                        Exit Sub
+                    End If
+                Else
+                    ffmpegPath = "ffmpeg"
+                    writeConfig()
                 End If
             End If
             ButtonAudio.Enabled = True
