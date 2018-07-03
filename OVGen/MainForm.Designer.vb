@@ -269,7 +269,7 @@ Partial Class MainForm
         'CheckBoxCRT
         '
         Me.CheckBoxCRT.AutoSize = True
-        Me.CheckBoxCRT.Location = New System.Drawing.Point(113, 31)
+        Me.CheckBoxCRT.Location = New System.Drawing.Point(120, 31)
         Me.CheckBoxCRT.Margin = New System.Windows.Forms.Padding(2)
         Me.CheckBoxCRT.Name = "CheckBoxCRT"
         Me.CheckBoxCRT.Size = New System.Drawing.Size(93, 19)
@@ -315,7 +315,7 @@ Partial Class MainForm
         '
         'NumericUpDownColumn
         '
-        Me.NumericUpDownColumn.Location = New System.Drawing.Point(71, 104)
+        Me.NumericUpDownColumn.Location = New System.Drawing.Point(77, 104)
         Me.NumericUpDownColumn.Margin = New System.Windows.Forms.Padding(2)
         Me.NumericUpDownColumn.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownColumn.Name = "NumericUpDownColumn"
@@ -348,7 +348,7 @@ Partial Class MainForm
         '
         'NumericUpDownFrameRate
         '
-        Me.NumericUpDownFrameRate.Location = New System.Drawing.Point(77, 75)
+        Me.NumericUpDownFrameRate.Location = New System.Drawing.Point(80, 75)
         Me.NumericUpDownFrameRate.Margin = New System.Windows.Forms.Padding(2)
         Me.NumericUpDownFrameRate.Maximum = New Decimal(New Integer() {600, 0, 0, 0})
         Me.NumericUpDownFrameRate.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
@@ -683,12 +683,11 @@ Partial Class MainForm
         '
         'TimerMonoStatusUpdater
         '
-        Me.TimerMonoStatusUpdater.Interval = 50
         '
         'MainForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(120.0!, 120.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1098, 665)
         Me.Controls.Add(Me.TabControlRenderingFiles)
         Me.Controls.Add(Me.LogBox)

@@ -63,4 +63,11 @@ Public Class AutoAmplifyWorkerForm
     Private Sub BackgroundWorkerAutoAmplify_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BackgroundWorkerAutoAmplify.ProgressChanged
         ProgressBar1.Value = e.ProgressPercentage
     End Sub
+
+    Private Sub AutoAmplifyWorkerForm_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        If BackgroundWorkerAutoAmplify.IsBusy Then
+            BackgroundWorkerAutoAmplify.CancelAsync()
+        End If
+        Me.DialogResult = DialogResult.Cancel
+    End Sub
 End Class

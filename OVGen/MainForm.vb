@@ -1284,12 +1284,12 @@ Public Class MainForm
             If OscilloscopeBackgroundWorker.IsBusy Then
                 If mono_messages.Count > 0 Then
                     fpsFrames += mono_messages.Count - 1
-                    progressUpdater(mono_messages.Last, True)
-                    While mono_messages.Count > 0
-                        progressUpdater(mono_messages.Last)
-                        mono_messages.RemoveAt(mono_messages.Count - 1)
+                    While mono_messages.Count > 1
+                        progressUpdater(mono_messages.First)
+                        mono_messages.RemoveAt(0)
                     End While
-                    mono_messages.Clear()
+                    progressUpdater(mono_messages.Last, True)
+                    mono_messages.RemoveAt(0)
                 End If
                 GC.Collect()
                 End If

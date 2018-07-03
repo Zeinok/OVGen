@@ -380,7 +380,8 @@ Partial Class ChannelConfigForm
         '
         'ChannelConfigForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
         Me.ClientSize = New System.Drawing.Size(272, 409)
         Me.Controls.Add(Me.CheckBoxXYaspectRatio)
