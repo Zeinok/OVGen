@@ -39,6 +39,7 @@ Public Class MainForm
     Dim formStarted As Boolean = False
     Dim originalFormSize As Size
     Dim originalTextBoxLogHeight As Integer
+    Dim isProgressTaskBarSupported As Boolean = True
 
     Private Sub MainForm_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
         If Not formStarted Then
@@ -82,6 +83,8 @@ Public Class MainForm
         If isRunningMono Then
             LogBox.AppendText("Detected running OVGen under Mono." & vbNewLine)
         End If
+        isProgressTaskBarSupported = Environment.OSVersion.Version.Major >= 6 And Environment.OSVersion.Version.Minor >= 1
+        'Windows 7 or up
     End Sub
 
     Function randStr(ByVal len As ULong) As String
@@ -848,7 +851,7 @@ Public Class MainForm
             LogBox.Select(LogBox.TextLength, 0)
         End If
         If prog.ffmpegClosed Then
-            If Not isRunningMono Then TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
+            If Not isRunningMono And isProgressTaskBarSupported Then TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
             LabelStatus.Text = "Waiting FFmpeg to finish..."
         End If
         If updateImage Then
@@ -877,7 +880,7 @@ Public Class MainForm
                 averageFPS = (averageFPS + realFPS) / 2
                 fpsFrames = 0
             End If
-            If Not isRunningMono Then
+            If Not isRunningMono And isProgressTaskBarSupported Then
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
                 TaskbarManager.Instance.SetProgressValue(prog.CurrentFrame, prog.TotalFrame)
             End If
@@ -902,7 +905,7 @@ Public Class MainForm
         LabelStatus.Text = "Finished."
         ButtonControl.Text = "Start"
         ButtonControl.Enabled = True
-        If Not isRunningMono Then TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
+        If Not isRunningMono And isProgressTaskBarSupported Then TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
         If Not allFilesLoaded Then
             For Each msg In failedFiles
                 LogBox.AppendText("Failed to load " & msg.Key & ":" & msg.Value & vbCrLf)
