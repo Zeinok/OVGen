@@ -1289,7 +1289,7 @@ Public Class MainForm
         previewLayout()
     End Sub
 
-    Private Sub TimerMonoStatusUpdater_Tick(sender As Object, e As EventArgs) Handles TimerStatusUpdater.Tick
+    Private Sub TimerStatusUpdater_Tick(sender As Object, e As EventArgs) Handles TimerStatusUpdater.Tick
         If OscilloscopeBackgroundWorker.IsBusy Then
             If OscilloscopeBackgroundWorker.IsBusy Then
                 If progressList.Count > 0 Then
