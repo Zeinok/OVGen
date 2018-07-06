@@ -1,13 +1,11 @@
 ﻿
 Public Class Progress
-    Public Image As System.Drawing.Image
     Public CurrentFrame As ULong
     Public TotalFrame As ULong
     Public message As String
     Public canceled As Boolean = False
-
-    Sub New(ByVal NewImage As System.Drawing.Image, ByVal NewCurrentFrame As ULong, ByVal NewTotalFrame As ULong, Optional ByVal newMessage As String = "")
-        Image = NewImage
+    Public ffmpegClosed As Boolean = False
+    Sub New(ByVal NewCurrentFrame As ULong, ByVal NewTotalFrame As ULong, Optional ByVal newMessage As String = "")
         CurrentFrame = NewCurrentFrame
         TotalFrame = NewTotalFrame
         message = newMessage

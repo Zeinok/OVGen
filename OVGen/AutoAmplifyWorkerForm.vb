@@ -3,6 +3,7 @@
 Public Class AutoAmplifyWorkerForm
     Public Property Filename As String
     Dim _result As Double = 1
+    Private finished As Boolean = False
     Public Property Result As Double
         Get
             Return _result
@@ -56,6 +57,7 @@ Public Class AutoAmplifyWorkerForm
     End Sub
 
     Private Sub BackgroundWorkerAutoAmplify_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorkerAutoAmplify.RunWorkerCompleted
+        finished = True
         Me.DialogResult = DialogResult.OK
         Close()
     End Sub
@@ -68,6 +70,8 @@ Public Class AutoAmplifyWorkerForm
         If BackgroundWorkerAutoAmplify.IsBusy Then
             BackgroundWorkerAutoAmplify.CancelAsync()
         End If
-        Me.DialogResult = DialogResult.Cancel
+        If Not finished Then
+            Me.DialogResult = DialogResult.Cancel
+        End If
     End Sub
 End Class
