@@ -292,8 +292,9 @@ Public Class MainForm
 
     Private Sub CheckBoxVideo_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CheckBoxVideo.CheckedChanged
         If CheckBoxVideo.Checked Then
-            If Not My.Computer.FileSystem.FileExists(ffmpegPath) Then
+            If Not My.Computer.FileSystem.FileExists(ffmpegPath) And ffmpegPath <> "ffmpeg" Then
                 Dim waitForm As New Form()
+                waitForm.ShowInTaskbar = False
                 waitForm.FormBorderStyle = FormBorderStyle.None
                 waitForm.ControlBox = False
                 waitForm.Size = New Size(100, 50)
@@ -339,12 +340,8 @@ Public Class MainForm
                 waitForm.Close()
                 Dim NeedToOpenDialog As Boolean = True
                 If FFmpegExist Then
-                    If ffmpegPath <> "ffmpeg" Then
-                        Dim useSystem As MsgBoxResult = MsgBox("We detected a copy of FFmpeg is installed in this system, do you want to use it?", MsgBoxStyle.YesNo + MsgBoxStyle.Question)
-                        If useSystem = MsgBoxResult.Yes Then NeedToOpenDialog = False
-                    Else
-                        NeedToOpenDialog = False
-                    End If
+                    Dim useSystem As MsgBoxResult = MsgBox("We detected a copy of FFmpeg is installed in this system, do you want to use it?", MsgBoxStyle.YesNo + MsgBoxStyle.Question)
+                    If useSystem = MsgBoxResult.Yes Then NeedToOpenDialog = False
                 Else
                     MsgBox("FFmpeg binary is not exist or location not set!, select one.", MsgBoxStyle.Exclamation)
                 End If
