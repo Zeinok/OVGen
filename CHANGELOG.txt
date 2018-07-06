@@ -1,3 +1,7 @@
+2018/7/6 0.0.18.4
++ Check for ffmpeg if CheckBoxVideo is checked
+* Better compatibility with Wine and Mono
+
 2018/6/24 0.0.18.3
 * fix XY scope pen width
 
