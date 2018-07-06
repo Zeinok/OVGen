@@ -292,27 +292,59 @@ Public Class MainForm
 
     Private Sub CheckBoxVideo_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CheckBoxVideo.CheckedChanged
         If CheckBoxVideo.Checked Then
-            If Not My.Computer.FileSystem.FileExists(ffmpegPath) And ffmpegPath <> "ffmpeg" Then
+            If Not My.Computer.FileSystem.FileExists(ffmpegPath) Then
+                Dim waitForm As New Form()
+                waitForm.FormBorderStyle = FormBorderStyle.None
+                waitForm.ControlBox = False
+                waitForm.Size = New Size(100, 50)
+                waitForm.Cursor = Cursors.WaitCursor
+                waitForm.StartPosition = FormStartPosition.Manual
+                waitForm.Location = New Point(Me.Location.X + Me.Size.Width / 2 - waitForm.Width / 2,
+                                              Me.Location.Y + Me.Size.Height / 2 - waitForm.Height / 2)
+                waitForm.TopMost = True
+                Dim waitLabel As New Label()
+                waitLabel.Text = "Please wait..."
+                Dim g As Graphics = waitForm.CreateGraphics()
+                Dim labelSize As SizeF = g.MeasureString(waitLabel.Text, waitLabel.Font)
+                waitLabel.Location = New Point(waitForm.Width / 2 - labelSize.Width / 2, waitForm.Height / 2 - labelSize.Height / 2)
+                waitForm.Controls.Add(waitLabel)
                 Dim procInfo As New ProcessStartInfo("ffmpeg", "-version")
                 procInfo.UseShellExecute = False
                 procInfo.CreateNoWindow = True
                 Dim FFmpegExist As Boolean = True
                 Dim proc As Process = Nothing
+                waitForm.Show()
+                waitLabel.Refresh()
+                ControlPaint.DrawBorder3D(g, New Rectangle(New Point, waitForm.Size), Border3DStyle.Raised)
                 Try
                     proc = Process.Start(procInfo)
                 Catch ex As Exception
                     FFmpegExist = False
                 End Try
                 If proc IsNot Nothing Then
+                    Dim procStopWatch As New Stopwatch
+                    procStopWatch.Start()
                     While Not proc.HasExited
+                        waitLabel.Refresh()
+                        ControlPaint.DrawBorder3D(g, New Rectangle(New Point, waitForm.Size), Border3DStyle.Raised)
                         Application.DoEvents()
+                        If procStopWatch.Elapsed.TotalSeconds > 10 Then 'run over 10 second
+                            proc.Kill()
+                            Exit Sub
+                        End If
                     End While
+                    procStopWatch.Stop()
                     If proc.ExitCode <> 0 Then FFmpegExist = False
                 End If
+                waitForm.Close()
                 Dim NeedToOpenDialog As Boolean = True
                 If FFmpegExist Then
-                    Dim useSystem As MsgBoxResult = MsgBox("We detected a copy of FFmpeg is installed in this system, Do you want to use it?", MsgBoxStyle.YesNo + MsgBoxStyle.Question)
-                    If useSystem = MsgBoxResult.Yes Then NeedToOpenDialog = False
+                    If ffmpegPath <> "ffmpeg" Then
+                        Dim useSystem As MsgBoxResult = MsgBox("We detected a copy of FFmpeg is installed in this system, do you want to use it?", MsgBoxStyle.YesNo + MsgBoxStyle.Question)
+                        If useSystem = MsgBoxResult.Yes Then NeedToOpenDialog = False
+                    Else
+                        NeedToOpenDialog = False
+                    End If
                 Else
                     MsgBox("FFmpeg binary is not exist or location not set!, select one.", MsgBoxStyle.Exclamation)
                 End If
