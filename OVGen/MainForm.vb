@@ -1,4 +1,5 @@
 ﻿Imports Microsoft.WindowsAPICodePack.Taskbar
+Imports System.Numerics
 Public Class MainForm
     Property isRunningMono As Boolean
     Dim configFileLocation As String = Environment.CurrentDirectory & "\OVG.ini"
@@ -684,12 +685,14 @@ Public Class MainForm
 #End Region
                 'draw
 #Region "draw wave or XY"
+                Dim rect As New Rectangle(channelOffset(c), channelSize)
                 If channelArg.XYmode Then
-                    drawWaveXY(g, wavePen, New Rectangle(channelOffset(c), channelSize),
-                         wave(c), args, currentWAV.sampleRate, currentWAV.sampleRate / args.FPS, sampleLocation)
+                    drawFFT(g, wavePen, rect, wave(c), args, 2048, sampleLocation)
+                    'drawWaveXY(g, wavePen, rect,
+                    '     wave(c), args, currentWAV.sampleRate, currentWAV.sampleRate / args.FPS, sampleLocation)
                 Else
-                    drawWave(g, wavePen, New Rectangle(channelOffset(c), channelSize),
-         wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation + triggerOffset)
+                    drawWave(g, wavePen, rect,
+                    wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation + triggerOffset)
                 End If
                 channelArg.waveColor = waveColor 'reset color
 #End Region
@@ -839,6 +842,36 @@ Public Class MainForm
         Else
             g.DrawLines(XYpen, points.ToArray())
         End If
+    End Sub
+    Dim maxY As Double = 0
+    Private Sub drawFFT(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal maxSample As Integer, ByVal offset As Long)
+        Dim args As channelOptions = wave.extraArguments
+        pen.Color = args.waveColor
+        Dim complexList As New List(Of Complex)
+        For i As ULong = offset To offset + maxSample - 1
+            Dim s As Double = wave.getSample(i, True)
+            If s > 0 Then
+                s /= 127
+            Else
+                s /= 128
+            End If
+            complexList.Add(New Complex(s, 0))
+        Next
+        Dim complexArr As Complex() = complexList.ToArray()
+        FFT.HannWindow(complexArr)
+        FFT.FFT(complexArr, complexArr.Length, 0)
+        Dim pts As PointF() = FFT.PlotHelper(complexArr, wave.sampleRate, maxSample)
+        Dim points As New List(Of Point)
+        For Each pt In pts
+            If pt.Y > maxY Then
+                maxY = pt.Y
+                Debug.WriteLine(maxY)
+            End If
+            Dim x As Integer = pt.X * rect.Width + rect.X
+            Dim y As Integer = (1 - pt.Y / 417) * rect.Height + rect.Y
+            points.Add(New Point(x, y))
+        Next
+        g.DrawLines(pen, points.ToArray())
     End Sub
 
     Function HSVtoRGB(ByVal hue As Double, ByVal saturation As Double, ByVal value As Double) As Color
