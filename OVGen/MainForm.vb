@@ -687,9 +687,8 @@ Public Class MainForm
 #Region "draw wave or XY"
                 Dim rect As New Rectangle(channelOffset(c), channelSize)
                 If channelArg.XYmode Then
-                    drawFFT(g, wavePen, rect, wave(c), args, 2048, sampleLocation)
-                    'drawWaveXY(g, wavePen, rect,
-                    '     wave(c), args, currentWAV.sampleRate, currentWAV.sampleRate / args.FPS, sampleLocation)
+                    drawWaveXY(g, wavePen, rect,
+                         wave(c), args, currentWAV.sampleRate, currentWAV.sampleRate / args.FPS, sampleLocation)
                 Else
                     drawWave(g, wavePen, rect,
                     wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation + triggerOffset)
@@ -716,8 +715,8 @@ Public Class MainForm
             frames += 1
             If Not args.noFileWriting And args.convertVideo Then
                 If ffmpegProc.HasExited Then
-                    workerReportProg(New Progress("FFmpeg has exited, terminating render..."))
-                    workerReportProg(New Progress("FFmpeg exit code:" & ffmpegProc.ExitCode))
+                    workerReportProg(New Progress(frames, totalFrame, "FFmpeg has exited, terminating render..."))
+                    workerReportProg(New Progress(frames, totalFrame, "FFmpeg exit code:" & ffmpegProc.ExitCode))
                     Exit Sub
                 End If
             End If
@@ -748,7 +747,7 @@ Public Class MainForm
                 If BackgroundWorkerStdErrReader.IsBusy Then
                     BackgroundWorkerStdErrReader.CancelAsync()
                 End If
-                prog = New Progress(Nothing, 0, 0)
+                prog = New Progress(frames, totalFrame)
                 prog.canceled = True
                 workerReportProg(prog)
                 canceledByUser = True
@@ -759,7 +758,7 @@ Public Class MainForm
         If args.convertVideo And Not args.noFileWriting And Not OscilloscopeBackgroundWorker.CancellationPending Then
             stdin.Flush()
             stdin.Close()
-            Dim endProg As New Progress("")
+            Dim endProg As New Progress(frames, totalFrame)
             endProg.ffmpegClosed = True
             workerReportProg(endProg)
             Do Until ffmpegProc.HasExited
