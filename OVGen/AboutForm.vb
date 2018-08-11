@@ -9,6 +9,6 @@
     End Sub
 
     Private Sub LinkLabelWebsite_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkLabelWebsite.LinkClicked
-        Process.Start("https://zeinok.blogspot.tw")
+        Process.Start("https://github.com/Zeinok/OVGen")
     End Sub
 End Class

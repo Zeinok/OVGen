@@ -30,7 +30,7 @@ Partial Class AboutForm
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(118, 131)
+        Me.Button1.Location = New System.Drawing.Point(176, 130)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(94, 29)
         Me.Button1.TabIndex = 0
@@ -41,7 +41,7 @@ Partial Class AboutForm
         '
         Me.LabelInformation.Location = New System.Drawing.Point(12, 9)
         Me.LabelInformation.Name = "LabelInformation"
-        Me.LabelInformation.Size = New System.Drawing.Size(193, 88)
+        Me.LabelInformation.Size = New System.Drawing.Size(258, 88)
         Me.LabelInformation.TabIndex = 1
         Me.LabelInformation.Text = "A software you can put WAV files and make oscilloscope view thing." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Creator: Ze" &
     "inok"
@@ -51,10 +51,10 @@ Partial Class AboutForm
         Me.LinkLabelWebsite.AutoSize = True
         Me.LinkLabelWebsite.Location = New System.Drawing.Point(12, 97)
         Me.LinkLabelWebsite.Name = "LinkLabelWebsite"
-        Me.LinkLabelWebsite.Size = New System.Drawing.Size(153, 15)
+        Me.LinkLabelWebsite.Size = New System.Drawing.Size(201, 15)
         Me.LinkLabelWebsite.TabIndex = 2
         Me.LinkLabelWebsite.TabStop = True
-        Me.LinkLabelWebsite.Text = "https://zeinok.blogspot.tw"
+        Me.LinkLabelWebsite.Text = "https://github.com/Zeinok/OVGen"
         '
         'LabelVersion
         '
@@ -69,7 +69,7 @@ Partial Class AboutForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(224, 171)
+        Me.ClientSize = New System.Drawing.Size(282, 171)
         Me.Controls.Add(Me.LabelVersion)
         Me.Controls.Add(Me.LinkLabelWebsite)
         Me.Controls.Add(Me.LabelInformation)
