@@ -10,6 +10,15 @@ Public Class MainForm
     Dim averageFPS As Double
     Dim startTime As DateTime
     Dim channelFlowDirection As FlowDirection = FlowDirection.LeftToRight
+    '=== stopwatches
+    Dim frameStopwatch As New Stopwatch()
+    Dim frameElapsed As New TimeSpan()
+    Dim triggerStopwatch As New Stopwatch()
+    Dim triggerElapsed As New TimeSpan()
+    Dim renderStopwatch As New Stopwatch()
+    Dim renderElapsed As New TimeSpan()
+    Dim stdinStopwatch As New Stopwatch()
+    Dim stdinElapsed As New TimeSpan()
     '===For Worker
     Public optionsList As New List(Of channelOptions)
     Dim canvasSize As New Size(1280, 720)
@@ -559,7 +568,12 @@ Public Class MainForm
             g.DrawString(channelArg.label, channelArg.labelFont, New SolidBrush(channelArg.labelColor), New Rectangle(channelOffset(c).X + labelDX, channelOffset(c).Y + labelDY, channelSize.Width, channelSize.Height))
         Next
 #End Region
+
         While frames < totalFrame
+            frameStopwatch.Restart()
+            renderElapsed = New TimeSpan()
+            stdinElapsed = New TimeSpan()
+            triggerElapsed = New TimeSpan()
 #Region "createBmp"
             Dim bmp As Bitmap = Nothing
             Dim createdBmp As Boolean = False
@@ -604,6 +618,8 @@ Public Class MainForm
                     currentWAV = wave(c)
                 End If
                 Dim sampleLocation As ULong = frames * currentWAV.sampleRate / args.FPS
+
+                triggerStopwatch.Restart()
                 'trigger
 #Region "trigger"
                 Dim maxScanLength As ULong = currentWAV.sampleRate * channelArg.horizontalTime * channelArg.maxScan
@@ -653,6 +669,8 @@ Public Class MainForm
                         End Select
                     End If
                 End If
+                triggerStopwatch.Stop()
+                triggerElapsed += triggerStopwatch.Elapsed
 #End Region
                 'pulseWidthModulatedColor
 #Region "PulseWidthModulatedColor"
@@ -685,6 +703,7 @@ Public Class MainForm
 #End Region
                 'draw
 #Region "draw wave or XY"
+                renderStopwatch.Restart()
                 Dim rect As New Rectangle(channelOffset(c), channelSize)
                 If channelArg.XYmode Then
                     drawWaveXY(g, wavePen, rect,
@@ -694,6 +713,8 @@ Public Class MainForm
                     wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation + triggerOffset)
                 End If
                 channelArg.waveColor = waveColor 'reset color
+                renderStopwatch.Stop()
+                renderElapsed += renderStopwatch.Elapsed
 #End Region
             Next
 
@@ -715,8 +736,10 @@ Public Class MainForm
             frames += 1
             If Not args.noFileWriting And args.convertVideo Then
                 If ffmpegProc.HasExited Then
-                    workerReportProg(New Progress(frames, totalFrame, "FFmpeg has exited, terminating render..."))
-                    workerReportProg(New Progress(frames, totalFrame, "FFmpeg exit code:" & ffmpegProc.ExitCode))
+                    workerReportProg(New Progress("FFmpeg has exited, terminating render..."))
+                    workerReportProg(New Progress("FFmpeg exit code:" & ffmpegProc.ExitCode))
+                    Dim errSignal As New Progress()
+                    errSignal.ffmpegExitedUnexpectedly = True
                     Exit Sub
                 End If
             End If
@@ -747,19 +770,21 @@ Public Class MainForm
                 If BackgroundWorkerStdErrReader.IsBusy Then
                     BackgroundWorkerStdErrReader.CancelAsync()
                 End If
-                prog = New Progress(frames, totalFrame)
+                prog = New Progress()
                 prog.canceled = True
                 workerReportProg(prog)
                 canceledByUser = True
                 Exit While
             End If
+            frameStopwatch.Stop()
+            Console.WriteLine(frameStopwatch.Elapsed)
         End While
         wavePen.Color = Color.White 'reset color on end
         If args.convertVideo And Not args.noFileWriting And Not OscilloscopeBackgroundWorker.CancellationPending Then
             stdin.Flush()
             stdin.Close()
-            Dim endProg As New Progress(frames, totalFrame)
-            endProg.ffmpegClosed = True
+            Dim endProg As New Progress()
+            endProg.ffmpegClosedGracefully = True
             workerReportProg(endProg)
             Do Until ffmpegProc.HasExited
             Loop
@@ -911,7 +936,7 @@ Public Class MainForm
             LogBox.Focus()
             LogBox.Select(LogBox.TextLength, 0)
         End If
-        If prog.ffmpegClosed Then
+        If prog.ffmpegClosedGracefully Then
             If Not isRunningMono And isProgressTaskBarSupported Then TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
             LabelStatus.Text = "Waiting FFmpeg to finish..."
         End If
@@ -953,6 +978,9 @@ Public Class MainForm
                 LogBox.Focus()
                 LogBox.Select(LogBox.TextLength, 0)
             End If
+        End If
+        If prog.ffmpegExitedUnexpectedly Then
+            MsgBox("Please check the log for detailed information!", MsgBoxStyle.Critical, "FFmpeg has exited unexpectedly.")
         End If
     End Sub
 
@@ -1357,15 +1385,23 @@ Public Class MainForm
         If OscilloscopeBackgroundWorker.IsBusy Then
             If OscilloscopeBackgroundWorker.IsBusy Then
                 If progressList.Count > 0 Then
-                    fpsFrames += progressList.Count - 1
-                    While progressList.Count > 1
+                    Dim imgFound As Boolean = False
+                    Dim imgIndex As Integer
+                    For i As Integer = 0 To progressList.Count - 1
+                        If progressList(i).isFrame Then
+                            If Not imgFound Then
+                                progressUpdater(progressList(i), True)
+                                imgIndex = i
+                            End If
+                            fpsFrames += 1
+                        End If
+                    Next
+                    progressList.RemoveAt(imgIndex)
+                    While progressList.Count > 0
                         progressUpdater(progressList.First)
                         progressList.RemoveAt(0)
                     End While
-                    progressUpdater(progressList.Last, True)
-                    progressList.RemoveAt(0)
                 End If
-                'GC.Collect()
             End If
         Else
             TimerStatusUpdater.Stop()

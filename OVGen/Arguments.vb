@@ -4,14 +4,20 @@ Public Class Progress
     Public TotalFrame As ULong
     Public message As String
     Public canceled As Boolean = False
-    Public ffmpegClosed As Boolean = False
+    Public ffmpegClosedGracefully As Boolean = False
+    Public ffmpegExitedUnexpectedly As Boolean = False
+    Public Property isFrame As Boolean = False
     Sub New(ByVal NewCurrentFrame As ULong, ByVal NewTotalFrame As ULong, Optional ByVal newMessage As String = "")
         CurrentFrame = NewCurrentFrame
         TotalFrame = NewTotalFrame
         message = newMessage
+        isFrame = True
     End Sub
     Sub New(ByVal message As String)
         Me.message = message
+    End Sub
+    Sub New()
+
     End Sub
 End Class
 Public Class WorkerArguments

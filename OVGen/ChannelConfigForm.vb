@@ -6,6 +6,9 @@
     Dim externalTrigger As String
 
     Private Sub ChannelConfigForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        CheckBoxXYmode.Checked = Options.XYmode
+        CheckBoxXYaspectRatio.Checked = Options.XYmodeAspectRatio
+        CheckBoxXYmode_CheckedChanged(Nothing, Nothing)
         ComboBoxAlgorithm.Items.Clear()
         ComboBoxAlgorithm.Items.AddRange(TriggeringAlgorithms.Algorithms)
         ButtonColor.BackColor = Options.waveColor
@@ -38,9 +41,6 @@
         End Select
         NumericUpDownAudioChannel.Value = Options.selectedChannel
         CheckBoxMixAudioChannel.Checked = Options.mixChannel
-        CheckBoxXYmode.Checked = Options.XYmode
-        CheckBoxXYaspectRatio.Checked = Options.XYmodeAspectRatio
-        CheckBoxXYmode_CheckedChanged(Nothing, Nothing)
     End Sub
 
     Private Sub ChannelConfigForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp

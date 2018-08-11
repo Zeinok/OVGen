@@ -44,7 +44,7 @@ Public Class FFT
         Dim points As New List(Of PointF)
         For i As ULong = 0 To sampleCount / 2 - 1
             Dim x As Single = i / sampleCount * 2
-            Dim y As Single = r(i).Magnitude
+            Dim y As Single = 20 * Math.Log10(r(i).Magnitude / sampleRate)
             points.Add(New PointF(x, y))
         Next
         Return points.ToArray()
