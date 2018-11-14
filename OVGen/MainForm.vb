@@ -708,16 +708,16 @@ Public Class MainForm
 #Region "draw wave or XY and LRmeter"
                 renderStopwatch.Restart()
                 Dim rect As New Rectangle(channelOffset(c), channelSize)
+                If channelArg.LRmeter Then
+                    drawLRmeter(g, args.LRpen, rect,
+                         wave(c), args, currentWAV.sampleRate, currentWAV.sampleRate / args.FPS, sampleLocation)
+                End If
                 If channelArg.XYmode Then
                     drawWaveXY(g, wavePen, rect,
                          wave(c), args, currentWAV.sampleRate, currentWAV.sampleRate / args.FPS, sampleLocation)
                 Else
                     drawWave(g, wavePen, rect,
                     wave(c), args, currentWAV.sampleRate, channelArg.horizontalTime, sampleLocation + triggerOffset)
-                End If
-                If channelArg.LRmeter Then
-                    drawLRmeter(g, args.LRpen, rect,
-                         wave(c), args, currentWAV.sampleRate, currentWAV.sampleRate / args.FPS, sampleLocation)
                 End If
                 channelArg.waveColor = waveColor 'reset color
                 renderStopwatch.Stop()
