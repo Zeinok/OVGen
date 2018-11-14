@@ -898,19 +898,24 @@ Public Class MainForm
                            ByVal offset As Long)
         Dim LeftCHMaxValue As Double = 0
         Dim RightCHMaxValue As Double = 0
-        Dim OriginalMixChannelSetting As Boolean = wave.mixChannel
+        Dim OriginalMixChannelState As Boolean = wave.mixChannel
+        Dim OriginalSelectedChannel As Boolean = wave.selectedChannel
         wave.mixChannel = False
         For i As Integer = offset To offset + frameDuration
-            Dim L As Double = Math.Abs(wave.getSample(i * wave.channels, True))
-            Dim R As Double = Math.Abs(wave.getSample(i * wave.channels + 1, True))
+            wave.selectedChannel = 0
+            Dim L As Double = Math.Abs(wave.getSample(i, True)) / 127
+            wave.selectedChannel = 1
+            Dim R As Double = Math.Abs(wave.getSample(i, True)) / 127
             If L > LeftCHMaxValue Then LeftCHMaxValue = L
             If R > RightCHMaxValue Then RightCHMaxValue = R
         Next
-        Dim meterRect As New Rectangle(rect.Left + rect.Width / 2 - (1 - LeftCHMaxValue) * rect.Width / 2,
+        Dim meterRect As New Rectangle(rect.Left + (1 - LeftCHMaxValue) * rect.Width / 2,
                                        rect.Bottom - pen.Width,
                                        (LeftCHMaxValue + RightCHMaxValue) * rect.Width / 2,
                                        pen.Width)
-        g.DrawRectangle(New Pen(pen.Color, 1), meterRect)
+        g.FillRectangle(New SolidBrush(pen.Color), meterRect)
+        wave.mixChannel = OriginalMixChannelState
+        wave.selectedChannel = OriginalSelectedChannel
     End Sub
     Function HSVtoRGB(ByVal hue As Double, ByVal saturation As Double, ByVal value As Double) As Color
         Dim h As Integer = Convert.ToInt32(Math.Floor(hue / 60)) Mod 6

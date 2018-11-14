@@ -31,7 +31,7 @@
         TextBoxLabel.Text = Options.label
         labelFont = Options.labelFont
         ButtonFontColor.BackColor = Options.labelColor
-        ComboBoxScanTimeScale.SelectedItem = Options.maxScan
+        ComboBoxScanTimeScale.SelectedItem = Options.maxScan.ToString
         NumericUpDownAudioChannel.Value = Options.selectedChannel
         CheckBoxMixAudioChannel.Checked = Options.mixChannel
         CheckBoxLRmeter.Checked = Options.LRmeter
