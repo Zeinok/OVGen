@@ -54,6 +54,7 @@ Partial Class ChannelConfigForm
         Me.CheckBoxXYaspectRatio = New System.Windows.Forms.CheckBox()
         Me.ComboBoxScanTimeScale = New System.Windows.Forms.ComboBox()
         Me.LabelMaxScanTimeMultiplierSign = New System.Windows.Forms.Label()
+        Me.CheckBoxLRmeter = New System.Windows.Forms.CheckBox()
         CType(Me.NumericUpDownAudioChannel, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownTriggerLevel, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -363,12 +364,23 @@ Partial Class ChannelConfigForm
         Me.LabelMaxScanTimeMultiplierSign.TabIndex = 34
         Me.LabelMaxScanTimeMultiplierSign.Text = "x"
         '
+        'CheckBoxLRmeter
+        '
+        Me.CheckBoxLRmeter.AutoSize = True
+        Me.CheckBoxLRmeter.Location = New System.Drawing.Point(8, 377)
+        Me.CheckBoxLRmeter.Name = "CheckBoxLRmeter"
+        Me.CheckBoxLRmeter.Size = New System.Drawing.Size(83, 19)
+        Me.CheckBoxLRmeter.TabIndex = 35
+        Me.CheckBoxLRmeter.Text = "LR meter"
+        Me.CheckBoxLRmeter.UseVisualStyleBackColor = True
+        '
         'ChannelConfigForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
         Me.ClientSize = New System.Drawing.Size(272, 409)
+        Me.Controls.Add(Me.CheckBoxLRmeter)
         Me.Controls.Add(Me.LabelMaxScanTimeMultiplierSign)
         Me.Controls.Add(Me.ComboBoxScanTimeScale)
         Me.Controls.Add(Me.CheckBoxXYaspectRatio)
@@ -448,4 +460,5 @@ Partial Class ChannelConfigForm
     Friend WithEvents CheckBoxXYaspectRatio As CheckBox
     Friend WithEvents ComboBoxScanTimeScale As ComboBox
     Friend WithEvents LabelMaxScanTimeMultiplierSign As Label
+    Friend WithEvents CheckBoxLRmeter As CheckBox
 End Class

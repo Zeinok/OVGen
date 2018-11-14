@@ -34,6 +34,7 @@
         ComboBoxScanTimeScale.SelectedItem = Options.maxScan
         NumericUpDownAudioChannel.Value = Options.selectedChannel
         CheckBoxMixAudioChannel.Checked = Options.mixChannel
+        CheckBoxLRmeter.Checked = Options.LRmeter
     End Sub
 
     Private Sub ChannelConfigForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
@@ -113,6 +114,7 @@
         Options.mixChannel = CheckBoxMixAudioChannel.Checked
         Options.XYmode = CheckBoxXYmode.Checked
         Options.XYmodeAspectRatio = CheckBoxXYaspectRatio.Checked
+        Options.LRmeter = CheckBoxLRmeter.Checked
         Me.DialogResult = Windows.Forms.DialogResult.OK
         Me.Close()
     End Sub

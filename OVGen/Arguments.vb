@@ -68,6 +68,7 @@ Public Class channelOptions
     Public selectedChannel As Byte = 0
     Public XYmode As Boolean = False
     Public XYmodeAspectRatio As Boolean = True
+    Public LRmeter As Boolean = False
 
     Public Function Clone() As Object Implements ICloneable.Clone
         Return Me.MemberwiseClone()
