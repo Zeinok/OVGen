@@ -8,9 +8,9 @@
     Private Sub ChannelConfigForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         CheckBoxXYmode.Checked = Options.XYmode
         CheckBoxXYaspectRatio.Checked = Options.XYmodeAspectRatio
-        CheckBoxXYmode_CheckedChanged(Nothing, Nothing)
         ComboBoxAlgorithm.Items.Clear()
         ComboBoxAlgorithm.Items.AddRange(TriggeringAlgorithms.Algorithms)
+        CheckBoxXYmode_CheckedChanged(Nothing, Nothing)
         ButtonColor.BackColor = Options.waveColor
         CheckBoxPulseWidthModulatedColor.Checked = Options.pulseWidthModulatedColor
         ComboBoxAlgorithm.SelectedIndex = Options.algorithm
