@@ -195,5 +195,6 @@
             End If
         Next
         CheckBoxXYaspectRatio.Enabled = CheckBoxXYmode.Checked
+        CheckBoxLRmeter.Enabled = True
     End Sub
 End Class
