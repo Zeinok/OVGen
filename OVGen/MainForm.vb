@@ -913,6 +913,7 @@ Public Class MainForm
                                        rect.Bottom - pen.Width,
                                        (LeftCHMaxValue + RightCHMaxValue) * rect.Width / 2,
                                        pen.Width)
+        g.Clip = New Region(rect)
         g.FillRectangle(New SolidBrush(pen.Color), meterRect)
         wave.mixChannel = OriginalMixChannelState
         wave.selectedChannel = OriginalSelectedChannel
