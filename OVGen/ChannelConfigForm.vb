@@ -31,14 +31,7 @@
         TextBoxLabel.Text = Options.label
         labelFont = Options.labelFont
         ButtonFontColor.BackColor = Options.labelColor
-        Select Case Options.maxScan
-            Case 1.0F
-                RadioButton1x.Checked = True
-            Case 1.5F
-                RadioButton1dot5x.Checked = True
-            Case 2.0F
-                RadioButton2x.Checked = True
-        End Select
+        ComboBoxScanTimeScale.SelectedItem = Options.maxScan
         NumericUpDownAudioChannel.Value = Options.selectedChannel
         CheckBoxMixAudioChannel.Checked = Options.mixChannel
     End Sub
@@ -115,14 +108,7 @@
         Options.label = TextBoxLabel.Text
         Options.labelFont = labelFont
         Options.labelColor = ButtonFontColor.BackColor
-        Select Case True
-            Case RadioButton1x.Checked
-                Options.maxScan = 1.0
-            Case RadioButton1dot5x.Checked
-                Options.maxScan = 1.5
-            Case RadioButton2x.Checked
-                Options.maxScan = 2.0
-        End Select
+        Options.maxScan = ComboBoxScanTimeScale.SelectedItem
         Options.selectedChannel = NumericUpDownAudioChannel.Value
         Options.mixChannel = CheckBoxMixAudioChannel.Checked
         Options.XYmode = CheckBoxXYmode.Checked

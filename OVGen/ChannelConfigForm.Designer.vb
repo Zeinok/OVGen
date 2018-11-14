@@ -38,12 +38,9 @@ Partial Class ChannelConfigForm
         Me.ButtonFontColor = New System.Windows.Forms.Button()
         Me.LabelAlgorithm = New System.Windows.Forms.Label()
         Me.LabelScanTime = New System.Windows.Forms.Label()
-        Me.RadioButton1x = New System.Windows.Forms.RadioButton()
-        Me.RadioButton2x = New System.Windows.Forms.RadioButton()
         Me.CheckBoxMixAudioChannel = New System.Windows.Forms.CheckBox()
         Me.LabelAudioChannel = New System.Windows.Forms.Label()
         Me.NumericUpDownAudioChannel = New System.Windows.Forms.NumericUpDown()
-        Me.RadioButton1dot5x = New System.Windows.Forms.RadioButton()
         Me.LabelTriggerLevel = New System.Windows.Forms.Label()
         Me.NumericUpDownTriggerLevel = New System.Windows.Forms.NumericUpDown()
         Me.CheckBoxExternalTrigger = New System.Windows.Forms.CheckBox()
@@ -55,6 +52,8 @@ Partial Class ChannelConfigForm
         Me.ComboBoxScanPhase = New System.Windows.Forms.ComboBox()
         Me.CheckBoxXYmode = New System.Windows.Forms.CheckBox()
         Me.CheckBoxXYaspectRatio = New System.Windows.Forms.CheckBox()
+        Me.ComboBoxScanTimeScale = New System.Windows.Forms.ComboBox()
+        Me.LabelMaxScanTimeMultiplierSign = New System.Windows.Forms.Label()
         CType(Me.NumericUpDownAudioChannel, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownTriggerLevel, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -211,28 +210,6 @@ Partial Class ChannelConfigForm
         Me.LabelScanTime.TabIndex = 22
         Me.LabelScanTime.Text = "Max Scan Time:"
         '
-        'RadioButton1x
-        '
-        Me.RadioButton1x.AutoSize = True
-        Me.RadioButton1x.Location = New System.Drawing.Point(112, 290)
-        Me.RadioButton1x.Name = "RadioButton1x"
-        Me.RadioButton1x.Size = New System.Drawing.Size(42, 19)
-        Me.RadioButton1x.TabIndex = 23
-        Me.RadioButton1x.TabStop = True
-        Me.RadioButton1x.Text = "1x"
-        Me.RadioButton1x.UseVisualStyleBackColor = True
-        '
-        'RadioButton2x
-        '
-        Me.RadioButton2x.AutoSize = True
-        Me.RadioButton2x.Location = New System.Drawing.Point(219, 290)
-        Me.RadioButton2x.Name = "RadioButton2x"
-        Me.RadioButton2x.Size = New System.Drawing.Size(42, 19)
-        Me.RadioButton2x.TabIndex = 25
-        Me.RadioButton2x.TabStop = True
-        Me.RadioButton2x.Text = "2x"
-        Me.RadioButton2x.UseVisualStyleBackColor = True
-        '
         'CheckBoxMixAudioChannel
         '
         Me.CheckBoxMixAudioChannel.AutoSize = True
@@ -259,17 +236,6 @@ Partial Class ChannelConfigForm
         Me.NumericUpDownAudioChannel.Name = "NumericUpDownAudioChannel"
         Me.NumericUpDownAudioChannel.Size = New System.Drawing.Size(61, 25)
         Me.NumericUpDownAudioChannel.TabIndex = 27
-        '
-        'RadioButton1dot5x
-        '
-        Me.RadioButton1dot5x.AutoSize = True
-        Me.RadioButton1dot5x.Location = New System.Drawing.Point(160, 290)
-        Me.RadioButton1dot5x.Name = "RadioButton1dot5x"
-        Me.RadioButton1dot5x.Size = New System.Drawing.Size(53, 19)
-        Me.RadioButton1dot5x.TabIndex = 24
-        Me.RadioButton1dot5x.TabStop = True
-        Me.RadioButton1dot5x.Text = "1.5x"
-        Me.RadioButton1dot5x.UseVisualStyleBackColor = True
         '
         'LabelTriggerLevel
         '
@@ -378,12 +344,33 @@ Partial Class ChannelConfigForm
         Me.CheckBoxXYaspectRatio.Text = "XY mode 1:1 aspect ratio"
         Me.CheckBoxXYaspectRatio.UseVisualStyleBackColor = True
         '
+        'ComboBoxScanTimeScale
+        '
+        Me.ComboBoxScanTimeScale.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBoxScanTimeScale.FormattingEnabled = True
+        Me.ComboBoxScanTimeScale.Items.AddRange(New Object() {"0.75", "1", "1.5", "2"})
+        Me.ComboBoxScanTimeScale.Location = New System.Drawing.Point(112, 290)
+        Me.ComboBoxScanTimeScale.Name = "ComboBoxScanTimeScale"
+        Me.ComboBoxScanTimeScale.Size = New System.Drawing.Size(75, 23)
+        Me.ComboBoxScanTimeScale.TabIndex = 33
+        '
+        'LabelMaxScanTimeMultiplierSign
+        '
+        Me.LabelMaxScanTimeMultiplierSign.AutoSize = True
+        Me.LabelMaxScanTimeMultiplierSign.Location = New System.Drawing.Point(193, 292)
+        Me.LabelMaxScanTimeMultiplierSign.Name = "LabelMaxScanTimeMultiplierSign"
+        Me.LabelMaxScanTimeMultiplierSign.Size = New System.Drawing.Size(14, 15)
+        Me.LabelMaxScanTimeMultiplierSign.TabIndex = 34
+        Me.LabelMaxScanTimeMultiplierSign.Text = "x"
+        '
         'ChannelConfigForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
         Me.ClientSize = New System.Drawing.Size(272, 409)
+        Me.Controls.Add(Me.LabelMaxScanTimeMultiplierSign)
+        Me.Controls.Add(Me.ComboBoxScanTimeScale)
         Me.Controls.Add(Me.CheckBoxXYaspectRatio)
         Me.Controls.Add(Me.CheckBoxXYmode)
         Me.Controls.Add(Me.ComboBoxScanPhase)
@@ -395,12 +382,9 @@ Partial Class ChannelConfigForm
         Me.Controls.Add(Me.CheckBoxExternalTrigger)
         Me.Controls.Add(Me.NumericUpDownTriggerLevel)
         Me.Controls.Add(Me.LabelTriggerLevel)
-        Me.Controls.Add(Me.RadioButton1dot5x)
         Me.Controls.Add(Me.NumericUpDownAudioChannel)
         Me.Controls.Add(Me.LabelAudioChannel)
         Me.Controls.Add(Me.CheckBoxMixAudioChannel)
-        Me.Controls.Add(Me.RadioButton2x)
-        Me.Controls.Add(Me.RadioButton1x)
         Me.Controls.Add(Me.LabelScanTime)
         Me.Controls.Add(Me.LabelAlgorithm)
         Me.Controls.Add(Me.ButtonFontColor)
@@ -448,12 +432,9 @@ Partial Class ChannelConfigForm
     Friend WithEvents ButtonFontColor As Button
     Friend WithEvents LabelAlgorithm As Label
     Friend WithEvents LabelScanTime As Label
-    Friend WithEvents RadioButton1x As RadioButton
-    Friend WithEvents RadioButton2x As RadioButton
     Friend WithEvents CheckBoxMixAudioChannel As CheckBox
     Friend WithEvents LabelAudioChannel As Label
     Friend WithEvents NumericUpDownAudioChannel As NumericUpDown
-    Friend WithEvents RadioButton1dot5x As RadioButton
     Friend WithEvents LabelTriggerLevel As Label
     Friend WithEvents NumericUpDownTriggerLevel As NumericUpDown
     Friend WithEvents CheckBoxExternalTrigger As CheckBox
@@ -465,4 +446,6 @@ Partial Class ChannelConfigForm
     Friend WithEvents ComboBoxScanPhase As ComboBox
     Friend WithEvents CheckBoxXYmode As CheckBox
     Friend WithEvents CheckBoxXYaspectRatio As CheckBox
+    Friend WithEvents ComboBoxScanTimeScale As ComboBox
+    Friend WithEvents LabelMaxScanTimeMultiplierSign As Label
 End Class
