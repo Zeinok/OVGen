@@ -22,9 +22,11 @@
         Public DrawMiddleLine As Boolean
         Public MiddleLineColor As New ColorSerializable(Color.Gray)
         Public MiddleLineWidth As Integer = 1
+        Public LRmeterColor As New ColorSerializable(Color.Red)
+        Public LRmeterHeight As Integer = 4
         Public CanvasSize As String = "1280x720"
-        Public FlowDirection As Integer
-        Public LabelPosition As Integer
+        Public FlowDirection As Integer = 0
+        Public LabelPosition As Integer = 0
     End Class
     Public Class FFmpegSection
         Public BinaryLocation As String

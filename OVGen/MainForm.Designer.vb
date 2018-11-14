@@ -71,6 +71,7 @@ Partial Class MainForm
         Me.LogBox = New System.Windows.Forms.RichTextBox()
         Me.TabControlRenderingFiles = New System.Windows.Forms.TabControl()
         Me.TabPageRendering = New System.Windows.Forms.TabPage()
+        Me.ButtonLRmeterColor = New System.Windows.Forms.Button()
         Me.CheckBoxDottedXYmode = New System.Windows.Forms.CheckBox()
         Me.ComboBoxLabelPos = New System.Windows.Forms.ComboBox()
         Me.LabelChannelLabelPos = New System.Windows.Forms.Label()
@@ -80,6 +81,8 @@ Partial Class MainForm
         Me.TabPageFiles = New System.Windows.Forms.TabPage()
         Me.ListBoxFiles = New System.Windows.Forms.ListBox()
         Me.TimerStatusUpdater = New System.Windows.Forms.Timer(Me.components)
+        Me.NumericUpDownLRmeterHeight = New System.Windows.Forms.NumericUpDown()
+        Me.LabelLRmeterHeight = New System.Windows.Forms.Label()
         CType(Me.NumericUpDownMiddleLine, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NumericUpDownLineWidth, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -91,6 +94,7 @@ Partial Class MainForm
         Me.TabPageRendering.SuspendLayout()
         CType(Me.NumericUpDownBorder, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPageFiles.SuspendLayout()
+        CType(Me.NumericUpDownLRmeterHeight, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'OscilloscopeBackgroundWorker
@@ -166,104 +170,104 @@ Partial Class MainForm
         '
         'NumericUpDownMiddleLine
         '
-        Me.NumericUpDownMiddleLine.Location = New System.Drawing.Point(185, 254)
+        Me.NumericUpDownMiddleLine.Location = New System.Drawing.Point(185, 316)
         Me.NumericUpDownMiddleLine.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDownMiddleLine.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownMiddleLine.Name = "NumericUpDownMiddleLine"
         Me.NumericUpDownMiddleLine.Size = New System.Drawing.Size(48, 25)
-        Me.NumericUpDownMiddleLine.TabIndex = 19
+        Me.NumericUpDownMiddleLine.TabIndex = 22
         Me.NumericUpDownMiddleLine.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'NumericUpDownGrid
         '
-        Me.NumericUpDownGrid.Location = New System.Drawing.Point(148, 225)
+        Me.NumericUpDownGrid.Location = New System.Drawing.Point(148, 287)
         Me.NumericUpDownGrid.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDownGrid.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownGrid.Name = "NumericUpDownGrid"
         Me.NumericUpDownGrid.Size = New System.Drawing.Size(48, 25)
-        Me.NumericUpDownGrid.TabIndex = 16
+        Me.NumericUpDownGrid.TabIndex = 19
         Me.NumericUpDownGrid.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'ButtonMiddleLineColor
         '
         Me.ButtonMiddleLineColor.BackColor = System.Drawing.Color.Gray
-        Me.ButtonMiddleLineColor.Location = New System.Drawing.Point(104, 254)
+        Me.ButtonMiddleLineColor.Location = New System.Drawing.Point(104, 316)
         Me.ButtonMiddleLineColor.Name = "ButtonMiddleLineColor"
         Me.ButtonMiddleLineColor.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonMiddleLineColor.TabIndex = 18
+        Me.ButtonMiddleLineColor.TabIndex = 21
         Me.ButtonMiddleLineColor.Text = "Color"
         Me.ButtonMiddleLineColor.UseVisualStyleBackColor = False
         '
         'ButtonGridColor
         '
         Me.ButtonGridColor.BackColor = System.Drawing.Color.LightGray
-        Me.ButtonGridColor.Location = New System.Drawing.Point(67, 225)
+        Me.ButtonGridColor.Location = New System.Drawing.Point(67, 287)
         Me.ButtonGridColor.Name = "ButtonGridColor"
         Me.ButtonGridColor.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonGridColor.TabIndex = 15
+        Me.ButtonGridColor.TabIndex = 18
         Me.ButtonGridColor.Text = "Color"
         Me.ButtonGridColor.UseVisualStyleBackColor = False
         '
         'CheckBoxDrawMiddleLine
         '
         Me.CheckBoxDrawMiddleLine.AutoSize = True
-        Me.CheckBoxDrawMiddleLine.Location = New System.Drawing.Point(5, 258)
+        Me.CheckBoxDrawMiddleLine.Location = New System.Drawing.Point(5, 320)
         Me.CheckBoxDrawMiddleLine.Name = "CheckBoxDrawMiddleLine"
         Me.CheckBoxDrawMiddleLine.Size = New System.Drawing.Size(100, 19)
-        Me.CheckBoxDrawMiddleLine.TabIndex = 17
+        Me.CheckBoxDrawMiddleLine.TabIndex = 20
         Me.CheckBoxDrawMiddleLine.Text = "Middle Line"
         Me.ToolTips.SetToolTip(Me.CheckBoxDrawMiddleLine, "Draws a horizontal line at 0V")
         Me.CheckBoxDrawMiddleLine.UseVisualStyleBackColor = True
         '
         'ButtonFlowDirection
         '
-        Me.ButtonFlowDirection.Location = New System.Drawing.Point(110, 315)
+        Me.ButtonFlowDirection.Location = New System.Drawing.Point(110, 377)
         Me.ButtonFlowDirection.Name = "ButtonFlowDirection"
         Me.ButtonFlowDirection.Size = New System.Drawing.Size(129, 26)
-        Me.ButtonFlowDirection.TabIndex = 23
+        Me.ButtonFlowDirection.TabIndex = 26
         Me.ButtonFlowDirection.Text = "FlowDirection"
         Me.ButtonFlowDirection.UseVisualStyleBackColor = True
         '
         'LabelFlowDirecton
         '
         Me.LabelFlowDirecton.AutoSize = True
-        Me.LabelFlowDirecton.Location = New System.Drawing.Point(6, 321)
+        Me.LabelFlowDirecton.Location = New System.Drawing.Point(6, 383)
         Me.LabelFlowDirecton.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LabelFlowDirecton.Name = "LabelFlowDirecton"
         Me.LabelFlowDirecton.Size = New System.Drawing.Size(97, 15)
-        Me.LabelFlowDirecton.TabIndex = 22
+        Me.LabelFlowDirecton.TabIndex = 25
         Me.LabelFlowDirecton.Text = "Flow Direction:"
         '
         'CheckBoxGrid
         '
         Me.CheckBoxGrid.AutoSize = True
-        Me.CheckBoxGrid.Location = New System.Drawing.Point(5, 229)
+        Me.CheckBoxGrid.Location = New System.Drawing.Point(5, 291)
         Me.CheckBoxGrid.Margin = New System.Windows.Forms.Padding(4)
         Me.CheckBoxGrid.Name = "CheckBoxGrid"
         Me.CheckBoxGrid.Size = New System.Drawing.Size(55, 19)
-        Me.CheckBoxGrid.TabIndex = 14
+        Me.CheckBoxGrid.TabIndex = 17
         Me.CheckBoxGrid.Text = "Grid"
         Me.CheckBoxGrid.UseVisualStyleBackColor = True
         '
         'LabelCanvasSize
         '
         Me.LabelCanvasSize.AutoSize = True
-        Me.LabelCanvasSize.Location = New System.Drawing.Point(6, 289)
+        Me.LabelCanvasSize.Location = New System.Drawing.Point(6, 351)
         Me.LabelCanvasSize.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LabelCanvasSize.Name = "LabelCanvasSize"
         Me.LabelCanvasSize.Size = New System.Drawing.Size(79, 15)
-        Me.LabelCanvasSize.TabIndex = 20
+        Me.LabelCanvasSize.TabIndex = 23
         Me.LabelCanvasSize.Text = "Canvas Size:"
         '
         'ComboBoxCanvasSize
         '
         Me.ComboBoxCanvasSize.FormattingEnabled = True
         Me.ComboBoxCanvasSize.Items.AddRange(New Object() {"1280x720", "1920x1080"})
-        Me.ComboBoxCanvasSize.Location = New System.Drawing.Point(93, 285)
+        Me.ComboBoxCanvasSize.Location = New System.Drawing.Point(93, 347)
         Me.ComboBoxCanvasSize.Margin = New System.Windows.Forms.Padding(4)
         Me.ComboBoxCanvasSize.Name = "ComboBoxCanvasSize"
         Me.ComboBoxCanvasSize.Size = New System.Drawing.Size(145, 23)
-        Me.ComboBoxCanvasSize.TabIndex = 21
+        Me.ComboBoxCanvasSize.TabIndex = 24
         Me.ComboBoxCanvasSize.Text = "1280x720"
         '
         'CheckBoxCRT
@@ -279,13 +283,13 @@ Partial Class MainForm
         '
         'NumericUpDownLineWidth
         '
-        Me.NumericUpDownLineWidth.Location = New System.Drawing.Point(85, 165)
+        Me.NumericUpDownLineWidth.Location = New System.Drawing.Point(85, 197)
         Me.NumericUpDownLineWidth.Margin = New System.Windows.Forms.Padding(2)
         Me.NumericUpDownLineWidth.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDownLineWidth.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownLineWidth.Name = "NumericUpDownLineWidth"
         Me.NumericUpDownLineWidth.Size = New System.Drawing.Size(49, 25)
-        Me.NumericUpDownLineWidth.TabIndex = 10
+        Me.NumericUpDownLineWidth.TabIndex = 11
         Me.NumericUpDownLineWidth.Value = New Decimal(New Integer() {2, 0, 0, 0})
         '
         'CheckBoxNoFileWriting
@@ -306,11 +310,11 @@ Partial Class MainForm
         'LabelLineWidth
         '
         Me.LabelLineWidth.AutoSize = True
-        Me.LabelLineWidth.Location = New System.Drawing.Point(5, 169)
+        Me.LabelLineWidth.Location = New System.Drawing.Point(5, 201)
         Me.LabelLineWidth.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LabelLineWidth.Name = "LabelLineWidth"
         Me.LabelLineWidth.Size = New System.Drawing.Size(76, 15)
-        Me.LabelLineWidth.TabIndex = 9
+        Me.LabelLineWidth.TabIndex = 10
         Me.LabelLineWidth.Text = "Line Width:"
         '
         'NumericUpDownColumn
@@ -558,6 +562,9 @@ Partial Class MainForm
         'TabPageRendering
         '
         Me.TabPageRendering.BackColor = System.Drawing.SystemColors.Control
+        Me.TabPageRendering.Controls.Add(Me.LabelLRmeterHeight)
+        Me.TabPageRendering.Controls.Add(Me.NumericUpDownLRmeterHeight)
+        Me.TabPageRendering.Controls.Add(Me.ButtonLRmeterColor)
         Me.TabPageRendering.Controls.Add(Me.CheckBoxDottedXYmode)
         Me.TabPageRendering.Controls.Add(Me.ComboBoxLabelPos)
         Me.TabPageRendering.Controls.Add(Me.LabelChannelLabelPos)
@@ -591,6 +598,16 @@ Partial Class MainForm
         Me.TabPageRendering.TabIndex = 0
         Me.TabPageRendering.Text = "Rendering"
         '
+        'ButtonLRmeterColor
+        '
+        Me.ButtonLRmeterColor.BackColor = System.Drawing.Color.Red
+        Me.ButtonLRmeterColor.Location = New System.Drawing.Point(8, 166)
+        Me.ButtonLRmeterColor.Name = "ButtonLRmeterColor"
+        Me.ButtonLRmeterColor.Size = New System.Drawing.Size(232, 25)
+        Me.ButtonLRmeterColor.TabIndex = 9
+        Me.ButtonLRmeterColor.Text = "LR meter Color"
+        Me.ButtonLRmeterColor.UseVisualStyleBackColor = False
+        '
         'CheckBoxDottedXYmode
         '
         Me.CheckBoxDottedXYmode.AutoSize = True
@@ -606,47 +623,47 @@ Partial Class MainForm
         Me.ComboBoxLabelPos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxLabelPos.FormattingEnabled = True
         Me.ComboBoxLabelPos.Items.AddRange(New Object() {"Top Left", "Top Right", "Bottom Left", "Bottom Right"})
-        Me.ComboBoxLabelPos.Location = New System.Drawing.Point(105, 347)
+        Me.ComboBoxLabelPos.Location = New System.Drawing.Point(105, 409)
         Me.ComboBoxLabelPos.Name = "ComboBoxLabelPos"
         Me.ComboBoxLabelPos.Size = New System.Drawing.Size(133, 23)
-        Me.ComboBoxLabelPos.TabIndex = 25
+        Me.ComboBoxLabelPos.TabIndex = 28
         '
         'LabelChannelLabelPos
         '
         Me.LabelChannelLabelPos.AutoSize = True
-        Me.LabelChannelLabelPos.Location = New System.Drawing.Point(6, 350)
+        Me.LabelChannelLabelPos.Location = New System.Drawing.Point(6, 412)
         Me.LabelChannelLabelPos.Name = "LabelChannelLabelPos"
         Me.LabelChannelLabelPos.Size = New System.Drawing.Size(93, 15)
-        Me.LabelChannelLabelPos.TabIndex = 24
+        Me.LabelChannelLabelPos.TabIndex = 27
         Me.LabelChannelLabelPos.Text = "Label Position:"
         '
         'NumericUpDownBorder
         '
-        Me.NumericUpDownBorder.Location = New System.Drawing.Point(160, 196)
+        Me.NumericUpDownBorder.Location = New System.Drawing.Point(160, 258)
         Me.NumericUpDownBorder.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDownBorder.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDownBorder.Name = "NumericUpDownBorder"
         Me.NumericUpDownBorder.Size = New System.Drawing.Size(48, 25)
-        Me.NumericUpDownBorder.TabIndex = 13
+        Me.NumericUpDownBorder.TabIndex = 16
         Me.NumericUpDownBorder.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'ButtonBorderColor
         '
         Me.ButtonBorderColor.BackColor = System.Drawing.Color.LightGray
-        Me.ButtonBorderColor.Location = New System.Drawing.Point(79, 196)
+        Me.ButtonBorderColor.Location = New System.Drawing.Point(79, 258)
         Me.ButtonBorderColor.Name = "ButtonBorderColor"
         Me.ButtonBorderColor.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonBorderColor.TabIndex = 12
+        Me.ButtonBorderColor.TabIndex = 15
         Me.ButtonBorderColor.Text = "Color"
         Me.ButtonBorderColor.UseVisualStyleBackColor = False
         '
         'CheckBoxBorder
         '
         Me.CheckBoxBorder.AutoSize = True
-        Me.CheckBoxBorder.Location = New System.Drawing.Point(5, 200)
+        Me.CheckBoxBorder.Location = New System.Drawing.Point(5, 262)
         Me.CheckBoxBorder.Name = "CheckBoxBorder"
         Me.CheckBoxBorder.Size = New System.Drawing.Size(68, 19)
-        Me.CheckBoxBorder.TabIndex = 11
+        Me.CheckBoxBorder.TabIndex = 14
         Me.CheckBoxBorder.Text = "Border"
         Me.CheckBoxBorder.UseVisualStyleBackColor = True
         '
@@ -684,6 +701,23 @@ Partial Class MainForm
         'TimerStatusUpdater
         '
         '
+        'NumericUpDownLRmeterHeight
+        '
+        Me.NumericUpDownLRmeterHeight.Location = New System.Drawing.Point(120, 227)
+        Me.NumericUpDownLRmeterHeight.Name = "NumericUpDownLRmeterHeight"
+        Me.NumericUpDownLRmeterHeight.Size = New System.Drawing.Size(49, 25)
+        Me.NumericUpDownLRmeterHeight.TabIndex = 13
+        Me.NumericUpDownLRmeterHeight.Value = New Decimal(New Integer() {4, 0, 0, 0})
+        '
+        'LabelLRmeterHeight
+        '
+        Me.LabelLRmeterHeight.AutoSize = True
+        Me.LabelLRmeterHeight.Location = New System.Drawing.Point(5, 229)
+        Me.LabelLRmeterHeight.Name = "LabelLRmeterHeight"
+        Me.LabelLRmeterHeight.Size = New System.Drawing.Size(109, 15)
+        Me.LabelLRmeterHeight.TabIndex = 12
+        Me.LabelLRmeterHeight.Text = "LR Meter Height:"
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
@@ -719,6 +753,7 @@ Partial Class MainForm
         CType(Me.NumericUpDownBorder, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPageFiles.ResumeLayout(False)
         Me.TabPageFiles.PerformLayout()
+        CType(Me.NumericUpDownLRmeterHeight, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -779,4 +814,7 @@ Partial Class MainForm
     Friend WithEvents ListBoxFiles As ListBox
     Friend WithEvents CheckBoxDottedXYmode As CheckBox
     Friend WithEvents TimerStatusUpdater As Timer
+    Friend WithEvents ButtonLRmeterColor As Button
+    Friend WithEvents LabelLRmeterHeight As Label
+    Friend WithEvents NumericUpDownLRmeterHeight As NumericUpDown
 End Class

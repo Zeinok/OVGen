@@ -129,6 +129,7 @@ Public Class MainForm
         conf.General.DrawBorder = CheckBoxBorder.Checked
         conf.General.BorderColor = New ColorSerializable(ButtonBorderColor.BackColor)
         conf.General.BorderWidth = NumericUpDownBorder.Value
+        conf.General.LRmeterColor = New ColorSerializable(ButtonLRmeterColor.BackColor)
         conf.General.CanvasSize = ComboBoxCanvasSize.Text
         conf.General.FlowDirection = channelFlowDirection
         conf.General.LabelPosition = ComboBoxLabelPos.SelectedIndex
@@ -175,6 +176,7 @@ Public Class MainForm
                 ButtonBorderColor.BackColor = conf.General.BorderColor.GetColor()
                 NumericUpDownBorder.Value = conf.General.BorderWidth
                 NumericUpDownGrid.Value = conf.General.GridWidth
+                ButtonLRmeterColor.BackColor = conf.General.LRmeterColor.GetColor()
                 ComboBoxCanvasSize.Text = conf.General.CanvasSize
                 channelFlowDirection = conf.General.FlowDirection
                 ComboBoxLabelPos.SelectedIndex = conf.General.LabelPosition
@@ -217,6 +219,7 @@ Public Class MainForm
             arg.gridPen = New Pen(ButtonGridColor.BackColor, NumericUpDownGrid.Value)
             arg.drawBorder = CheckBoxBorder.Checked
             arg.borderPen = New Pen(ButtonBorderColor.BackColor, NumericUpDownBorder.Value * 2)
+            arg.LRpen = New Pen(ButtonLRmeterColor.BackColor, NumericUpDownLRmeterHeight.Value + 1)
             arg.useAnalogOscilloscopeStyle = CheckBoxCRT.Checked
             arg.dottedXYmode = CheckBoxDottedXYmode.Checked
             If arg.useAnalogOscilloscopeStyle Then
@@ -777,7 +780,7 @@ Public Class MainForm
                 Exit While
             End If
             frameStopwatch.Stop()
-            Console.WriteLine(frameStopwatch.Elapsed)
+            'Console.WriteLine(frameStopwatch.Elapsed)
         End While
         wavePen.Color = Color.White 'reset color on end
         If args.convertVideo And Not args.noFileWriting And Not OscilloscopeBackgroundWorker.CancellationPending Then
@@ -795,7 +798,14 @@ Public Class MainForm
         progressList.Add(userState)
     End Sub
 
-    Private Sub drawWave(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal sampleRate As Long, ByVal timeScale As Double, ByVal offset As Long)
+    Private Sub drawWave(ByRef g As Graphics, 
+                         ByRef pen As Pen, 
+                         ByVal rect As Rectangle, 
+                         ByRef wave As WAV, 
+                         ByVal workerArg As WorkerArguments, 
+                         ByVal sampleRate As Long, 
+                         ByVal timeScale As Double, 
+                         ByVal offset As Long)
         Dim args As channelOptions = wave.extraArguments
         Dim points As New List(Of Point)
         Dim prevX As Integer = -1
@@ -827,7 +837,14 @@ Public Class MainForm
         g.DrawLines(pen, points.ToArray())
     End Sub
 
-    Private Sub drawWaveXY(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal sampleRate As Long, ByVal frameDuration As Double, ByVal offset As Long)
+    Private Sub drawWaveXY(ByRef g As Graphics,
+                           ByRef pen As Pen,
+                           ByVal rect As Rectangle,
+                           ByRef wave As WAV,
+                           ByVal workerArg As WorkerArguments,
+                           ByVal sampleRate As Long,
+                           ByVal frameDuration As Double,
+                           ByVal offset As Long)
         wave.mixChannel = False
         g.Clip = New Region(rect)
         Dim args As channelOptions = wave.extraArguments
@@ -867,37 +884,30 @@ Public Class MainForm
             g.DrawLines(XYpen, points.ToArray())
         End If
     End Sub
-    Dim maxY As Double = 0
-    Private Sub drawFFT(ByRef g As Graphics, ByRef pen As Pen, ByVal rect As Rectangle, ByRef wave As WAV, ByVal workerArg As WorkerArguments, ByVal maxSample As Integer, ByVal offset As Long)
-        Dim args As channelOptions = wave.extraArguments
-        pen.Color = args.waveColor
-        Dim complexList As New List(Of Complex)
-        For i As ULong = offset To offset + maxSample - 1
-            Dim s As Double = wave.getSample(i, True)
-            If s > 0 Then
-                s /= 127
-            Else
-                s /= 128
-            End If
-            complexList.Add(New Complex(s, 0))
+    Private Sub drawLRmeter(ByRef g As Graphics,
+                           ByRef pen As Pen,
+                           ByVal rect As Rectangle,
+                           ByRef wave As WAV,
+                           ByVal workerArg As WorkerArguments,
+                           ByVal sampleRate As Long,
+                           ByVal frameDuration As Double,
+                           ByVal offset As Long)
+        Dim LeftCHMaxValue As Double = 0
+        Dim RightCHMaxValue As Double = 0
+        Dim OriginalMixChannelSetting As Boolean = wave.mixChannel
+        wave.mixChannel = False
+        For i As Integer = offset To offset + frameDuration
+            Dim L As Double = Math.Abs(wave.getSample(i * wave.channels, True))
+            Dim R As Double = Math.Abs(wave.getSample(i * wave.channels + 1, True))
+            If L > LeftCHMaxValue Then LeftCHMaxValue = L
+            If R > RightCHMaxValue Then RightCHMaxValue = R
         Next
-        Dim complexArr As Complex() = complexList.ToArray()
-        FFT.HannWindow(complexArr)
-        FFT.FFT(complexArr, complexArr.Length, 0)
-        Dim pts As PointF() = FFT.PlotHelper(complexArr, wave.sampleRate, maxSample)
-        Dim points As New List(Of Point)
-        For Each pt In pts
-            If pt.Y > maxY Then
-                maxY = pt.Y
-                Debug.WriteLine(maxY)
-            End If
-            Dim x As Integer = pt.X * rect.Width + rect.X
-            Dim y As Integer = (1 - pt.Y / 417) * rect.Height + rect.Y
-            points.Add(New Point(x, y))
-        Next
-        g.DrawLines(pen, points.ToArray())
+        Dim meterRect As New Rectangle(rect.Left + rect.Width / 2 - (1 - LeftCHMaxValue) * rect.Width / 2,
+                                       rect.Bottom - pen.Width,
+                                       (LeftCHMaxValue + RightCHMaxValue) * rect.Width / 2,
+                                       pen.Width)
+        g.DrawRectangle(New Pen(pen.Color, 1), meterRect)
     End Sub
-
     Function HSVtoRGB(ByVal hue As Double, ByVal saturation As Double, ByVal value As Double) As Color
         Dim h As Integer = Convert.ToInt32(Math.Floor(hue / 60)) Mod 6
         Dim f As Double = hue / 60 - Math.Floor(hue / 60)
@@ -1334,6 +1344,14 @@ Public Class MainForm
             ButtonBackgroundColor.BackColor = cd.Color
         End If
         previewLayout()
+    End Sub
+
+    Private Sub ButtonLRmeterColor_Click(sender As Object, e As EventArgs) Handles ButtonLRmeterColor.Click
+        Dim cd As New ColorDialog
+        cd.Color = ButtonLRmeterColor.BackColor
+        If cd.ShowDialog() = DialogResult.OK Then
+            ButtonLRmeterColor.BackColor = cd.Color
+        End If
     End Sub
 
     Private Sub ButtonBorderColor_Click(sender As Object, e As EventArgs) Handles ButtonBorderColor.Click
